@@ -11,6 +11,7 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 from matplotlib.patches import Ellipse
+from matplotlib.lines import Line2D
 from scipy import stats
 import warnings
 warnings.filterwarnings('ignore')
@@ -18,16 +19,27 @@ warnings.filterwarnings('ignore')
 # ============================================================
 # LOAD DATA
 # ============================================================
-main_csv = '/Users/lukebegg/Downloads/deep_analysis/merged_complete_data.csv'
-dihed_csv = '/Users/lukebegg/Downloads/deep_analysis/megley_dihedrals.csv'
-out_dir = '/Users/lukebegg/Downloads/deep_analysis/pub_figures/'
+import os
+_HERE = os.path.dirname(os.path.abspath(__file__))
+_REPO = os.path.dirname(os.path.dirname(_HERE))
+main_csv = os.path.join(_REPO, 'data', 'merged_complete_data.csv')
+dihed_csv = os.path.join(_REPO, 'data', 'megley_dihedrals.csv')
+out_dir = os.path.join(_REPO, 'figures', 'pub_figures') + '/'
 
-df = pd.read_csv(main_csv)
+_df_full = pd.read_csv(main_csv)
 dih = pd.read_csv(dihed_csv)
+
+# Use the canonical_cohort flag (seq_length 210-245 aa, minus the 5AQB
+# rogue-water outlier). The flag is defined in merged_complete_data.csv.
+df = _df_full[_df_full['canonical_cohort']].copy()
+# Restrict dihedral table to canonical-cohort PDB ids
+_canon_ids = set(df['pdb_id'].astype(str))
+dih = dih[dih['pdb_id'].astype(str).isin(_canon_ids)].copy()
 
 print("=== Main data columns ===")
 print(list(df.columns))
-print(f"Shape: {df.shape}")
+print(f"Full shape:      {_df_full.shape}")
+print(f"Canonical cohort: {df.shape}")
 print("\n=== Dihedral data columns ===")
 print(list(dih.columns))
 print(f"Shape: {dih.shape}")
@@ -198,7 +210,7 @@ for i, (col, ylabel, lbl) in enumerate(metrics_fig1):
     remove_top_right(ax)
     panel_label(ax, lbl)
 
-path = out_dir + 'fig1_chromophore_effect.png'
+path = out_dir + 'figS6_chromophore_effect.png'
 fig.savefig(path, dpi=300, bbox_inches='tight', facecolor='white')
 saved_files.append(path)
 plt.close(fig)
@@ -258,13 +270,13 @@ for i, (col, ylabel, lbl) in enumerate(metrics_fig2):
 
     panel_label(ax, lbl)
 
-path = out_dir + 'fig2_color_class.png'
+path = out_dir + 'fig01_color_class.png'
 fig.savefig(path, dpi=300, bbox_inches='tight', facecolor='white')
 saved_files.append(path)
 plt.close(fig)
 
 # ============================================================
-# FIGURE 3: B-Factor Ratio (saved as fig4_bfactor.png)
+# FIGURE 2 (main text): B-Factor Ratio
 # ============================================================
 print("--- Generating Figure 3 (B-factor) ---")
 
@@ -292,7 +304,11 @@ ax.text(0.03, 0.95, f'\u03c1 = {rho_a:.3f}, {p_a_str}', transform=ax.transAxes,
         fontsize=9, va='top', fontstyle='italic')
 ax.set_xlabel('Quantum Yield')
 ax.set_ylabel('B-factor Ratio')
-ax.legend(fontsize=7, ncol=3, loc='upper right', framealpha=0.8, markerscale=0.8)
+legend_handles = [Line2D([0], [0], marker='o', color='w',
+                         markerfacecolor=CLASS_COLORS[cc], markersize=5,
+                         label=cc.capitalize()) for cc in CLASS_ORDER]
+ax.legend(handles=legend_handles, fontsize=7, ncol=3, loc='upper right',
+          framealpha=0.8)
 remove_top_right(ax)
 panel_label(ax, '(A)')
 
@@ -335,13 +351,13 @@ ax.set_ylabel('B-factor Ratio')
 remove_top_right(ax)
 panel_label(ax, '(C)')
 
-path = out_dir + 'fig4_bfactor.png'
+path = out_dir + 'fig02_bfactor.png'
 fig.savefig(path, dpi=300, bbox_inches='tight', facecolor='white')
 saved_files.append(path)
 plt.close(fig)
 
 # ============================================================
-# FIGURE 4: Dihedral Angles (saved as fig5_megley.png)
+# FIGURE S7 (supporting): Chromophore Dihedral Angles
 # ============================================================
 print("--- Generating Figure 4 (Dihedrals) ---")
 
@@ -427,7 +443,7 @@ ax.set_ylabel('Emission Maximum (nm)', fontsize=10)
 remove_top_right(ax)
 panel_label(ax, '(C)')
 
-path = out_dir + 'fig5_megley.png'
+path = out_dir + 'figS7_megley.png'
 fig.savefig(path, dpi=300, bbox_inches='tight', facecolor='white')
 saved_files.append(path)
 plt.close(fig)

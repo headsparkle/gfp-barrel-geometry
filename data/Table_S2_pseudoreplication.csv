@@ -1,13 +1,13 @@
-Test,Original_rho_or_H,Original_p,Unique_rho_or_H,Unique_p,Survives
-Emission vs Eccentricity,0.21,2.1e-08,0.33,5.5e-03,Yes
-Emission vs Minor Axis,-0.29,6.3e-15,-0.42,2.5e-04,Yes
-Emission vs Circularity,-0.2,5.3e-08,-0.37,1.7e-03,Yes
-QY vs B-Factor Ratio,-0.49,7.9e-18,-0.76,1.0e-03,Yes
-Emission vs B-Factor Ratio,0.4,4.0e-25,0.49,2.3e-05,Yes
-|τ|+|φ| vs Emission,0.14,1.4e-03,0.35,6.0e-03,Yes
-KW Eccentricity by Color,67.9,2.8e-13,,0.025,Yes
-KW Minor Axis by Color,87.3,2.5e-17,,0.013,Yes
-KW Circularity by Color,70.8,6.8e-14,,0.014,Yes
-MW Eccentricity (chrom vs no-chrom),,0.011,,0.17,No
-MW Circularity (chrom vs no-chrom),,0.0017,,0.58,No
-MW Minor Axis (chrom vs no-chrom),,8.2e-04,,0.003,Yes
+Test,Original_rho_or_H,Original_p,Original_n,Unique_rho_or_H,Unique_p,Unique_n,Survives
+Emission vs Eccentricity,0.29,1.83e-13,635,0.49,1.49e-05,70,Yes
+Emission vs Minor Axis,-0.30,1.14e-14,635,-0.52,3.89e-06,70,Yes
+Emission vs Circularity,-0.26,1.32e-11,635,-0.43,1.86e-04,70,Yes
+QY vs B-Factor Ratio,-0.50,1.45e-17,255,-0.76,0.00103,15,Yes
+Emission vs B-Factor Ratio,0.40,4.97e-23,564,0.48,5.27e-05,64,Yes
+|τ|+|φ| vs Emission,0.15,5.89e-04,501,0.39,0.00332,56,Yes
+KW Eccentricity by Color,105.0,4.62e-21,638,22.8,1.42e-04,70,Yes
+KW Minor Axis by Color,87.0,2.90e-17,638,20.0,4.92e-04,70,Yes
+KW Circularity by Color,86.3,4.10e-17,638,15.7,0.00341,70,Yes
+MW Eccentricity (chrom vs no-chrom),,9.46e-04,781,,0.223,216,No
+MW Circularity (chrom vs no-chrom),,0.0607,781,,0.507,216,No
+MW Minor Axis (chrom vs no-chrom),,2.85e-04,781,,0.023,216,Yes

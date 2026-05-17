@@ -40,12 +40,18 @@ CLASS_COLORS = {
     'blue':   '#1E88E5',
 }
 
-OUTDIR = '/Users/lukebegg/Downloads/deep_analysis/pub_figures'
+import os as _os
+_REPO = _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))
+OUTDIR = _os.path.join(_REPO, 'figures', 'pub_figures')
 
 # ── Load data ─────────────────────────────────────────────────────────────────
-df = pd.read_csv('/Users/lukebegg/Downloads/deep_analysis/merged_complete_data.csv')
+_df_full = pd.read_csv(_os.path.join(_REPO, 'data', 'merged_complete_data.csv'))
+
+# Canonical cohort: seq_length 210-245 aa, minus 5AQB rogue-water outlier
+df = _df_full[_df_full['canonical_cohort']].copy()
 print("Columns:", list(df.columns))
-print(f"Loaded {len(df)} rows")
+print(f"Full dataset: {len(_df_full)} rows")
+print(f"Canonical cohort: {len(df)} rows")
 
 
 # ── Helper functions ──────────────────────────────────────────────────────────
@@ -127,7 +133,7 @@ fig.legend(handles, lbls, loc='lower center', ncol=6, frameon=False,
            fontsize=9, bbox_to_anchor=(0.5, -0.02))
 
 fig.tight_layout(rect=[0, 0.05, 1, 1])
-path = f'{OUTDIR}/fig3_emission_vs_geometry.png'
+path = f'{OUTDIR}/figS1_emission_vs_geometry.png'
 fig.savefig(path, dpi=300, bbox_inches='tight', facecolor='white')
 plt.close(fig)
 print(f'Saved: {path}')
@@ -191,7 +197,7 @@ for ax, (col, ylabel), lab in zip(axes, metrics, labels_s2):
         ax.text(1.5, bar_y + 0.03*yrange, ptxt, ha='center', va='bottom', fontsize=8)
 
 fig.tight_layout()
-path = f'{OUTDIR}/fig9_cis_trans.png'
+path = f'{OUTDIR}/figS2_cis_trans.png'
 fig.savefig(path, dpi=300, bbox_inches='tight', facecolor='white')
 plt.close(fig)
 print(f'Saved: {path}')
@@ -252,7 +258,7 @@ ax.text(0.05, 0.85, f'n = {len(hires)} (< 2.0 Å)', transform=ax.transAxes,
 panel_label(ax, '(C)')
 
 fig.tight_layout()
-path = f'{OUTDIR}/fig6_resolution.png'
+path = f'{OUTDIR}/figS3_resolution.png'
 fig.savefig(path, dpi=300, bbox_inches='tight', facecolor='white')
 plt.close(fig)
 print(f'Saved: {path}')
@@ -309,7 +315,7 @@ ax.set_yticklabels(hm_labels, fontsize=10)
 ax.tick_params(top=False, bottom=True, left=True, right=False)
 
 fig.tight_layout()
-path = f'{OUTDIR}/fig7_heatmap.png'
+path = f'{OUTDIR}/figS4_heatmap.png'
 fig.savefig(path, dpi=300, bbox_inches='tight', facecolor='white')
 plt.close(fig)
 print(f'Saved: {path}')
@@ -375,7 +381,7 @@ for ax, (col, ylabel), lab in zip(axes, metrics_s5, labels_s5):
     safe_ylim(ax, all_vals)
 
 fig.tight_layout()
-path = f'{OUTDIR}/fig8_chromophore_types.png'
+path = f'{OUTDIR}/figS5_chromophore_types.png'
 fig.savefig(path, dpi=300, bbox_inches='tight', facecolor='white')
 plt.close(fig)
 print(f'Saved: {path}')

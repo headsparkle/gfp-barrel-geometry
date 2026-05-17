@@ -5,6 +5,7 @@ Applies Benjamini-Hochberg FDR correction to all Spearman correlations
 and group comparison tests.
 """
 
+import os
 import pandas as pd
 import numpy as np
 from scipy import stats
@@ -12,9 +13,12 @@ from itertools import combinations
 import warnings
 warnings.filterwarnings('ignore')
 
+_REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+_DATA = os.path.join(_REPO, 'data')
+
 # ─── Load data ───────────────────────────────────────────────────────────
-df = pd.read_csv('/Users/lukebegg/Downloads/deep_analysis/merged_complete_data.csv')
-dih = pd.read_csv('/Users/lukebegg/Downloads/deep_analysis/megley_dihedrals.csv')
+df = pd.read_csv(os.path.join(_DATA, 'merged_complete_data.csv'))
+dih = pd.read_csv(os.path.join(_DATA, 'megley_dihedrals.csv'))
 
 # Rename for convenience
 df.columns = [c.strip().lower() for c in df.columns]
@@ -356,7 +360,8 @@ if partial_results:
         report(f"  - {r['name']}: partial rho={r['r_partial']:.4f} (zero-order: {r['rho_zero']:.4f}, {change})")
 
 # ─── Save results ────────────────────────────────────────────────────────
-with open('/Users/lukebegg/Downloads/deep_analysis/multiple_testing_results.txt', 'w') as f:
+_OUT = os.path.join(_DATA, 'multiple_testing_results.txt')
+with open(_OUT, 'w') as f:
     f.write('\n'.join(out_lines))
 
-print("\n\nResults saved to /Users/lukebegg/Downloads/deep_analysis/multiple_testing_results.txt")
+print(f"\n\nResults saved to {_OUT}")

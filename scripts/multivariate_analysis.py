@@ -9,15 +9,18 @@ from sklearn.inspection import permutation_importance
 import statsmodels.api as sm
 import sys, os
 
-out_path = "/Users/lukebegg/Downloads/deep_analysis/multivariate_results.txt"
+_REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+_DATA = os.path.join(_REPO, 'data')
+
+out_path = os.path.join(_DATA, 'multivariate_results.txt')
 lines = []
 def p(s=""):
     print(s)
     lines.append(s)
 
 # ── Load data ──
-main = pd.read_csv("/Users/lukebegg/Downloads/deep_analysis/merged_complete_data.csv")
-dihed = pd.read_csv("/Users/lukebegg/Downloads/deep_analysis/megley_dihedrals.csv")
+main = pd.read_csv(os.path.join(_DATA, 'merged_complete_data.csv'))
+dihed = pd.read_csv(os.path.join(_DATA, 'megley_dihedrals.csv'))
 
 p("=== COLUMN NAMES ===")
 p(f"Main data columns ({len(main.columns)}): {list(main.columns)}")
