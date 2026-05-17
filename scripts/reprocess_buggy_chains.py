@@ -24,12 +24,16 @@ DATA = os.path.join(REPO, 'data')
 CIF_DIR = '/tmp/cif_audit/cifs'
 
 CHROMOPHORE_RESIDUES = {
-    'CRO','CR2','GYS','SYG','CRQ','CRF','CRW','CRY','NRQ','NYG','CH6','CH7',
-    'CRG','CRU','CRV','CRS','66A','CR0','GYC','LYG','TYG','OHD','SWG','QYG',
-    'CR7','CR8','CR9','CRK','RC7','CFY','PIA','B2H','C12','XYG','DYG','CSH',
-    'IIC','CCY','CRH','CRJ','4F3','VYA','CRX','XXY','CWR','MYG','GYG','EYG',
-    'AYG','CYG','HYG','KYG','NRG','PYG','VRG','WYG','ZYG','9C5','OGM','OFL',
-    'BYG','C2G','HHQ','HFG','C99','GFR',
+    # Complete set of chromophore residue codes seen across the 908-structure
+    # FP dataset. Drawn from Table_S1_all_structures.csv's Chromophore_Type
+    # column. To regenerate this set whenever new FP entries are deposited,
+    # run `scripts/audit_chain_selection.py` and inspect the resulting CSV.
+    '0YG','4M9','5SQ','7R0','7R6','A1BE5','A1IJF','B2H','BF6','BJO','C12',
+    'CCY','CFY','CH6','CH7','CIV','CJO','CQ1','CQ2','CR0','CR2','CR7','CR8',
+    'CRF','CRG','CRK','CRO','CRQ','CRU','CSH','CZO','DYG','FHE','GMO','GYC',
+    'GYS','IEY','IIC','IO8','JBY','KXV','KY4','KY7','KZ1','KZ4','KZ7','KZG',
+    'KZV','KZY','LKE','M3V','MFC','NRP','NRQ','NYG','OFM','OHD','OIM','PIA',
+    'QCA','QFG','QLG','QYG','QYX','RC7','SWG','TUK','VUB','X9Q','XXY','XYG',
 }
 STANDARD_AA = {'ALA','ARG','ASN','ASP','CYS','GLN','GLU','GLY','HIS','ILE',
                'LEU','LYS','MET','MSE','PHE','PRO','SER','THR','TRP','TYR','VAL'}
