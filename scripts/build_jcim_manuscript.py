@@ -7,16 +7,56 @@ import os
 from docx import Document
 from docx.shared import Pt, Inches
 from docx.enum.text import WD_ALIGN_PARAGRAPH
+from docx.oxml.ns import qn
+from docx.oxml import OxmlElement
 
 doc = Document()
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 fig_dir = os.path.join(REPO_ROOT, 'figures', 'pub_figures')
+
+
+def _enable_line_numbers(section):
+    sectPr = section._sectPr
+    # Remove any existing line-number element first
+    for existing in sectPr.findall(qn('w:lnNumType')):
+        sectPr.remove(existing)
+    ln = OxmlElement('w:lnNumType')
+    ln.set(qn('w:countBy'), '1')      # number every line
+    ln.set(qn('w:start'), '1')
+    ln.set(qn('w:restart'), 'continuous')
+    ln.set(qn('w:distance'), '360')   # ~0.25" gutter
+    sectPr.append(ln)
+
+
+def _add_page_number_footer(section):
+    footer = section.footer
+    footer.is_linked_to_previous = False
+    p = footer.paragraphs[0] if footer.paragraphs else footer.add_paragraph()
+    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    # Clear any existing content
+    for r in list(p.runs):
+        r._r.getparent().remove(r._r)
+    run = p.add_run()
+    run.font.size = Pt(11)
+    run.font.name = 'Times New Roman'
+    # Field: { PAGE }
+    fld_begin = OxmlElement('w:fldChar'); fld_begin.set(qn('w:fldCharType'), 'begin')
+    instr      = OxmlElement('w:instrText'); instr.text = 'PAGE'
+    fld_sep   = OxmlElement('w:fldChar'); fld_sep.set(qn('w:fldCharType'), 'separate')
+    fld_end   = OxmlElement('w:fldChar'); fld_end.set(qn('w:fldCharType'), 'end')
+    run._r.append(fld_begin)
+    run._r.append(instr)
+    run._r.append(fld_sep)
+    run._r.append(fld_end)
+
 
 for section in doc.sections:
     section.top_margin = Inches(1)
     section.bottom_margin = Inches(1)
     section.left_margin = Inches(1)
     section.right_margin = Inches(1)
+    _enable_line_numbers(section)
+    _add_page_number_footer(section)
 
 style = doc.styles['Normal']
 font = style.font
@@ -361,7 +401,7 @@ add_body(
     'bridge\u2013phenol bond. Structures with |\u03c4| < 30\u00b0 were '
     'classified as cis, |\u03c4| > 150\u00b0 as trans, and the remainder as '
     'twisted. Absolute magnitudes |\u03c4| and |\u03c6| are used in '
-    'correlation analyzes as descriptive measures of out-of-plane '
+    'correlation analyses as descriptive measures of out-of-plane '
     'chromophore distortion, irrespective of cis/trans configuration; '
     'the algebraic sum \u03c4 + \u03c6 is likewise treated as a '
     'descriptive composite of the two rotations and is not interpreted '
@@ -534,7 +574,7 @@ add_subheading('AlphaFold Structure Analysis.')
 add_body(
     'AlphaFold DB v6 coordinate files were downloaded for FP sequences '
     'via the EBI AlphaFold API and matched to crystal structures via '
-    'the UniProt REST API. Two analyzes were performed: a paired '
+    'the UniProt REST API. Two analyses were performed: a paired '
     'comparison between 51 wild-type FPs for which both an AlphaFold '
     'model and the highest-resolution crystal structure exist '
     '(mean crystal resolution 1.63 \u00b1 0.37 \u00c5, mean pLDDT '
@@ -646,16 +686,19 @@ add_body(
     'major-axis differences and the eccentricity trend do not survive '
     '(Table S2); only the circularity difference reaches significance '
     '(p = 4.6 \u00d7 10\u207b\u2074), and that effect is small in absolute terms '
-    '(0.922 vs 0.919). The paired AlphaFold\u2013crystal comparison is '
-    'similarly unhelpful as an independent check: AlphaFold, which '
-    'lacks the cyclized chromophore, yields minor- and major-axis '
-    'values that are not significantly different from the matched '
-    'crystal structures (\u0394_minor = +0.23 \u00c5, p = 0.25; '
-    '\u0394_major = +0.45 \u00c5, p = 0.02; Figure S8). We therefore '
-    'conclude only that the gross barrel cross-section is largely '
-    'established at the pre-cyclization stage and that any geometric '
-    'imprint of chromophore maturation, if real, is too small to '
-    'detect cleanly in this dataset.'
+    '(0.922 vs 0.919). The paired AlphaFold\u2013crystal comparison '
+    'provides only weak, partial support for the maturation hypothesis: '
+    'AlphaFold, which lacks the cyclized chromophore, yields axes '
+    'shifted in the direction expected if AlphaFold barrels resembled '
+    'the chromophore-absent (uncyclized) crystals, but the shifts are '
+    'much smaller than the within-crystal contraction. The minor-axis '
+    'shift is not significant (\u0394_minor = +0.23 \u00c5, p = 0.25); the '
+    'major-axis shift is significant but small (\u0394_major = +0.45 \u00c5, '
+    'p = 0.02), both \u226a 1.2\u20131.5 \u00c5 within-crystal effect (Figure S8). '
+    'We therefore conclude only that the gross barrel cross-section is '
+    'largely established at the pre-cyclization stage and that any '
+    'geometric imprint of chromophore maturation, if real, is too small '
+    'to detect cleanly in this dataset.'
 )
 
 add_subheading('Barrel Geometry by Emission Color Class.')
@@ -761,8 +804,9 @@ add_figure('fig02_bfactor.png',
 add_subheading('Chromophore\u2013Barrel Contacts.')
 add_body(
     'Restricting to the 739 chromophore-containing canonical structures, '
-    'the mean number of barrel atoms within 4.0 \u00c5 of the chromophore '
-    'was 133 \u00b1 63. Contact count correlated with emission wavelength '
+    'the mean number of (chromophore-atom, scaffold-atom) pairs within '
+    '4.0 \u00c5 was 133 \u00b1 63 (pair count, not unique scaffold-atom count; '
+    'see Methods). Pair count correlated with emission wavelength '
     '(\u03c1 = +0.202, p = 5.9 \u00d7 10\u207b\u2077, n = 600).'
 )
 
@@ -826,8 +870,10 @@ add_body(
     '(partial \u03c1 = \u20130.327), and QY vs B-factor ratio '
     '(partial \u03c1 = \u20130.481). Cross-sectional area is uncorrelated with '
     'emission (\u03c1 = +0.039, p = 0.33), and barrel length is similarly '
-    'uninformative (\u03c1 = \u20130.027, p = 0.50). The '
-    'photophysically relevant variation is in barrel shape, not size. This '
+    'uninformative (\u03c1 = \u20130.027, p = 0.50). Resolution-vs-minor-axis '
+    'and emission-vs-minor-axis scatters, with resolution color-coded, '
+    'are shown in Figure S3. The photophysically relevant variation is '
+    'in barrel shape, not size. This '
     'suggests that optimization of quantum yield should target the symmetry '
     'and tightness of chromophore packing in the minor-axis direction, not '
     'overall barrel volume.'
@@ -1084,7 +1130,21 @@ doc.add_paragraph()
 add_heading('Author Information')
 
 add_subheading('Corresponding Author.')
-add_body('*E-mail: mzim@conncoll.edu')
+add_body(
+    'Marc Zimmer — Chemistry Department, Connecticut College, '
+    'New London, CT 06320, United States. '
+    'ORCID: 0000-0000-0000-0000. *E-mail: mzim@conncoll.edu.'
+)
+
+add_subheading('Authors.')
+add_body(
+    'Luke P. Begg — Chemistry Department, Connecticut College, '
+    'New London, CT 06320, United States. ORCID: 0000-0000-0000-0000.'
+)
+add_body(
+    'Madeline L. Mason — Chemistry Department, Connecticut College, '
+    'New London, CT 06320, United States. ORCID: 0000-0000-0000-0000.'
+)
 
 add_subheading('Author Contributions.')
 add_body(
@@ -1198,8 +1258,9 @@ add_body(
     'unique protein within the canonical cohort. Two collapse rules are '
     'used: (i) for Spearman correlations and Kruskal–Wallis tests, which '
     'rely on FPbase spectral data, the 633 canonical-cohort entries with '
-    'em_max are collapsed by unique FPbase match name (n = 70, '
-    'highest-resolution entry retained per protein); (ii) for the three '
+    'em_max are collapsed by unique FPbase match name '
+    '(n = 69 unique proteins, highest-resolution entry retained per '
+    'protein); (ii) for the three '
     'Mann–Whitney tests of chromophore-present vs chromophore-absent '
     'barrels, the full canonical cohort is collapsed by FPbase match name '
     'where available, falling back to PDB id otherwise (n = 216; 210 '
@@ -1257,8 +1318,9 @@ add_body(
     'The chromophore detection step provides an instructive example of AI '
     'failure. The initial implementation used a hardcoded list of 31 residue '
     'names to identify mature chromophores. This list was incomplete in two '
-    'directions. First, 62 additional chromophore residue codes present in the '
-    'dataset were omitted, causing approximately 114 structures to be '
+    'directions. First, approximately 40 additional chromophore residue '
+    'codes present in the dataset were omitted, causing approximately 90 '
+    'structures to be '
     'incorrectly classified as lacking a chromophore; among these were 1BFP '
     '(BFP-type chromophore IIC, His66-derived), 1EMF and 1EMK (CFP-type '
     'variants CSH and CCY, Trp66-derived), and others. Second, the residue '
@@ -1267,7 +1329,7 @@ add_body(
     'inventory check used standard Tyr66 atom names (CG2, CD1, CD2, CE1, '
     'CE2, CZ, OH) that are absent from CR8; CR8 instead uses a non-standard '
     'naming convention (C4\u2013C8, C11, C12, O13 for the phenol ring), so '
-    'the aromatic ring was missed and 18 CR8-containing structures were '
+    'the aromatic ring was missed and 21 CR8-containing structures were '
     'incorrectly reclassified as non-chromophoric. Examination of the '
     'structures confirmed that CR8 '
     'contains both a complete imidazolinone ring and a para-hydroxyphenyl '
@@ -1360,10 +1422,13 @@ add_figure('figS6_chromophore_effect.png',
     '(n = 739, blue) and without (n = 41, orange) a validated mature '
     'chromophore. (A) Cross-sectional area, (B) eccentricity, and '
     '(C) circularity do not differ between the two groups. (D) Minor '
-    'axis and (E) major axis are both significantly narrower in '
-    'chromophore-containing structures (p < 10⁻⁷ for both), indicating '
-    'that chromophore maturation contracts the barrel cross-section '
-    'symmetrically.')
+    'axis and (E) major axis are both narrower in chromophore-containing '
+    'structures at the structure level (p < 10⁻⁷ for both); these axis '
+    'differences do not survive pseudoreplication collapse to one '
+    'highest-resolution structure per unique protein (Table S2), '
+    'reflecting the small number of unique chromophore-absent proteins '
+    '(n = 6) and the unbalanced group sizes. See main-text Chromophore '
+    'Maturation section for interpretation.')
 
 add_figure('figS7_megley.png',
     'S7. Chromophore dihedral analysis. (A) τ vs φ plot '
