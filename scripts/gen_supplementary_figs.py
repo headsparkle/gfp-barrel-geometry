@@ -95,45 +95,55 @@ def spearman_text(x, y):
 
 
 # ══════════════════════════════════════════════════════════════════════════════
-# FIGURE S1: Emission vs Geometry  (1×3)
+# FIGURE S1: Barrel geometry by emission color class  (2×2 bar charts)
+# (Promoted continuous scatter version is now main-text Figure 1.)
 # ══════════════════════════════════════════════════════════════════════════════
-fig, axes = plt.subplots(1, 3, figsize=(7.5, 6))
+CLASS_ORDER = ['blue', 'cyan', 'green', 'yellow', 'orange', 'red']
+classes_present = [c for c in CLASS_ORDER if c in df['color_class'].values]
 
-pairs = [
-    ('minor_axis',   'Minor Axis (Å)'),
-    ('eccentricity', 'Eccentricity'),
-    ('circularity',  'Circularity'),
+metrics = [
+    ('minor_axis',   'Minor Axis (Å)',                  '(A)'),
+    ('eccentricity', 'Eccentricity',                          '(B)'),
+    ('circularity',  'Circularity',                           '(C)'),
+    ('convex_area',  'Cross-sectional Area (Å²)',       '(D)'),
 ]
-labels = ['(A)', '(B)', '(C)']
 
-sub = df.dropna(subset=['em_max'])
+fig, axes = plt.subplots(2, 2, figsize=(7.5, 6))
+fig.subplots_adjust(hspace=0.42, wspace=0.35)
+axes = axes.flatten()
 
-for ax, (col, xlabel), lab in zip(axes, pairs, labels):
-    for cls in ['cyan', 'green', 'yellow', 'orange', 'red', 'blue']:
-        sel = sub[sub['color_class'] == cls]
-        sel_valid = sel.dropna(subset=[col])
-        if len(sel_valid) == 0:
+for i, (col, ylabel, lbl) in enumerate(metrics):
+    ax = axes[i]
+    means, sems, colors, labels = [], [], [], []
+    group_data = []
+    for cc in classes_present:
+        vals = df.loc[df['color_class'] == cc, col].dropna()
+        if len(vals) == 0:
             continue
-        ax.scatter(sel_valid[col], sel_valid['em_max'],
-                   c=CLASS_COLORS[cls], s=20, alpha=0.6,
-                   edgecolors='none', label=cls.capitalize(), zorder=2)
+        means.append(vals.mean())
+        sems.append(vals.sem())
+        colors.append(CLASS_COLORS.get(cc, 'gray'))
+        labels.append(f'{cc.capitalize()}\n(n={len(vals)})')
+        group_data.append(vals.values)
+    x = np.arange(len(means))
+    ax.bar(x, means, yerr=sems, capsize=3, color=colors,
+           edgecolor='black', linewidth=0.5, width=0.6,
+           error_kw=dict(lw=0.8))
+    ax.set_xticks(x)
+    ax.set_xticklabels(labels, fontsize=8)
+    ax.set_ylabel(ylabel)
     clean_spines(ax)
-    ax.set_xlabel(xlabel)
-    ax.set_ylabel('Emission Max (nm)')
-    txt = spearman_text(sub[col].values, sub['em_max'].values)
-    ax.text(0.05, 0.95, txt, transform=ax.transAxes, fontsize=9,
-            va='top', ha='left',
-            bbox=dict(facecolor='white', edgecolor='grey', alpha=0.8, pad=3))
-    panel_label(ax, lab)
-    safe_ylim(ax, sub['em_max'])
+    if len(group_data) >= 2:
+        h_stat, p_kw = stats.kruskal(*group_data)
+        kw_str = (f'H = {h_stat:.1f}, p < 0.001'
+                  if p_kw < 0.001 else f'H = {h_stat:.1f}, p = {p_kw:.3f}')
+        ax.text(0.98, 0.95, kw_str, transform=ax.transAxes,
+                ha='right', va='top', fontsize=7.5, fontstyle='italic',
+                bbox=dict(boxstyle='round,pad=0.3', facecolor='white',
+                          edgecolor='gray', alpha=0.8))
+    panel_label(ax, lbl)
 
-# Single legend below
-handles, lbls = axes[0].get_legend_handles_labels()
-fig.legend(handles, lbls, loc='lower center', ncol=6, frameon=False,
-           fontsize=9, bbox_to_anchor=(0.5, -0.02))
-
-fig.tight_layout(rect=[0, 0.05, 1, 1])
-path = f'{OUTDIR}/figS1_emission_vs_geometry.png'
+path = f'{OUTDIR}/figS1_color_class.png'
 fig.savefig(path, dpi=300, bbox_inches='tight', facecolor='white')
 plt.close(fig)
 print(f'Saved: {path}')

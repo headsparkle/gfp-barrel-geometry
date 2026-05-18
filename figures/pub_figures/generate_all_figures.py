@@ -158,15 +158,18 @@ plt.close(fig)
 print("--- Generating Figure 1 ---")
 
 metrics_fig1 = [
-    ('convex_area', 'Cross-sectional Area (\u00c5\u00b2)', '(A)'),
-    ('eccentricity', 'Eccentricity (dimensionless)', '(B)'),
-    ('circularity', 'Circularity (dimensionless)', '(C)'),
-    ('minor_axis', 'Minor Axis (\u00c5)', '(D)'),
+    ('convex_area',  'Cross-sectional Area (\u00c5\u00b2)',  '(A)'),
+    ('eccentricity', 'Eccentricity',                      '(B)'),
+    ('circularity',  'Circularity',                       '(C)'),
+    ('minor_axis',   'Minor Axis (\u00c5)',              '(D)'),
+    ('major_axis',   'Major Axis (\u00c5)',              '(E)'),
 ]
 
-fig, axes = plt.subplots(2, 2, figsize=(7.5, 6))
-fig.subplots_adjust(hspace=0.38, wspace=0.35)
+fig, axes = plt.subplots(2, 3, figsize=(10.0, 6.4))
+fig.subplots_adjust(hspace=0.42, wspace=0.40, top=0.95, bottom=0.08, left=0.08, right=0.98)
 axes = axes.flatten()
+# Hide the unused 6th panel
+axes[5].axis('off')
 
 chrom_present = df[df['has_chromophore'] == True]
 chrom_absent = df[df['has_chromophore'] == False]
@@ -216,61 +219,58 @@ saved_files.append(path)
 plt.close(fig)
 
 # ============================================================
-# FIGURE 2: Color Class Geometry
+# FIGURE 1 (main text): Emission vs Barrel Geometry \u2014 scatter plots
+# (The color-class bar-chart version is now Figure S1.)
 # ============================================================
-print("--- Generating Figure 2 ---")
+print("--- Generating Figure 1 (emission scatter) ---")
 
-metrics_fig2 = [
-    ('minor_axis', 'Minor Axis (\u00c5)', '(A)'),
-    ('eccentricity', 'Eccentricity (dimensionless)', '(B)'),
-    ('circularity', 'Circularity (dimensionless)', '(C)'),
-    ('convex_area', 'Cross-sectional Area (\u00c5\u00b2)', '(D)'),
+metrics_fig1 = [
+    ('minor_axis',   'Minor Axis (\u00c5)',                 '(A)'),
+    ('eccentricity', 'Eccentricity',                         '(B)'),
+    ('circularity',  'Circularity',                          '(C)'),
+    ('major_axis',   'Major Axis (\u00c5)',                  '(D)'),
 ]
 
-fig, axes = plt.subplots(2, 2, figsize=(7.5, 6))
-fig.subplots_adjust(hspace=0.42, wspace=0.35)
+fig, axes = plt.subplots(2, 2, figsize=(7.5, 6.4))
+fig.subplots_adjust(hspace=0.40, wspace=0.32, top=0.94, bottom=0.10, left=0.10, right=0.97)
 axes = axes.flatten()
 
-# Filter to only classes present
-classes_present = [c for c in CLASS_ORDER if c in df['color_class'].values]
+sub_em = df.dropna(subset=['em_max'])
 
-for i, (col, ylabel, lbl) in enumerate(metrics_fig2):
+for i, (col, xlabel, lbl) in enumerate(metrics_fig1):
     ax = axes[i]
-    means, sems, colors, labels = [], [], [], []
-    group_data = []
-    for cc in classes_present:
-        vals = df.loc[df['color_class'] == cc, col].dropna()
-        if len(vals) == 0:
-            continue
-        means.append(vals.mean())
-        sems.append(vals.sem())
-        colors.append(CLASS_COLORS.get(cc, 'gray'))
-        labels.append(f'{cc.capitalize()}\n(n={len(vals)})')
-        group_data.append(vals.values)
-
-    x = np.arange(len(means))
-    bars = ax.bar(x, means, yerr=sems, capsize=3, color=colors, edgecolor='black',
-                  linewidth=0.5, width=0.6, error_kw=dict(lw=0.8))
-    ax.set_xticks(x)
-    ax.set_xticklabels(labels, fontsize=8)
-    ax.set_ylabel(ylabel)
+    valid = sub_em.dropna(subset=[col])
+    for cc in CLASS_ORDER:
+        mask = valid['color_class'] == cc
+        if mask.sum() > 0:
+            ax.scatter(valid.loc[mask, col], valid.loc[mask, 'em_max'],
+                       c=CLASS_COLORS.get(cc, 'gray'), s=18, alpha=0.55,
+                       edgecolors='none', label=cc.capitalize(), zorder=3)
+    # Regression overlay (least-squares on the displayed data)
+    x = valid[col].values
+    y = valid['em_max'].values
+    slope, intercept, r_lr, _, _ = stats.linregress(x, y)
+    xx = np.linspace(np.nanmin(x), np.nanmax(x), 100)
+    ax.plot(xx, slope * xx + intercept, 'k--', lw=1.0, alpha=0.6, zorder=2)
+    rho, p_sp = stats.spearmanr(x, y)
+    p_str = 'p < 10\u207b\u00b9\u2070' if p_sp < 1e-10 else f'p = {p_sp:.2g}'
+    ax.text(0.04, 0.96, f'\u03c1 = {rho:+.3f}, {p_str}',
+            transform=ax.transAxes, fontsize=8.5, va='top', ha='left',
+            bbox=dict(boxstyle='round,pad=0.3', facecolor='white',
+                      edgecolor='gray', alpha=0.85))
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel('Emission Maximum (nm)')
     remove_top_right(ax)
-
-    # Kruskal-Wallis
-    if len(group_data) >= 2:
-        h_stat, p_kw = stats.kruskal(*group_data)
-        if p_kw < 0.001:
-            kw_str = f'H = {h_stat:.1f}, p < 0.001'
-        else:
-            kw_str = f'H = {h_stat:.1f}, p = {p_kw:.3f}'
-        ax.text(0.98, 0.95, kw_str, transform=ax.transAxes, ha='right', va='top',
-                fontsize=7.5, fontstyle='italic',
-                bbox=dict(boxstyle='round,pad=0.3', facecolor='white', edgecolor='gray',
-                          alpha=0.8))
-
     panel_label(ax, lbl)
 
-path = out_dir + 'fig01_color_class.png'
+# Legend below figure
+legend_handles = [Line2D([0], [0], marker='o', color='w',
+                         markerfacecolor=CLASS_COLORS[cc], markersize=6,
+                         label=cc.capitalize()) for cc in CLASS_ORDER]
+fig.legend(handles=legend_handles, loc='lower center', ncol=6,
+           frameon=False, fontsize=9, bbox_to_anchor=(0.5, 0.0))
+
+path = out_dir + 'fig01_emission_scatter.png'
 fig.savefig(path, dpi=300, bbox_inches='tight', facecolor='white')
 saved_files.append(path)
 plt.close(fig)
@@ -330,23 +330,43 @@ ax.set_ylabel('B-factor Ratio')
 remove_top_right(ax)
 panel_label(ax, '(B)')
 
-# Panel C: B-ratio by color class bar plot
+# Panel C: B-ratio by color class — boxplot with jittered points
 ax = axes[2]
-means, sems, colors, labels = [], [], [], []
+classes_present = [c for c in CLASS_ORDER if c in df['color_class'].values]
+class_data = []
+class_colors = []
+class_labels = []
 for cc in classes_present:
     vals = df.loc[df['color_class'] == cc, 'b_factor_ratio'].dropna()
     if len(vals) == 0:
         continue
-    means.append(vals.mean())
-    sems.append(vals.sem())
-    colors.append(CLASS_COLORS.get(cc, 'gray'))
-    labels.append(f'{cc.capitalize()}\n(n={len(vals)})')
-x = np.arange(len(means))
-ax.bar(x, means, yerr=sems, capsize=3, color=colors, edgecolor='black',
-       linewidth=0.5, width=0.6, error_kw=dict(lw=0.8))
-ax.axhline(y=1.0, color='black', linestyle='--', linewidth=0.8, alpha=0.6)
-ax.set_xticks(x)
-ax.set_xticklabels(labels, fontsize=8)
+    class_data.append(vals.values)
+    class_colors.append(CLASS_COLORS.get(cc, 'gray'))
+    class_labels.append(f'{cc.capitalize()}\n(n={len(vals)})')
+positions = np.arange(len(class_data)) + 1
+
+# Boxplot (median, IQR, whiskers to 1.5×IQR; outliers shown separately)
+bp = ax.boxplot(class_data, positions=positions, widths=0.55,
+                patch_artist=True, showfliers=False,
+                medianprops=dict(color='black', linewidth=1.4),
+                whiskerprops=dict(color='black', linewidth=0.8),
+                capprops=dict(color='black', linewidth=0.8),
+                boxprops=dict(linewidth=0.8))
+for patch, c in zip(bp['boxes'], class_colors):
+    patch.set_facecolor(c)
+    patch.set_alpha(0.30)
+    patch.set_edgecolor('black')
+
+# Jittered individual points (deterministic jitter for reproducibility)
+rng = np.random.default_rng(seed=42)
+for pos, vals, c in zip(positions, class_data, class_colors):
+    jitter = rng.uniform(-0.20, 0.20, size=len(vals))
+    ax.scatter(np.full(len(vals), pos) + jitter, vals,
+               c=c, s=10, alpha=0.55, edgecolors='none', zorder=3)
+
+ax.axhline(y=1.0, color='black', linestyle='--', linewidth=0.8, alpha=0.6, zorder=1)
+ax.set_xticks(positions)
+ax.set_xticklabels(class_labels, fontsize=8)
 ax.set_ylabel('B-factor Ratio')
 remove_top_right(ax)
 panel_label(ax, '(C)')

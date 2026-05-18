@@ -30,9 +30,8 @@ style.paragraph_format.line_spacing = 2.0
 title = doc.add_paragraph()
 title.alignment = WD_ALIGN_PARAGRAPH.CENTER
 run = title.add_run(
-    'Systematic Structural Analysis of Barrel Shape, Chromophore '
-    'Rigidity, and Photophysics in Fluorescent Proteins Using an '
-    'AI-Assisted Workflow'
+    'Barrel Shape and Chromophore Rigidity Predict '
+    'Fluorescent-Protein Photophysics'
 )
 run.bold = True
 run.font.size = Pt(14)
@@ -79,35 +78,24 @@ r.font.name = 'Times New Roman'
 abs_p = doc.add_paragraph()
 abs_p.paragraph_format.line_spacing = 2.0
 abs_text = (
-    'The 11-stranded beta-barrel of fluorescent proteins is universally '
+    'The 11-stranded \u03b2-barrel of fluorescent proteins (FPs) is universally '
     'conserved, yet its quantitative geometry has not been systematically '
-    'characterized. Here, we report a '
-    'computational analysis of beta-barrel cross-sectional geometry across '
-    '908 fluorescent protein crystal structures from the RCSB Protein Data '
-    'Bank, of which 781 satisfy a canonical FP-barrel sequence-length '
-    'filter (210\u2013245 residues, with the chromophore-containing chain '
-    'used in FP-complex co-crystals) and form the cohort for the '
-    'geometric analysis. For each structure, the barrel axis was determined by '
-    'principal component analysis of backbone C\u03b1 coordinates, and a '
-    'perpendicular cross-sectional slice at the chromophore level was '
-    'characterized by convex hull analysis. The entire computational '
-    'pipeline, including CIF parsing, coordinate transformation, '
-    'geometry quantification, spectral data integration, and statistical '
-    'analysis, was developed using Claude (Anthropic), a large language '
-    'model accessed through the agentic coding environment Claude Code. '
-    'Barrel shape, but not size, correlates with emission wavelength: '
-    'red-shifted proteins have narrower, more elliptical barrels '
-    '(\u03c1 = \u20130.328 for minor axis, p = 2.2 \u00d7 10\u207b\u00b9\u2077). '
-    'The ratio of chromophore to barrel crystallographic B-factors is the '
-    'strongest predictor of quantum yield (\u03c1 = \u20130.446, '
-    'p < 10\u207b\u00b9\u00b3). Chromophore dihedral angles correlate '
-    'with both barrel eccentricity and '
-    'photophysical performance. The principal correlations survive '
-    'Benjamini\u2013Hochberg correction for multiple testing and partial '
-    'correlation analysis controlling for crystallographic resolution. '
-    'These findings suggest that the barrel is not a passive scaffold but '
-    'participates in modulating chromophore rigidity and photophysical '
-    'output.'
+    'characterized. We analyzed cross-sectional barrel geometry across '
+    '908 FP crystal structures in the RCSB PDB by PCA-based axis '
+    'determination and convex hull analysis of protein-atom slices at the '
+    'chromophore plane; 780 structures (210\u2013245 residues, with the '
+    'chromophore-containing chain selected in FP-complex co-crystals) '
+    'form the canonical analysis cohort. Barrel shape, but not size, '
+    'correlates with emission wavelength: red-shifted proteins have '
+    'narrower, more elliptical barrels (\u03c1 = \u20130.328 for minor axis, '
+    'p = 2.2 \u00d7 10\u207b\u00b9\u2077). The chromophore-to-scaffold B-factor ratio is the '
+    'strongest predictor of quantum yield (\u03c1 = \u20130.446, p < 10\u207b\u00b9\u00b3). '
+    'Chromophore dihedral angles correlate with both barrel eccentricity '
+    'and photophysical performance. Principal correlations survive '
+    'Benjamini\u2013Hochberg correction and partial correlation controlling '
+    'for resolution. The barrel is not a passive scaffold: it constrains '
+    'chromophore rigidity and thereby shapes photophysical output. '
+    'The pipeline was developed with Claude (Anthropic) via Claude Code.'
 )
 r = abs_p.add_run(abs_text)
 r.font.size = Pt(12)
@@ -170,11 +158,17 @@ def add_figure(filename, caption, width=6.5):
         doc.add_page_break()
         p = doc.add_paragraph()
         p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        # Keep the figure paragraph with the caption paragraph so Word does
+        # not insert a page break between them (which would orphan the
+        # caption alone on the next page).
+        p.paragraph_format.keep_with_next = True
         r = p.add_run()
         r.add_picture(path, width=Inches(width))
         cap = doc.add_paragraph()
         cap.alignment = WD_ALIGN_PARAGRAPH.LEFT
         cap.paragraph_format.space_after = Pt(6)
+        # Keep caption lines together so a caption can't be split mid-paragraph.
+        cap.paragraph_format.keep_together = True
         run = cap.add_run(caption)
         run.font.size = Pt(10)
         run.font.name = 'Times New Roman'
@@ -283,52 +277,21 @@ add_body(
 )
 
 add_body(
-    'This study was conducted with the assistance of Claude (Anthropic), '
-    'a large language model accessed through Claude Code, an agentic coding '
-    'environment that provides the model with file system access, terminal '
-    'commands, and persistent memory across tasks.\u00b2\u2079 The project was '
-    'organized as a sequence of discrete computational tasks: dataset '
-    'assembly, chromophore detection, PCA-based barrel axis determination, '
-    'convex hull analysis, spectral data matching, B-factor extraction, '
-    'contact counting, torsion angle computation, and statistical analysis. '
-    'For each task, the authors specified the objective and the model '
-    'generated Python code, which was then reviewed, tested against known '
-    'structures, and validated before application to the full dataset. This '
-    'workflow shares features with recent work by Schwartz,\u00b3\u2070 who '
-    'used Claude Code for theoretical physics calculations by writing '
-    'intermediate results to disk for retrieval across tasks. A similar '
-    'strategy was adopted here: each computational step wrote its output to '
-    'CSV files on disk, which were read back in subsequent steps, allowing '
-    'the full dataset to be processed across multiple sessions '
-    'without requiring the model to hold all results in context.'
-)
-
-add_body(
-    'The use of AI in fluorescent protein research has taken several forms. '
-    'Hartley et al. used AlphaFold2 and RoseTTAFold to predict '
-    'post-translational modifications in GFP-like proteins.\u00b3\u00b9 '
-    'The ESM3 protein language model was used to design esmGFP, a functional '
-    'fluorescent protein with only 58% identity to known GFPs;\u00b3\u00b2 '
-    'related protein-specific transformers have predicted fluorescence '
-    'properties from sequence for directed FP engineering.\u00b3\u00b3 '
-    'These approaches use models trained on protein sequence or structural '
-    'data for design tasks. By contrast, this study employs a general-purpose '
-    'conversational LLM (Claude, Anthropic) as a research assistant for '
-    'systematic crystallographic and statistical analysis of existing '
-    'structural data, a distinct role not represented in the prior '
-    'FP literature. Agentic LLM systems have begun to automate multistep '
-    'workflows in protein science and computational biology, including '
-    'protein design and molecular dynamics tasks, but their use as coding '
-    'agents for large-scale analysis of experimental structural databases '
-    'remains rare. To our knowledge, this is among the first applications '
-    'of a conversational LLM in this analytical role within fluorescent '
-    'protein structural research. '
-    'We describe the specific tasks performed with AI assistance, the '
-    'failure modes encountered, and a detailed case study of systematic '
-    'chromophore mis-detection and its correction in the Methods section '
-    'and Supporting Information (Note S1). All scientific decisions, '
-    'interpretation, and responsibility for the claims in this paper rest '
-    'with the human authors.'
+    'Prior AI applications in FP research have used models trained on '
+    'protein sequence or structural data for design: AlphaFold2 and '
+    'RoseTTAFold to predict chromophore-related post-translational '
+    'modifications,\u00b3\u00b9 ESM3 to design the de novo FP esmGFP at 58% '
+    'identity to known GFPs,\u00b3\u00b2 and protein-specific transformers to '
+    'predict fluorescence properties from sequence.\u00b3\u00b3 In contrast, the '
+    'analysis presented here uses a general-purpose conversational LLM '
+    '(Claude, Anthropic; via Claude Code\u00b2\u2079) as a coding assistant for '
+    'systematic crystallographic and statistical analysis of an existing '
+    'structural database \u2014 a role following the disk-mediated multi-task '
+    'pattern recently described for theoretical physics by Schwartz.\u00b3\u2070 '
+    'A short failure-mode case study (chromophore mis-detection) is '
+    'provided in Note S1 to illustrate the human-validation discipline '
+    'required. All scientific decisions, interpretation, and responsibility '
+    'for the claims rest with the human authors.'
 )
 
 doc.add_paragraph()
@@ -360,26 +323,30 @@ add_body(
     'known chromophore residue names. The detection list encompasses all '
     'major fluorescent chromophore variants, requiring two criteria: '
     '(i) an imidazolinone ring (atoms N2, C2, O2 in the PDB CONECT '
-    'record), and (ii) a pi-conjugated aromatic ring at position 66 '
-    '(phenol from Tyr66, indole from Trp66, or imidazole from His66). '
-    'Detection covered '
+    'record), and (ii) a π-conjugated aromatic ring at position 66, '
+    'irrespective of whether that ring carries a heteroatom donor. '
+    'Phenol-based (Tyr66), indole-based (Trp66), imidazole-based '
+    '(His66), and phenyl-based (Phe66) rings are all accepted; the '
+    'detection logic checks for any of the standard aromatic-ring '
+    'atom inventories associated with these four side chains as well '
+    'as known non-standard naming conventions used in modified '
+    'chromophore residues. Detection covered '
     'Tyr66-based GFP-type chromophores (CRO, CR2, CRQ, GYC, CRG, NYG, '
     'and others), Trp66-based CFP-type chromophores (PIA, CRF, CRK, '
     'CR7, CFY, CCY, and others), His66-based BFP-type chromophores '
-    '(GYS, IIC, CSH, and others), and red/orange-shifted variants '
+    '(GYS, IIC, CSH, and others), Phe66-based variants where present, '
+    'and red/orange-shifted variants '
     '(NRQ, CH6, CH7, SWG, OHD, RC7, B2H, C12, XYG, DYG, and others; '
-    '72 distinct residue codes in total, including CR8, 4F3, and VYA '
-    'whose aromatic rings use non-standard PDB atom names). '
-    'Residues with an intact imidazolinone ring but lacking any '
-    'aromatic ring system at position 66 (CRX, MDO, C99, CLV, '
-    'KWS, Q2K, NRP, and related synthetic analogs without a '
-    'phenol, indole, or imidazole donor) were excluded as '
-    'non-fluorescent. Structures in which the chromophore precursor '
+    '71 distinct residue codes in total, including CR8 whose aromatic '
+    'ring uses non-standard PDB atom names). '
+    'Residues with an intact imidazolinone ring but no aromatic ring '
+    'at position 66 (CRX, MDO, C99, CLV, KWS, Q2K, NRP, and related '
+    'synthetic analogs) were excluded as non-fluorescent. Structures in which the chromophore precursor '
     'is stored as standard residues SER65\u2013TYR66\u2013GLY67 '
     '(uncyclized/immature state) were likewise classified as lacking '
     'a mature chromophore. '
-    'Of 908 structures, 843 contained a validated mature chromophore '
-    'and 65 did not (Table S1). The chromophore detection step '
+    'Of 908 structures, 861 contained a validated mature chromophore '
+    'and 47 did not (Table S1). The chromophore detection step '
     'provides an instructive example of AI failure (Note S1).'
 )
 
@@ -394,7 +361,7 @@ add_body(
     'bridge\u2013phenol bond. Structures with |\u03c4| < 30\u00b0 were '
     'classified as cis, |\u03c4| > 150\u00b0 as trans, and the remainder as '
     'twisted. Absolute magnitudes |\u03c4| and |\u03c6| are used in '
-    'correlation analyses as descriptive measures of out-of-plane '
+    'correlation analyzes as descriptive measures of out-of-plane '
     'chromophore distortion, irrespective of cis/trans configuration; '
     'the algebraic sum \u03c4 + \u03c6 is likewise treated as a '
     'descriptive composite of the two rotations and is not interpreted '
@@ -411,13 +378,14 @@ add_body(
     'barrel geometry. A rotation matrix mapping PC1 onto [0, 0, 1] was '
     'applied to all non-hydrogen coordinates. The cross-sectional slice was '
     'centered on the chromophore (mean z of chromophore atoms = 0) and '
-    'defined as all non-hydrogen atoms with |z| \u2264 2.0 \u00c5.'
+    'defined as the protein heavy atoms (standard amino-acid + chromophore '
+    'residues) with |z| \u2264 2.0 \u00c5; see Geometry Quantification below.'
 )
 
 add_subheading('Geometry Quantification.')
 add_body(
     'All non-hydrogen atoms of the standard amino-acid and chromophore '
-    'residues of the analysed chain (i.e., protein heavy atoms) in each '
+    'residues of the analyzed chain (i.e., protein heavy atoms) in each '
     'slice were projected onto the xy-plane (i.e., the plane perpendicular '
     'to the barrel axis). Ordered solvent molecules, crystallization '
     'additives, and ions were excluded from the slice so that the '
@@ -435,8 +403,8 @@ add_body(
     'channel diameter (~24 \u00c5 in avGFP\u2078) reported in the original '
     'crystallographic papers, which refers to the solvent-accessible '
     'cavity through which the central alpha-helix passes. The beta-sheet '
-    'walls add approximately 4\u20136 \u00c5 on each side, consistent with the '
-    'mean minor axis of 30.2 \u00c5 reported here.'
+    'walls add approximately 2\u20133 \u00c5 on each side, consistent with the '
+    'mean minor axis of 29.5 \u00c5 reported here.'
 )
 
 add_subheading('Canonical FP-Barrel Cohort.')
@@ -455,7 +423,7 @@ add_body(
     'residues; we therefore restrict the geometric analysis to structures '
     'with seq_length between 210 and 245 (inclusive). A secondary '
     'chain-selection audit (Note S2) identified 15 FP-complex co-crystals '
-    'in which the original pipeline analysed the binding partner rather '
+    'in which the original pipeline analyzed the binding partner rather '
     'than the FP chain; these entries were reprocessed using the '
     'chromophore-containing chain, which placed 13 of them into the canonical '
     'cohort and reclassified one (4XL5) from chromophore-absent to '
@@ -468,8 +436,8 @@ add_body(
     'monomeric FPs identified by name-matching against FPbase. All reported '
     'barrel-geometry statistics, color-class comparisons, B-factor and '
     'dihedral correlations, and multivariate models in this paper refer to '
-    'this 780-structure cohort. Section-level sample sizes (e.g., n = 635 '
-    'for spectral correlations, n = 255 for quantum-yield correlations) '
+    'this 780-structure cohort. Section-level sample sizes (e.g., n = 633 '
+    'for spectral correlations, n = 265 for quantum-yield correlations) '
     'reflect the further availability of FPbase spectral data within the '
     'canonical cohort. The full 908-structure '
     'dataset, including the seq-length outliers, is retained in Table S1 '
@@ -502,14 +470,22 @@ add_body(
 
 add_subheading('B-Factor and Contact Analysis.')
 add_body(
-    'Mean B-factors were computed for chromophore and non-chromophore atoms '
-    'separately. The B-factor ratio (chromophore/barrel) quantifies '
-    'chromophore rigidity. Chromophore\u2013barrel contacts were counted as '
-    'non-hydrogen barrel atoms within 4.0 \u00c5 of any chromophore atom. '
-    'Chromophore atoms were defined as all non-hydrogen atoms belonging to '
-    'the non-standard residue identified as the chromophore; this includes '
-    'all atom types (imidazolinone ring, methine bridge, and pendant aromatic '
-    'ring) for Tyr66-, Trp66-, and His66-derived chromophores alike.'
+    'For each structure, two atom sets in the analyzed chain were defined: '
+    'the chromophore set (all non-hydrogen atoms of the non-standard '
+    'residue identified as the chromophore \u2014 imidazolinone ring, methine '
+    'bridge, and pendant aromatic ring, for Tyr66-, Trp66-, His66-, '
+    'or Phe66-derived chromophores alike), and the scaffold set (all '
+    'non-hydrogen atoms of the standard amino-acid residues in the same '
+    'chain). The latter is referred to throughout this paper as the '
+    '"barrel" set for brevity, but it is not restricted to the eleven '
+    '\u03b2-strands of the barrel wall \u2014 it also includes the central '
+    '\u03b1-helix that bears the chromophore-forming tripeptide and the '
+    'capping loops at both ends of the barrel. Mean B-factors were '
+    'computed for each set, and the B-factor ratio (chromophore / scaffold) '
+    'quantifies chromophore rigidity relative to the rest of the chain. '
+    'Chromophore\u2013barrel contacts were counted as the number of '
+    '(chromophore-atom, scaffold-atom) pairs within 4.0 \u00c5 of one '
+    'another (i.e., pair count, not unique scaffold-atom count).'
 )
 
 add_subheading('Statistical Analysis.')
@@ -529,79 +505,53 @@ add_body(
     'cis-vs-trans tests, and the three Kruskal\u2013Wallis by color class '
     'tests. The complete list with raw and BH-corrected p-values is '
     'provided in Table S4; 46 of 63 tests survive the FDR threshold at '
-    'q < 0.05.'
-    'Partial correlations '
-    'controlling for crystallographic resolution were computed by the '
-    'residual method: both the dependent and independent variables were '
-    'regressed on resolution using ordinary least squares, and the Spearman '
-    'correlation of the residuals was reported. '
+    'q < 0.05. '
+    'Partial Spearman correlations controlling for crystallographic '
+    'resolution were computed by the rank-residual method: all three '
+    'variables were rank-transformed, the rank-transformed dependent '
+    'and independent variables were each regressed on rank-transformed '
+    'resolution by ordinary least squares, and the Pearson correlation '
+    'of the residuals was reported (equivalent to the partial Spearman '
+    'correlation).'
 )
 
 add_subheading('AI-Assisted Computation.')
 add_body(
-    'All scripts for CIF parsing, coordinate transformation, convex hull '
-    'computation, spectral matching, torsion angle calculation, and '
-    'statistical analysis were generated by Claude (Anthropic, Opus 4) '
-    'via Claude Code and reviewed by the authors before execution. The '
-    'workflow followed a task-based structure similar to that described by '
-    'Schwartz:\u00b3\u2070 each computational task was specified in plain '
-    'language, the model produced code, and results were written to disk for '
-    'independent verification. Failure modes included the model reporting '
-    'steps as validated without performing checks, simplifying code based on '
-    'patterns from unrelated examples, and halting after finding a single '
-    'error rather than continuing to search. These were mitigated by '
-    'requiring intermediate output files, cross-checking representative '
-    'structures manually, and repeating verification prompts until no new '
-    'errors were found. All scientific questions, methodology choices, and '
+    'All scripts were generated by Claude (Anthropic, Opus 4) via Claude '
+    'Code and reviewed by the authors before execution. Each computational '
+    'task was specified in plain language; the model produced code, '
+    'results were written to disk, and intermediate files were used for '
+    'cross-checking against known structures. Observed failure modes '
+    '(steps reported as validated without performing checks, simplification '
+    'based on unrelated patterns, premature halting on first error) were '
+    'mitigated by mandatory intermediate output files and repeated '
+    'verification prompts; the chromophore-detection failure is documented '
+    'in Note S1. All scientific questions, methodology choices, and '
     'interpretations were made by the human authors.'
 )
 
-# Placeholder subheading — Maddie to write this section
-add_subheading('Self-Consistency Check  [Maddie]')
-
 add_subheading('AlphaFold Structure Analysis.')
 add_body(
-    'AlphaFold v6 coordinate files were downloaded for fluorescent protein '
-    'sequences via the EBI AlphaFold API '
-    '(https://alphafold.ebi.ac.uk/api/prediction/{UniProt_ID}), which '
-    'returns the current model version URL. Two analyses were performed. '
-    'First, AlphaFold structures were obtained for all 346 wild type '
-    'FPs with UniProt accessions and matched them to crystal '
-    'structures in the main dataset via the UniProt REST API '
-    '(https://rest.uniprot.org/uniprotkb/{ID}.json), yielding 51 '
-    'proteins with both an AlphaFold model and a matched crystal '
-    'structure. The highest-resolution crystal structure was selected '
-    'per protein for paired comparison. Second, all '
-    '347 unique wild-type FP sequences in the FPbase UniProt sequence list '
-    '(accessed April 2026) were analyzed; 346 unique UniProt identifiers '
-    'were resolved (one entry lacked a UniProt accession), of which 327 '
-    'yielded successful AlphaFold predictions and barrel analyses (17 had '
-    'no available AlphaFold model, and 3 failed quality filters).\n'
-    'Because AlphaFold structures contain no mature chromophore (the '
-    'precursor residues Ser\u2013Tyr\u2013Gly remain uncyclized), the '
-    'chromophore z-coordinate used to position the cross-sectional slice '
-    'was set to z = 0 (the barrel centroid in the PCA frame). This '
-    'approximation places the slice at the geometric midpoint of the '
-    'barrel, which corresponds closely to the chromophore level in all '
-    'known FP crystal structures. The axis computation matched the '
-    'crystal-structure pipeline exactly: major and minor axes were derived '
-    'as 4\u221aeigenvalue of the 2D covariance matrix of all non-hydrogen '
-    'atoms in the \u00b12.0 \u00c5 slice. AlphaFold B-factor fields '
-    'contain per-residue pLDDT confidence scores (0\u2013100) rather than '
-    'crystallographic B-factors; these were recorded but not used in '
+    'AlphaFold DB v6 coordinate files were downloaded for FP sequences '
+    'via the EBI AlphaFold API and matched to crystal structures via '
+    'the UniProt REST API. Two analyzes were performed: a paired '
+    'comparison between 51 wild-type FPs for which both an AlphaFold '
+    'model and the highest-resolution crystal structure exist '
+    '(mean crystal resolution 1.63 \u00b1 0.37 \u00c5, mean pLDDT '
+    '96.7 \u00b1 1.3); and a population-level analysis of the 309 successfully '
+    'predicted AlphaFold structures whose sequence length falls within the '
+    'canonical 210\u2013245 residue window (327 successful predictions in '
+    'total; 18 fell outside the window). Because AlphaFold structures lack the cyclized chromophore, '
+    'the slice was centered on the barrel centroid (z = 0 in the PCA '
+    'frame) rather than the chromophore z; the rest of the geometric '
+    'pipeline matched the crystal-structure pipeline exactly. The pLDDT '
+    'confidence scores in the AlphaFold B-factor field were not used in '
     'cross-structure comparisons with crystallographic B-factor ratios. '
-    'Spectral data for the 347-sequence analysis were retrieved from the '
-    'FPbase REST API and matched by UniProt accession. '
-    'For the paired AlphaFold–crystal comparison, two-sided Wilcoxon '
-    'signed-rank tests were used to assess whether each metric differed '
-    'systematically. The 95% confidence intervals reported in the Results '
-    'are normal-approximation intervals on the mean paired difference '
-    '(Δ̄ ± 1.96 SE, where SE = SD/√n with n = 51) and describe '
-    'uncertainty in the population mean offset between AlphaFold and '
-    'crystal values. Figure S8 separately plots the 95% limits of '
-    'agreement (Δ̄ ± 1.96 SD), which describe the spread of individual '
-    'paired differences across proteins and are therefore considerably '
-    'wider than the confidence interval on the mean.'
+    'Paired comparisons used two-sided Wilcoxon signed-rank tests; the '
+    '95% confidence intervals reported in Results are normal-approximation '
+    'intervals on the mean paired difference (\u0394\u0304 \u00b1 1.96 SE), '
+    'while Figure S8 plots the 95% limits of agreement '
+    '(\u0394\u0304 \u00b1 1.96 SD).'
 )
 
 doc.add_paragraph()
@@ -613,9 +563,9 @@ add_heading('Results and Discussion')
 
 add_subheading('Dataset Composition.')
 add_body(
-    'The dataset comprises 908 fluorescent protein crystal structures: 843 '
-    'with a validated mature chromophore and 65 without. The 843 chromophore-containing '
-    'structures span 71 distinct residue types (CRO, CR2, NRQ, CRQ, GYS, PIA, and '
+    'The dataset comprises 908 fluorescent protein crystal structures: 861 '
+    'with a validated mature chromophore and 47 without. The 861 chromophore-containing '
+    'structures span 69 distinct residue types (CRO, CR2, NRQ, CRQ, GYS, PIA, and '
     'others). Spectral data from FPbase were matched to 694 structures. '
     'Quantum yield data were available for 321. The color class distribution '
     'was green (n = 465), red (n = 94), yellow (n = 69), cyan (n = 48), '
@@ -661,13 +611,14 @@ add_body(
     'and 29.5 \u00b1 1.3 \u00c5, respectively. Barrel length averaged '
     '49.3 \u00b1 3.6 \u00c5. Area and eccentricity were weakly positively '
     'correlated (\u03c1 = +0.117, p = 0.001), reflecting the slightly larger '
-    'major axis of more elliptical barrels. For comparison, the full '
-    '908-structure dataset computed with solvent included and without the '
-    'chain-selection audit (as in earlier draft versions) gave a much '
-    'wider area distribution (818 \u00b1 194 \u00c5\u00b2, range 330\u20131975 \u00c5\u00b2); the '
-    'residual variance in the present canonical cohort is approximately '
-    '4.7-fold smaller, demonstrating that both the cohort definition and '
-    'the exclusion of crystallographic solvent from the slice remove '
+    'major axis of more elliptical barrels. For comparison, when the same '
+    'pipeline is applied to the full 908-structure dataset with '
+    'crystallographic solvent included in the slice and no chain-selection '
+    'audit, the area distribution is much wider '
+    '(818 \u00b1 194 \u00c5\u00b2, range 330\u20131975 \u00c5\u00b2); the residual variance in '
+    'the present canonical cohort is approximately 4.7-fold smaller, '
+    'demonstrating that both the cohort definition and the exclusion of '
+    'crystallographic solvent from the slice remove '
     'major methodological artefacts without altering the qualitative '
     'shape of the distribution.'
 )
@@ -680,26 +631,31 @@ add_body(
     '(689 \u00b1 41 vs 691 \u00b1 34 \u00c5\u00b2, p = 0.62), nor did '
     'circularity (0.922 \u00b1 0.020 vs 0.919 \u00b1 0.016, p = 0.25) '
     'or eccentricity (0.41 \u00b1 0.12 vs 0.39 \u00b1 0.11, p = 0.15). '
-    'However, both axes were significantly narrower in the '
-    'chromophore-containing structures: the minor axis was '
-    '29.4 \u00b1 1.2 \u00c5 vs 30.9 \u00b1 1.1 \u00c5 (p = 3.9 \u00d7 10\u207b\u00b9\u00b9) and the '
-    'major axis was 32.6 \u00b1 1.4 \u00c5 vs 33.8 \u00b1 1.4 \u00c5 '
-    '(p = 3.1 \u00d7 10\u207b\u2078). Both axes contract by approximately 1.2\u20131.5 \u00c5 '
-    'on chromophore maturation while the convex-hull area is preserved, '
-    'indicating that the barrel cross-section is established at the '
-    'pre-cyclization stage and that chromophore formation reorganises '
-    'the wall positions inward by a small amount on both axes rather '
-    'than changing the overall barrel size. The minor-axis contraction is '
-    'consistent in direction with the paired AlphaFold\u2013crystal comparison '
-    'reported below: AlphaFold (which lacks the mature chromophore) '
-    'predicts a slightly narrower minor axis than the crystal structures '
-    '(Figure S6, S8). After pseudoreplication collapse to one structure '
-    'per unique protein, the circularity difference between chromophore-'
-    'containing and chromophore-absent groups remains significant '
-    '(p = 4.6 \u00d7 10\u207b\u2074, Table S2); the minor-axis and eccentricity '
-    'differences do not survive collapse, reflecting the small number '
-    'of unique chromophore-absent proteins (six, vs 210 chromophore-'
-    'positive).'
+    'At the structure level, both axes were narrower in the '
+    'chromophore-containing group: minor axis '
+    '29.4 \u00b1 1.2 \u00c5 vs 30.9 \u00b1 1.1 \u00c5 (p = 3.9 \u00d7 10\u207b\u00b9\u00b9) and '
+    'major axis 32.6 \u00b1 1.4 \u00c5 vs 33.8 \u00b1 1.4 \u00c5 '
+    '(p = 3.1 \u00d7 10\u207b\u2078), while the convex-hull area was preserved '
+    '(Figure S6). However, the two groups in this comparison are '
+    'highly unbalanced both in size (739 vs 41) and in protein diversity '
+    '(210 unique chromophore-positive proteins, six unique chromophore-'
+    'absent proteins, mostly avGFP precursor variants), and the '
+    'structure-level axis differences should be interpreted with this '
+    'imbalance in mind. After pseudoreplication collapse to one '
+    'highest-resolution structure per unique protein, the minor- and '
+    'major-axis differences and the eccentricity trend do not survive '
+    '(Table S2); only the circularity difference reaches significance '
+    '(p = 4.6 \u00d7 10\u207b\u2074), and that effect is small in absolute terms '
+    '(0.922 vs 0.919). The paired AlphaFold\u2013crystal comparison is '
+    'similarly unhelpful as an independent check: AlphaFold, which '
+    'lacks the cyclized chromophore, yields minor- and major-axis '
+    'values that are not significantly different from the matched '
+    'crystal structures (\u0394_minor = +0.23 \u00c5, p = 0.25; '
+    '\u0394_major = +0.45 \u00c5, p = 0.02; Figure S8). We therefore '
+    'conclude only that the gross barrel cross-section is largely '
+    'established at the pre-cyclization stage and that any geometric '
+    'imprint of chromophore maturation, if real, is too small to '
+    'detect cleanly in this dataset.'
 )
 
 add_subheading('Barrel Geometry by Emission Color Class.')
@@ -720,8 +676,14 @@ add_body(
     'All reported p-values were corrected for multiple testing using '
     'the Benjamini\u2013Hochberg procedure (q < 0.05); the key '
     'correlations remain significant after correction. '
+    'These associations also strengthen after collapse to one highest-'
+    'resolution structure per unique FPbase protein (n = 69 unique '
+    'proteins): minor axis \u03c1 = \u20130.54, p = 1.6 \u00d7 10\u207b\u2076; '
+    'eccentricity \u03c1 = +0.49, p = 1.3 \u00d7 10\u207b\u2075; circularity '
+    '\u03c1 = \u20130.43, p = 2.0 \u00d7 10\u207b\u2074 (Table S2), ruling out '
+    'pseudoreplication of related variants as a driver. '
     'The correlations of emission with eccentricity, minor axis, and '
-    'circularity survive partial correlation analysis controlling for '
+    'circularity also survive partial correlation analysis controlling for '
     'resolution. The major axis and barrel length are uninformative. '
     'These data are consistent with a red-shift associated with narrowing '
     'of the barrel in one dimension, rather than a general contraction. '
@@ -734,12 +696,17 @@ add_body(
     'cannot be established from static crystal structures alone.'
 )
 
-add_figure('fig01_color_class.png',
-    'Figure 1. Barrel geometry by emission color class within the '
-    'canonical cohort (seq_length 210\u2013245 aa). Mean (\u00b1 SEM) '
-    'minor axis, eccentricity, circularity, and cross-sectional area. '
-    'Red fluorescent proteins have the narrowest, most elliptical barrels. '
-    'Emission wavelength scatter plots are shown in Figure S1.')
+add_figure('fig01_emission_scatter.png',
+    'Figure 1. Continuous relationships between barrel geometry and '
+    'emission wavelength in the canonical cohort (n = 633 structures with '
+    'FPbase em_max). Each point is one structure, colored by emission '
+    'class. (A) Minor axis (\u03c1 = \u20130.328). (B) Eccentricity '
+    '(\u03c1 = +0.320). (C) Circularity (\u03c1 = \u20130.258). (D) Major '
+    'axis (\u03c1 = +0.176). Dashed lines are least-squares fits, included '
+    'as visual guides; Spearman \u03c1 and p-values are reported in the '
+    'panels. Red-shifted variants populate the narrower, more elliptical '
+    'tail of each distribution. The same data summarized by emission '
+    'color class are shown as bar charts in Figure S1.')
 
 add_subheading('B-Factor Ratio and Quantum Yield.')
 add_body(
@@ -750,7 +717,13 @@ add_body(
     'strongest predictor of quantum yield: '
     '\u03c1 = \u20130.446, p = 2.4 \u00d7 10\u207b\u00b9\u2074, n = 265. '
     'This correlation survived partial correlation controlling for '
-    'resolution (partial \u03c1 = \u20130.481). The ratio varied by color '
+    'resolution (partial \u03c1 = \u20130.481). After collapse to one highest-'
+    'resolution structure per unique FPbase protein, the same effect '
+    'size persists (\u03c1 = \u20130.43) but the small remaining sample loses '
+    'statistical significance (p = 0.08, n = 18; Table S2); the '
+    'correlation should therefore be regarded as quantitatively '
+    'supported by the full canonical cohort but limited by the sparse '
+    'availability of quantum-yield measurements across unique proteins. The ratio varied by color '
     'class: blue 0.66 \u00b1 0.19, cyan 0.70 \u00b1 0.15, green 0.76 \u00b1 0.17, '
     'yellow 0.79 \u00b1 0.16, orange 0.88 \u00b1 0.22, red 1.02 \u00b1 0.24. '
     'In red fluorescent proteins, the chromophore is on average no more '
@@ -767,11 +740,9 @@ add_body(
     'decay requires conformational motion, particularly rotation about the '
     'methine bridge. A chromophore that is rigid relative to its barrel has '
     'fewer accessible conformational states and therefore fewer decay '
-    'pathways. This interpretation is consistent with the engineering of '
-    'mTurquoise2,\u00b9\u2077 where a single packing mutation raised the '
-    'quantum yield to 0.93, StayGold,\u2074\u00b9 which exhibits exceptional '
-    'photostability, and YuzuFP,\u00b2\u2078 where altering residue 148 '
-    'increased brightness 1.5-fold. The extended conjugation that produces '
+    'pathways. This interpretation is consistent with the engineering '
+    'examples discussed in the Implications section below. The extended '
+    'conjugation that produces '
     'red emission introduces torsional degrees of freedom that the barrel '
     'does not fully constrain, explaining the mean B-factor ratio of '
     '1.02 \u00b1 0.24 for red variants compared to 0.70 \u00b1 0.15 for '
@@ -782,37 +753,40 @@ add_figure('fig02_bfactor.png',
     'Figure 2. B-factor ratio analysis (canonical cohort, n = 780). '
     '(A) B-factor ratio vs quantum yield '
     '(\u03c1 = \u20130.446). (B) B-factor ratio vs emission wavelength. '
-    '(C) B-factor ratio by color class; dashed line at 1.0 indicates equal '
-    'rigidity.')
+    '(C) B-factor ratio by color class: box shows median and IQR with '
+    'whiskers at 1.5 \u00d7 IQR; individual structures are overlaid as jittered '
+    'points; the dashed line at 1.0 indicates equal chromophore and '
+    'barrel rigidity.')
 
 add_subheading('Chromophore\u2013Barrel Contacts.')
 add_body(
-    'The mean number of barrel atoms within 4.0 \u00c5 of the chromophore '
-    'was 126 \u00b1 68 (n = 780). Contact count correlated with emission '
-    'wavelength (\u03c1 = +0.219, p = 2.5 \u00d7 10\u207b\u2078, n = 633).'
+    'Restricting to the 739 chromophore-containing canonical structures, '
+    'the mean number of barrel atoms within 4.0 \u00c5 of the chromophore '
+    'was 133 \u00b1 63. Contact count correlated with emission wavelength '
+    '(\u03c1 = +0.202, p = 5.9 \u00d7 10\u207b\u2077, n = 600).'
 )
 
 add_subheading('Chromophore Dihedral Angles.')
 add_body(
-    '\u03c4 and \u03c6 dihedral angles were computed for 604 canonical-cohort '
-    'structures (591 of which were classifiable as cis, trans, or '
-    'twisted). Cis configurations predominated (442, 74.8%), with '
+    '\u03c4 and \u03c6 dihedral angles were computed for 603 canonical-cohort '
+    'structures (590 of which were classifiable as cis, trans, or '
+    'twisted). Cis configurations predominated (441, 74.7%), with '
     '111 trans (18.8%) and 38 twisted (6.4%). The \u03c4 angle correlated '
-    'with eccentricity (\u03c1 = \u20130.204, p = 4.4 \u00d7 10\u207b\u2077). '
+    'with eccentricity (\u03c1 = \u20130.197, p = 1.1 \u00d7 10\u207b\u2076). '
     'Absolute twist magnitudes correlated with eccentricity (|\u03c4|: '
-    '\u03c1 = +0.201; |\u03c6|: \u03c1 = +0.222), quantum yield '
+    '\u03c1 = +0.167; |\u03c6|: \u03c1 = +0.197), quantum yield '
     '(|\u03c4|: \u03c1 = \u20130.246, p = 1.9 \u00d7 10\u207b\u2074; '
     '|\u03c6|: \u03c1 = \u20130.204, p = 0.002), and B-factor ratio '
-    '(|\u03c4|: \u03c1 = +0.164; |\u03c6|: \u03c1 = +0.158). The '
+    '(|\u03c4|: \u03c1 = +0.158; |\u03c6|: \u03c1 = +0.155). The '
     'sum \u03c4 + \u03c6 was the strongest dihedral predictor '
-    'of emission (\u03c1 = \u20130.305, p = 3.0 \u00d7 10\u207b\u00b9\u00b2) '
+    'of emission (\u03c1 = \u20130.312, p = 1.0 \u00d7 10\u207b\u00b9\u00b2) '
     'and quantum yield (\u03c1 = +0.281, p = 1.9 \u00d7 10\u207b\u2075). '
     'We note that \u03c4 + \u03c6 is used here as a descriptive algebraic '
     'sum of two static crystallographic dihedral angles, not in the '
     'mechanistic sense of the hula-twist photoisomerization pathway. '
     'This extends the findings of Megley et al.\u00b2\u2077 from a small '
-    'set of structures to 604. Within this dataset, \u03c4 and \u03c6 are '
-    'negatively correlated across all structures (\u03c1 = \u20130.356, '
+    'set of structures to 603. Within this dataset, \u03c4 and \u03c6 are '
+    'negatively correlated across all structures (\u03c1 = \u20130.357, '
     'p < 0.001; Figure S7A), forming two parallel bands in the \u03c4\u2013\u03c6 '
     'plane corresponding to cis and trans configurations. This anticorrelation '
     'primarily reflects the bimodal distribution of configurational states: '
@@ -829,21 +803,21 @@ add_body(
     'is associated with an asymmetric barrel that provides less symmetric '
     'constraint on torsional freedom, potentially allowing greater '
     'non-planar distortion and increased non-radiative decay. Trans-configured chromophores had higher '
-    'eccentricity than cis (0.446 vs 0.410, p < 0.001), lower circularity '
-    '(0.922 vs 0.928, p = 0.024), and narrower minor axes '
-    '(29.9 vs 30.4 \u00c5, p < 0.001; Figure S2). The full dihedral '
+    'eccentricity than cis (0.44 vs 0.40, p < 0.001), lower circularity '
+    '(0.918 vs 0.923, p = 0.019), and narrower minor axes '
+    '(29.2 vs 29.6 \u00c5, p = 0.003; Figure S2). The full dihedral '
     'analysis is shown in Figure S7.'
 )
 
 add_subheading('Resolution Confound and Barrel Size.')
 add_body(
-    'Earlier draft versions of this analysis, in which crystallographic '
-    'water and other ordered solvent atoms were included in the slice, '
-    'showed a strong negative correlation between resolution and '
-    'cross-sectional area (\u03c1 \u2248 \u20130.5), because higher-resolution '
-    'structures resolve more ordered water molecules and these padded '
-    'the convex hull. Once the slice is restricted to protein heavy '
-    'atoms only, the resolution dependence of area essentially vanishes '
+    'If crystallographic water and other ordered solvent atoms are '
+    'included in the slice, a strong negative correlation appears '
+    'between resolution and cross-sectional area (\u03c1 \u2248 \u20130.5), because '
+    'higher-resolution structures resolve more ordered water molecules '
+    'and these pad the convex hull. With the slice restricted to '
+    'protein heavy atoms only (Methods), the resolution dependence of '
+    'area essentially vanishes '
     '(\u03c1 = \u20130.037, p = 0.30); the same holds for minor axis '
     '(\u03c1 = \u20130.047, p = 0.19) and eccentricity (\u03c1 = +0.003, p = 0.93). '
     'Partial correlations controlling for resolution are therefore '
@@ -864,10 +838,12 @@ add_body(
     'The Stokes shift, which is the difference between excitation and emission '
     'maxima, was available for 633 canonical-cohort structures '
     '(mean 23.7 \u00b1 18.6 nm, range 9\u2013180 nm). Stokes shift varied '
-    'by color class: cyan variants showed the largest mean Stokes shift '
-    '(37.9 \u00b1 4.4 nm), followed by red (41.0 \u00b1 36.4 nm, with high '
-    'variance), green (19.5 \u00b1 9.6 nm), orange (16.6 \u00b1 8.7 nm), and '
-    'yellow (13.3 \u00b1 1.3 nm). Stokes shift correlated negatively '
+    'by color class, with rankings dominated by a small long-Stokes-shift '
+    '(LSS) subset of the blue class: blue 62.9 \u00b1 2.0 nm (n = 7; all LSS '
+    'variants), red 41.0 \u00b1 36.4 nm (n = 89, very high variance reflecting '
+    'a mix of standard and large-Stokes-shift red FPs), cyan '
+    '37.9 \u00b1 4.4 nm (n = 47), green 19.5 \u00b1 9.6 nm (n = 415), orange '
+    '16.6 \u00b1 8.7 nm (n = 11), and yellow 13.3 \u00b1 1.3 nm (n = 64). Stokes shift correlated negatively '
     'with quantum yield '
     '(\u03c1 = \u20130.436, p = 5.2 \u00d7 10\u207b\u00b9\u2075, n = 293), '
     'consistent with the interpretation that greater excited-state '
@@ -899,29 +875,32 @@ add_body(
     'To disentangle the contributions of correlated predictors, multiple '
     'linear regression was performed with quantum yield as the response '
     'variable. A model including eccentricity, minor axis, B-factor ratio, '
-    'and |\u03c4| yielded R\u00b2 = 0.41 (n = 225). The B-factor ratio was '
-    'the dominant \u2014 and only \u2014 independently significant geometric '
-    'predictor (\u03b2 = \u20130.469, p = 2 \u00d7 10\u207b\u00b2\u2070); eccentricity, minor '
-    'axis, and |\u03c4| were not significant after controlling for the other '
-    'predictors. This indicates that the bivariate correlations between '
-    'barrel shape and quantum yield are mediated almost entirely '
+    'and |\u03c4| yielded R\u00b2 = 0.41 (n = 225). Standardized regression '
+    'coefficients show that the B-factor ratio is the dominant \u2014 and '
+    'only \u2014 independently significant geometric predictor '
+    '(\u03b2 = \u20130.563, p = 2 \u00d7 10\u207b\u00b2\u2070); eccentricity (\u03b2 = \u20130.093, '
+    'p = 0.24), minor axis (\u03b2 = +0.082, p = 0.32), and |\u03c4| '
+    '(\u03b2 = \u20130.020, p = 0.71) were not significant after controlling for '
+    'the other predictors. This indicates that the bivariate correlations '
+    'between barrel shape and quantum yield are mediated almost entirely '
     'through chromophore rigidity.'
 )
 
 add_body(
     'For emission wavelength, a model including minor axis, circularity, '
     'B-factor ratio, and resolution yielded R\u00b2 = 0.33 (n = 600). '
-    'Minor axis (\u03b2 = \u20135.5, p = 1.8 \u00d7 10\u207b\u2076), '
-    'circularity (\u03b2 = \u2013428, p = 6.3 \u00d7 10\u207b\u00b9\u2070), and '
-    'B-factor ratio (\u03b2 = +74, p = 1.4 \u00d7 10\u207b\u00b2\u2075) were each independently '
-    'significant; resolution was marginal '
-    '(\u03b2 = \u20135.3, p = 0.07). Barrel shape and chromophore rigidity '
+    'Standardized regression coefficients again identified the B-factor '
+    'ratio as the largest contributor (\u03b2 = +0.394, p = 1.4 \u00d7 10\u207b\u00b2\u2075), '
+    'with circularity (\u03b2 = \u20130.225, p = 6.3 \u00d7 10\u207b\u00b9\u2070) and minor axis '
+    '(\u03b2 = \u20130.177, p = 1.8 \u00d7 10\u207b\u2076) each making smaller but independently '
+    'significant contributions; resolution was marginal '
+    '(\u03b2 = \u20130.063, p = 0.07). Barrel shape and chromophore rigidity '
     'thus contribute to emission wavelength through partially '
     'independent pathways.'
 )
 
 add_body(
-    'A Random Forest model (500 trees, 5-fold cross-validation) predicting '
+    'A Random Forest model (500 trees, bootstrap aggregation) predicting '
     'quantum yield achieved out-of-bag R\u00b2 = 0.42, with B-factor ratio '
     'as the dominant feature (importance = 0.499). The nonlinear model\u2019s '
     'improved performance suggests that interactions among predictors '
@@ -971,9 +950,12 @@ add_body(
     'in Figure S8. The barrel-length excess likely reflects AlphaFold '
     'modeling of flexible terminal regions that are disordered and '
     'excluded from electron density in crystal structures. The lack of '
-    'a measurable cross-sectional offset is notable: AlphaFold faithfully '
-    'reproduces both the size and the shape of the FP barrel even '
-    'though its training data did not contain the cyclized chromophore.'
+    'a measurable cross-sectional offset is notable given that AlphaFold '
+    'DB models are sequence-based and do not explicitly include the '
+    'cyclized chromophore (or any post-translational modification) in '
+    'the predicted structure: the chromophore-forming residues are output '
+    'as the uncyclized Ser–Tyr–Gly precursor. The barrel cross-section is '
+    'therefore reproduced from sequence information alone.'
 )
 
 add_body(
@@ -1013,73 +995,35 @@ add_body(
 
 add_subheading('Limitations.')
 add_body(
-    'Several caveats apply. The canonical cohort is unevenly distributed: '
-    'green proteins are overrepresented (n = 415), while blue (n = 10) and '
-    'orange (n = 11) classes are sparse. The 780 canonical PDB entries '
-    'are not fully independent: many represent the same protein under '
-    'different conditions, related mutants, or multiple chains. Of 633 '
-    'entries matched to FPbase, only 70 unique protein names are '
-    'represented. To assess pseudoreplication, the key correlations were '
-    'recomputed after collapsing to one structure per unique protein '
-    '(choosing the highest-resolution entry); the principal findings '
-    'were preserved (Table S2).'
+    'The canonical cohort is unevenly distributed (green n = 415, blue '
+    'and orange \u2264 11), the 780 entries are not fully independent (633 '
+    'spectrally matched entries correspond to only 70 unique FPbase '
+    'names), and the PDB itself is not a random sample of all FPs \u2014 '
+    'heavily studied variants such as GFP and mCherry are overrepresented '
+    'while many natural and engineered FPs have no deposited structure. '
+    'These pseudoreplication and selection issues are partially addressed '
+    'by the unique-protein collapse (Table S2), which preserves the '
+    'principal correlations, but the generalizability to FPs outside the '
+    'crystallized subset remains to be established. Crystal-lattice '
+    'contacts impose non-physiological forces that can distort eccentricity, '
+    'particularly for proteins crystallized in multiple space groups.'
 )
-
 add_body(
-    'The PDB is not a random sample of fluorescent proteins. Heavily '
-    'studied variants such as GFP and mCherry are overrepresented, while '
-    'many engineered or naturally occurring FPs have no deposited crystal '
-    'structure. The correlations reported here therefore describe trends '
-    'within the subset of FPs that have been crystallized, and their '
-    'generalizability to the full diversity of fluorescent proteins remains '
-    'to be established.'
-)
-
-add_body(
-    'Crystal packing contacts are an uncontrolled variable in this '
-    'dataset. Lattice contacts impose non-physiological forces on '
-    'the barrel surface that can distort cross-sectional geometry, '
-    'particularly eccentricity. Proteins that have been crystallized in '
-    'multiple space groups (e.g., GFP variants, mCherry, DsRed) may '
-    'show geometry variation attributable to different packing environments '
-    'rather than intrinsic differences. Ideally, the analysis would be '
-    'restricted to one crystal form per protein; the pseudoreplication '
-    'collapse (Table S2) partially addresses this but does not fully '
-    'control for packing effects.'
-)
-
-add_body(
-    'Thirty-one additional FP barrels deposited after the last SCOP update '
-    'were identified by cross-referencing PDB entries from FP-producing '
-    'organisms and added manually; the complete list of PDB identifiers '
-    'is provided in Table S1.'
-)
-
-add_body(
-    'The use of crystallographic B-factors as a cross-structure rigidity '
-    'metric requires caution. B-factors are influenced by resolution, '
-    'temperature, refinement protocol, occupancy modeling, TLS treatment, '
-    'and crystal packing, not solely by genuine atomic mobility. The '
-    'B-factor ratio normalizes within each structure, mitigating some of '
-    'these effects, and the correlation with quantum yield survives partial '
-    'correlation controlling for resolution (partial \u03c1 = \u20130.481). '
-    'Nevertheless, the B-factor ratio should be regarded as a proxy for '
-    'relative chromophore mobility rather than a direct measure of dynamics.'
-)
-
-add_body(
-    'The geometry pipeline depends on the choice of slice thickness '
-    '(|z| \u2264 2.0 \u00c5), use of all non-hydrogen atoms, and convex hull '
-    'construction. Sensitivity tests using slice thicknesses of 1.5 and '
-    '2.5 \u00c5, and using backbone-heavy atoms only, confirmed that the '
-    'rank order of structures by eccentricity, circularity, and minor axis '
-    'length is preserved (Table S3). The convex hull does not capture '
-    'internal cavities. Dihedral angles are static snapshots that do not '
-    'capture solution-state dynamics. Quantum yield values were available '
-    'for only 293 canonical-cohort structures, from measurements under heterogeneous '
-    'conditions. The full Spearman correlation matrix (Figure S4) and '
-    'barrel geometry by chromophore type (Figure S5) are provided in '
-    'Supporting Information.'
+    'Crystallographic B-factors are influenced by resolution, refinement '
+    'protocol, occupancy, TLS treatment, and packing as well as genuine '
+    'mobility. The B-factor ratio normalizes within each structure and '
+    'survives partial correlation controlling for resolution '
+    '(partial \u03c1 = \u20130.481), but should be regarded as a proxy for '
+    'relative chromophore mobility rather than a direct measure of '
+    'dynamics. The geometry pipeline itself is robust: sensitivity tests '
+    'across slice thicknesses (1.5\u20132.5 \u00c5) and atom selections '
+    '(protein heavy atoms vs backbone only) preserve the rank order of '
+    'structures by eccentricity, circularity, and minor axis (Table S3). '
+    'Quantum-yield values were available for only 293 canonical-cohort '
+    'structures, from measurements under heterogeneous conditions. The '
+    'full Spearman correlation matrix (Figure S4) and barrel geometry '
+    'by chromophore type (Figure S5) are provided in Supporting '
+    'Information.'
 )
 
 doc.add_paragraph()
@@ -1093,7 +1037,7 @@ add_body(
     'Across a canonical cohort of 780 fluorescent protein crystal '
     'structures (drawn from 908 total deposits by an FP-barrel '
     'sequence-length filter of 210–245 residues, a chain-selection '
-    'audit that recovered 14 FP-complex co-crystals analysed on the '
+    'audit that recovered 14 FP-complex co-crystals analyzed on the '
     'binding-partner chain, and exclusion of two entries whose '
     'topology is not a standard monomeric β-can; see Note S2), '
     'and using protein heavy atoms only (no crystallographic '
@@ -1107,7 +1051,7 @@ add_body(
     'mediates most of the bivariate correlations between barrel shape and '
     'quantum yield. Chromophore dihedral twist correlates with both barrel '
     'eccentricity and quantum yield, extending the observations of Megley '
-    'et al.²⁷ from a handful of structures to 603. AlphaFold reproduces '
+    'et al.²⁷ from a handful of structures to 603 (canonical cohort). AlphaFold reproduces '
     'both the size and shape of the FP barrel; in the paired comparison '
     'against high-resolution crystal structures, only the major axis '
     '(+0.5 Å) and barrel length (+3.7 Å) differ measurably, while '
@@ -1121,20 +1065,15 @@ add_body(
 )
 
 add_body(
-    'The analysis was carried out using Claude (Anthropic) via Claude Code '
-    'as a coding assistant operating on local CIF files and FPbase data. '
-    'The workflow was productive but introduced characteristic failure modes '
-    'that required human expert validation at every step. The chromophore '
-    'detection step (Note S1) is the clearest illustration: an incomplete '
-    'hardcoded residue list mis-classified ~114 structures even as the model '
-    'reported the step as validated. As conversational LLMs become routine '
-    'in computational structural biology, intermediate output files, '
-    'cross-checking against known structures, and repeated verification '
-    'will be as important as the speed gains. The structural patterns '
-    'identified here motivate prospective experimental work, particularly '
-    'mutations targeting the minor-axis-defining strands of red FPs aimed '
-    'at restoring the rigidity differential that characterizes brighter '
-    'green and cyan variants.'
+    'The structural patterns identified here motivate prospective '
+    'experimental work, particularly mutations targeting the minor-axis-'
+    'defining strands of red FPs aimed at restoring the rigidity '
+    'differential that characterizes brighter green and cyan variants. '
+    'On the methodological side, the entire pipeline was generated with '
+    'AI assistance (Claude Code); the chromophore-detection failure '
+    'documented in Note S1 illustrates that intermediate output files '
+    'and explicit cross-checks against known structures remain essential '
+    'when LLMs are used as coding agents on scientific data.'
 )
 
 doc.add_paragraph()
@@ -1206,7 +1145,7 @@ refs = [
     '(30) Schwartz, M. D. Vibe Physics: The AI Grad Student. Anthropic 2026. https://www.anthropic.com/research/vibe-physics (accessed 2026-04-07).',
     '(31) Hartley, S. M.; Tiernan, K. A.; Ahmetaj, G.; Cretu, A.; Zhuang, Y.; Zimmer, M. AlphaFold2 and RoseTTAFold Predict Posttranslational Modifications. Chromophore Formation in GFP-like Proteins. PLoS One 2022, 17, e0267560.',
     '(32) Hayes, T.; et al. Simulating 500 Million Years of Evolution with a Language Model. Science 2025, 387, 850\u2013858.',
-    '(33) Gujral, O.; Bafna, M.; Alm, E.; Berger, B. Sparse Autoencoders Uncover Biologically Interpretable Features in Protein Language Model Representations. Proc. Natl. Acad. Sci. U.S.A. 2025, 122, e2506316122.',
+    '(33) Gelman, S.; Johnson, B.; Freschlin, C. R.; Sharma, A.; D’Costa, S.; Peters, J.; Gitter, A.; Romero, P. A. Biophysics-Based Protein Language Models for Protein Engineering. Nat. Methods 2025, 22, 1868–1879.',
     '(34) Lambert, T. J. FPbase: A Community-Editable Fluorescent Protein Database. Nat. Methods 2019, 16, 277\u2013278.',
     '(35) Sievers, F.; et al. Fast, Scalable Generation of High-Quality Protein Multiple Sequence Alignments Using Clustal Omega. Mol. Syst. Biol. 2011, 7, 539.',
     '(36) Waterhouse, A. M.; Procter, J. B.; Martin, D. M. A.; Clamp, M.; Barton, G. J. Jalview Version 2\u2014A Multiple Sequence Alignment Editor and Analysis Workbench. Bioinformatics 2009, 25, 1189\u20131191.',
@@ -1278,12 +1217,14 @@ add_body(
 
 add_body(
     'Table S3. Sensitivity analysis of the geometry pipeline. '
-    'Cross-sectional parameters recomputed for 52 representative '
+    'Cross-sectional parameters were recomputed for 52 representative '
     'structures using slice thicknesses of 1.5 \u00c5 and 2.5 \u00c5 '
-    '(vs default 2.0 \u00c5) and using backbone-heavy atoms only '
-    '(vs all non-hydrogen atoms). Pearson and Spearman correlations '
-    'with the default parameterization are reported (provided as a '
-    'CSV file).'
+    '(vs the default 2.0 \u00c5) and using backbone-heavy atoms only '
+    '(vs the default protein heavy-atom selection). Pearson and Spearman '
+    'rank correlations with the default parameterization are reported '
+    '(provided as a CSV file); the rank order of structures by '
+    'eccentricity, circularity, and minor axis is preserved across all '
+    'variants.'
 )
 
 add_body(
@@ -1327,9 +1268,8 @@ add_body(
     'CE2, CZ, OH) that are absent from CR8; CR8 instead uses a non-standard '
     'naming convention (C4\u2013C8, C11, C12, O13 for the phenol ring), so '
     'the aromatic ring was missed and 18 CR8-containing structures were '
-    'incorrectly reclassified as non-chromophoric. Additional verified '
-    'chromophores with non-standard atom naming (4F3, VYA) were caught by the '
-    'same failure mode. Examination of the structures confirmed that CR8 '
+    'incorrectly reclassified as non-chromophoric. Examination of the '
+    'structures confirmed that CR8 '
     'contains both a complete imidazolinone ring and a para-hydroxyphenyl '
     'group bridged through the methine carbon (C8=CA2), consistent with a '
     'Tyr66-derived chromophore; the Arg residue at sequence position 66 in '
@@ -1343,13 +1283,13 @@ add_body(
 
 add_body(
     'Note S2. Chain-Selection Audit for FP-Complex Co-Crystals. '
-    'During manuscript revision the original chain-selection logic was '
-    'audited by, for each PDB entry, parsing the deposited mmCIF, listing '
-    'all polymer chains, and identifying which contain a recognized mature '
-    'chromophore residue. The pipeline as originally written picked the '
-    'longest standard-amino-acid chain in each entry. Fifteen entries '
-    'failed this audit: the longest chain did not contain a chromophore '
-    'while another chain in the same entry did. These were FP-complex '
+    'The default chain-selection rule used by the geometry pipeline is '
+    'to analyze the longest standard-amino-acid chain in each PDB entry. '
+    'For each PDB entry, a chain-selection audit parses the deposited '
+    'mmCIF, lists all polymer chains, and identifies which contain a '
+    'recognized mature chromophore residue. Fifteen entries fail the '
+    'audit: the longest chain does not contain a chromophore while '
+    'another chain in the same entry does. These were FP-complex '
     'co-crystals in which the binding partner (designed ankyrin / armadillo '
     'repeat protein, antibody, or nanobody fragment) is longer than the FP '
     'and was therefore analysed in place of it. The 15 entries are '
@@ -1389,13 +1329,16 @@ add_body(
     'Supporting Information.'
 )
 
-add_figure('figS1_emission_vs_geometry.png',
-    'S1. Emission wavelength vs minor axis, eccentricity, and '
-    'circularity. Each point represents one structure, colored by emission '
-    'class.')
+add_figure('figS1_color_class.png',
+    'S1. Barrel geometry by emission color class within the canonical '
+    'cohort. Mean (± SEM) minor axis, eccentricity, circularity, and '
+    'cross-sectional area by color class, with Kruskal–Wallis H and '
+    'p-values annotated. This is the categorical summary of the '
+    'continuous relationships shown in Figure 1.')
 
 add_figure('figS2_cis_trans.png',
-    'S2. Barrel geometry by chromophore configuration (cis vs trans).')
+    'S2. Barrel geometry by chromophore configuration (cis, trans, '
+    'and twisted).')
 
 add_figure('figS3_resolution.png',
     'S3. Resolution control. (A) Resolution vs minor axis. '
@@ -1413,17 +1356,20 @@ add_figure('figS5_chromophore_types.png',
 
 add_figure('figS6_chromophore_effect.png',
     'S6. Effect of chromophore maturation on barrel geometry within the '
-    'canonical cohort (n = 780). Cross-sectional area, circularity, and '
-    'eccentricity do not differ between chromophore-containing (n = 739) '
-    'and chromophore-absent (n = 41) structures, while minor and major '
-    'axes are both significantly narrower in chromophore-containing '
-    'structures (p < 10⁻¹⁰ for both), indicating that chromophore '
-    'maturation contracts the barrel cross-section symmetrically.')
+    'canonical cohort (n = 780). Boxplots compare structures with '
+    '(n = 739, blue) and without (n = 41, orange) a validated mature '
+    'chromophore. (A) Cross-sectional area, (B) eccentricity, and '
+    '(C) circularity do not differ between the two groups. (D) Minor '
+    'axis and (E) major axis are both significantly narrower in '
+    'chromophore-containing structures (p < 10⁻⁷ for both), indicating '
+    'that chromophore maturation contracts the barrel cross-section '
+    'symmetrically.')
 
 add_figure('figS7_megley.png',
     'S7. Chromophore dihedral analysis. (A) τ vs φ plot '
     'colored by emission class. (B) |τ| vs quantum yield. (C) '
-    'Dihedral sum (τ + φ) vs emission wavelength.')
+    'Dihedral sum (τ + φ) vs emission wavelength.',
+    width=5.5)
 
 add_figure('figS8_alphafold_paired.png',
     'S8. Bland–Altman plots of the paired AlphaFold–crystal comparison '
@@ -1433,10 +1379,14 @@ add_figure('figS8_alphafold_paired.png',
     'horizontal line marks the mean difference (Δ̄); dashed lines mark '
     'the 95% limits of agreement (Δ̄ ± 1.96 SD); the dotted line at '
     'zero marks perfect agreement. p-values are from two-sided Wilcoxon '
-    'signed-rank tests. AlphaFold underestimates the minor axis '
-    '(Δ̄ = –0.53 Å), major axis (–0.89 Å), and cross-sectional area '
-    '(–78 Å²) while overestimating barrel length (+3.7 Å); '
-    'eccentricity and circularity show no systematic offset.')
+    'signed-rank tests. With crystal slices restricted to protein heavy '
+    'atoms (no ordered solvent), AlphaFold and crystal barrels are '
+    'statistically indistinguishable on minor axis '
+    '(Δ̄ = +0.23 Å, p = 0.25), eccentricity (Δ̄ = 0.00, '
+    'p = 0.59), circularity (Δ̄ = 0.00, p = 0.74), and area '
+    '(Δ̄ = +9.6 Å², p = 0.23). AlphaFold predicts slightly '
+    'wider major axes (Δ̄ = +0.45 Å, p = 0.02) and longer '
+    'barrels (Δ̄ = +3.7 Å, p < 10⁻⁴).')
 
 # ── Save ──
 output_path = os.path.join(REPO_ROOT, 'GFP_JCIM_Manuscript.docx')

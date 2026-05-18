@@ -46,16 +46,16 @@ def panel_label(ax, label, x=-0.18, y=1.08):
             fontsize=13, fontweight='bold', va='top', ha='left')
 
 metrics = [
-    ('minor', 'Minor Axis (Å)',          '(A)'),
-    ('major', 'Major Axis (Å)',          '(B)'),
-    ('area',  'Cross-sectional Area (Å²)','(C)'),
-    ('blen',  'Barrel Length (Å)',       '(D)'),
-    ('ecc',   'Eccentricity',            '(E)'),
-    ('circ',  'Circularity',             '(F)'),
+    ('minor', 'Minor Axis (Å)',     '(A)'),
+    ('major', 'Major Axis (Å)',     '(B)'),
+    ('area',  'Area (Å²)',          '(C)'),
+    ('blen',  'Barrel Length (Å)',  '(D)'),
+    ('ecc',   'Eccentricity',       '(E)'),
+    ('circ',  'Circularity',        '(F)'),
 ]
 
-fig, axes = plt.subplots(2, 3, figsize=(9.5, 6.0))
-fig.subplots_adjust(hspace=0.45, wspace=0.40, top=0.93, bottom=0.10, left=0.08, right=0.97)
+fig, axes = plt.subplots(2, 3, figsize=(10.5, 6.4))
+fig.subplots_adjust(hspace=0.45, wspace=0.40, top=0.93, bottom=0.10, left=0.07, right=0.985)
 axes = axes.flatten()
 
 for ax, (key, label, panel) in zip(axes, metrics):
