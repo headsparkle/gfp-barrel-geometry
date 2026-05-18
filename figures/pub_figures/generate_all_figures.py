@@ -146,9 +146,124 @@ ax2.set_ylabel('B-factor Ratio', fontsize=7)
 ax2.tick_params(labelsize=6)
 remove_top_right(ax2)
 
-for fmt, fname in [('png', 'graphical_abstract.png'), ('tiff', 'graphical_abstract.tif')]:
+# Replace simple 2-panel TOC with 3-panel layout (3D barrel sketch +
+# cross-section comparison + scatter). Save under same filenames so
+# the manuscript builder picks up the new TOC automatically.
+plt.close(fig)
+fig = plt.figure(figsize=(6.5, 1.95))
+gs = fig.add_gridspec(1, 3, width_ratios=[1.05, 0.85, 1.20],
+                      wspace=0.30, left=0.02, right=0.99,
+                      top=0.96, bottom=0.18)
+ax1 = fig.add_subplot(gs[0])
+ax2 = fig.add_subplot(gs[1])
+ax3 = fig.add_subplot(gs[2])
+
+# ---- Panel 1: 3D barrel schematic with axes labeled in the
+# chromophore-plane slice. Both axes lie in the slice plane,
+# perpendicular to each other and perpendicular to the barrel long
+# axis. The minor axis here is the foreshortened front-to-back
+# direction (NOT the barrel long axis).
+ax1.set_aspect('equal')
+ax1.set_xlim(-1.85, 1.55)
+ax1.set_ylim(-1.65, 1.85)
+ax1.axis('off')
+
+barrel_color = '#2E7D32'
+slice_color  = '#1E5DAA'
+a_barrel = 1.0
+b_barrel = 0.22
+top_y, bot_y, slice_y = 1.3, -1.3, 0.0
+
+n_strands = 14
+for k in range(n_strands):
+    theta = 2 * np.pi * k / n_strands
+    x = a_barrel * np.cos(theta)
+    front = np.sin(theta) <= 0
+    alpha = 0.95 if front else 0.30
+    ls = '-' if front else (0, (2, 1.5))
+    ax1.plot([x, x], [bot_y, top_y], color=barrel_color,
+             lw=1.0, alpha=alpha, ls=ls, zorder=2)
+
+top_el = Ellipse((0, top_y), width=2*a_barrel, height=2*b_barrel,
+                 fill=False, edgecolor=barrel_color, lw=1.3, zorder=3)
+bot_el = Ellipse((0, bot_y), width=2*a_barrel, height=2*b_barrel,
+                 fill=False, edgecolor=barrel_color, lw=1.3, zorder=3)
+slice_el = Ellipse((0, slice_y), width=2*a_barrel, height=2*b_barrel,
+                   fill=False, edgecolor=slice_color, lw=1.0,
+                   linestyle='--', alpha=0.85, zorder=4)
+ax1.add_patch(top_el); ax1.add_patch(bot_el); ax1.add_patch(slice_el)
+
+ax1.scatter([0], [slice_y], s=42, color='#FFC107',
+            edgecolors='black', linewidths=0.5, zorder=6)
+ax1.annotate('chromophore', xy=(0.07, slice_y + 0.05),
+             xytext=(0.55, slice_y + 0.65),
+             fontsize=6.2, color='black',
+             arrowprops=dict(arrowstyle='-', lw=0.5, color='black'),
+             zorder=7)
+
+# Major axis: horizontal, in the slice plane
+ax1.annotate('', xy=( a_barrel * 0.96, slice_y),
+             xytext=(-a_barrel * 0.96, slice_y),
+             arrowprops=dict(arrowstyle='<|-|>', color='black',
+                             lw=1.0, mutation_scale=8), zorder=5)
+ax1.text(0, slice_y - 0.12, 'major axis', fontsize=6.5,
+         ha='center', va='top', color='black')
+
+# Minor axis: perpendicular to major *within the same slice plane*
+# (the front-to-back direction, which appears foreshortened).
+ax1.annotate('', xy=(0,  slice_y + b_barrel),
+             xytext=(0,  slice_y - b_barrel),
+             arrowprops=dict(arrowstyle='<|-|>', color='black',
+                             lw=1.0, mutation_scale=6), zorder=5)
+ax1.text(0.08, slice_y + b_barrel + 0.04, 'minor axis',
+         fontsize=6.5, ha='left', va='bottom', color='black')
+
+# Barrel long-axis arrow (labeled separately to disambiguate)
+ax1.annotate('', xy=(-1.45, top_y), xytext=(-1.45, bot_y),
+             arrowprops=dict(arrowstyle='<|-|>', color='gray',
+                             lw=0.8, mutation_scale=6), zorder=2)
+ax1.text(-1.55, 0, 'barrel\nlong axis',
+         fontsize=5.8, ha='right', va='center', color='gray')
+
+# ---- Panel 2: cross-section comparison (Green vs Red FP)
+ax2.set_aspect('equal')
+green_el = Ellipse((0, 0), width=2.0, height=1.85, fill=False,
+                   edgecolor='#43A047', linewidth=1.6, linestyle='-')
+red_el = Ellipse((0, 0), width=2.3, height=1.55, fill=False,
+                 edgecolor='#E53935', linewidth=1.6, linestyle='--')
+ax2.add_patch(green_el); ax2.add_patch(red_el)
+ax2.text(0.65, 0.78, 'Green FP', fontsize=6.5, color='#43A047',
+         fontweight='bold')
+ax2.text(0.65, -0.92, 'Red FP', fontsize=6.5, color='#E53935',
+         fontweight='bold')
+ax2.text(0, -1.25, 'cross-section', fontsize=6.5, ha='center')
+ax2.set_xlim(-1.5, 1.5); ax2.set_ylim(-1.40, 1.20)
+ax2.set_xticks([]); ax2.set_yticks([])
+for sp in ax2.spines.values():
+    sp.set_visible(False)
+
+# ---- Panel 3: B-factor ratio vs QY scatter (headline result)
+sub = df.dropna(subset=['b_factor_ratio', 'lit_qy', 'color_class']).copy()
+for cc in CLASS_ORDER:
+    mask = sub['color_class'] == cc
+    if mask.sum() > 0:
+        ax3.scatter(sub.loc[mask, 'lit_qy'],
+                    sub.loc[mask, 'b_factor_ratio'],
+                    c=CLASS_COLORS.get(cc, 'gray'), s=11, alpha=0.7,
+                    edgecolors='none', zorder=3)
+rho, pval = stats.spearmanr(sub['lit_qy'], sub['b_factor_ratio'])
+ax3.text(0.05, 0.96, f'\u03c1 = {rho:.3f}', transform=ax3.transAxes,
+         fontsize=7, va='top', fontstyle='italic')
+ax3.set_xlabel('Quantum Yield', fontsize=7)
+ax3.set_ylabel('B-factor Ratio', fontsize=7)
+ax3.tick_params(labelsize=6)
+remove_top_right(ax3)
+
+for fmt, fname in [('png', 'graphical_abstract.png'),
+                   ('tiff', 'graphical_abstract.tif')]:
     path = out_dir + fname
-    fig.savefig(path, format=fmt, dpi=300, bbox_inches='tight', facecolor='white')
+    fig.savefig(path, format=fmt, dpi=300, bbox_inches='tight',
+                facecolor='white')
     saved_files.append(path)
 plt.close(fig)
 
