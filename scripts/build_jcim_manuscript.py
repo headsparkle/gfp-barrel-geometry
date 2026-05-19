@@ -1244,12 +1244,11 @@ add_body(
     '210\u2013245 residues, with two structural-topology outliers excluded; '
     'see Note S1(b)) '
     'that comprise the geometric-analysis cohort reported in the main text. This table also serves as the source data '
-    'for all figures in the manuscript (provided as a CSV file). Note: '
-    'PDB entries 4DXQ and 4DXP '
-    '(Kaede photoconvertible FP) are genuine FP barrels present in the PDB '
-    'but absent from this dataset because their SCOP classification was not '
-    'captured in our curation pipeline; they were not explicitly excluded on '
-    'scientific grounds.'
+    'for all figures in the manuscript (provided as a CSV file). PDB '
+    'entries 4DXQ and 4DXP (Kaede photoconvertible FP) are genuine FP '
+    'barrels present in the PDB but absent from this dataset because '
+    'their SCOP classification was not captured in our curation pipeline; '
+    'they were not explicitly excluded on scientific grounds.'
 )
 
 add_body(
