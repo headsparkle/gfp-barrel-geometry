@@ -346,8 +346,11 @@ metrics_fig1 = [
     ('major_axis',   'Major Axis (\u00c5)',                  '(D)'),
 ]
 
-fig, axes = plt.subplots(2, 2, figsize=(7.5, 6.4))
-fig.subplots_adjust(hspace=0.40, wspace=0.32, top=0.94, bottom=0.10, left=0.10, right=0.97)
+# Legend goes ABOVE the panels (between title strip and row 1) so it
+# never collides with the bottom row's x-axis labels.
+fig, axes = plt.subplots(2, 2, figsize=(7.5, 6.8))
+fig.subplots_adjust(hspace=0.42, wspace=0.32,
+                    top=0.90, bottom=0.09, left=0.10, right=0.97)
 axes = axes.flatten()
 
 sub_em = df.dropna(subset=['em_max'])
@@ -378,12 +381,12 @@ for i, (col, xlabel, lbl) in enumerate(metrics_fig1):
     remove_top_right(ax)
     panel_label(ax, lbl)
 
-# Legend below figure
 legend_handles = [Line2D([0], [0], marker='o', color='w',
                          markerfacecolor=CLASS_COLORS[cc], markersize=6,
                          label=cc.capitalize()) for cc in CLASS_ORDER]
-fig.legend(handles=legend_handles, loc='lower center', ncol=6,
-           frameon=False, fontsize=9, bbox_to_anchor=(0.5, 0.0))
+fig.legend(handles=legend_handles, loc='upper center', ncol=6,
+           frameon=False, fontsize=9,
+           bbox_to_anchor=(0.5, 0.985))
 
 path = out_dir + 'fig01_emission_scatter.png'
 fig.savefig(path, dpi=300, bbox_inches='tight', facecolor='white')
