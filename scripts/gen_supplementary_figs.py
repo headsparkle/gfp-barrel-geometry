@@ -40,12 +40,18 @@ CLASS_COLORS = {
     'blue':   '#1E88E5',
 }
 
-OUTDIR = '/Users/lukebegg/Downloads/deep_analysis/pub_figures'
+import os as _os
+_REPO = _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))
+OUTDIR = _os.path.join(_REPO, 'figures', 'pub_figures')
 
 # ── Load data ─────────────────────────────────────────────────────────────────
-df = pd.read_csv('/Users/lukebegg/Downloads/deep_analysis/merged_complete_data.csv')
+_df_full = pd.read_csv(_os.path.join(_REPO, 'data', 'merged_complete_data.csv'))
+
+# Canonical cohort: seq_length 210-245 aa, minus 5AQB rogue-water outlier
+df = _df_full[_df_full['canonical_cohort']].copy()
 print("Columns:", list(df.columns))
-print(f"Loaded {len(df)} rows")
+print(f"Full dataset: {len(_df_full)} rows")
+print(f"Canonical cohort: {len(df)} rows")
 
 
 # ── Helper functions ──────────────────────────────────────────────────────────
@@ -89,45 +95,55 @@ def spearman_text(x, y):
 
 
 # ══════════════════════════════════════════════════════════════════════════════
-# FIGURE S1: Emission vs Geometry  (1×3)
+# FIGURE S1: Barrel geometry by emission color class  (2×2 bar charts)
+# (Promoted continuous scatter version is now main-text Figure 1.)
 # ══════════════════════════════════════════════════════════════════════════════
-fig, axes = plt.subplots(1, 3, figsize=(7.5, 6))
+CLASS_ORDER = ['blue', 'cyan', 'green', 'yellow', 'orange', 'red']
+classes_present = [c for c in CLASS_ORDER if c in df['color_class'].values]
 
-pairs = [
-    ('minor_axis',   'Minor Axis (Å)'),
-    ('eccentricity', 'Eccentricity'),
-    ('circularity',  'Circularity'),
+metrics = [
+    ('minor_axis',   'Minor Axis (Å)',                  '(A)'),
+    ('eccentricity', 'Eccentricity',                          '(B)'),
+    ('circularity',  'Circularity',                           '(C)'),
+    ('convex_area',  'Cross-sectional Area (Å²)',       '(D)'),
 ]
-labels = ['(A)', '(B)', '(C)']
 
-sub = df.dropna(subset=['em_max'])
+fig, axes = plt.subplots(2, 2, figsize=(7.5, 6))
+fig.subplots_adjust(hspace=0.42, wspace=0.35)
+axes = axes.flatten()
 
-for ax, (col, xlabel), lab in zip(axes, pairs, labels):
-    for cls in ['cyan', 'green', 'yellow', 'orange', 'red', 'blue']:
-        sel = sub[sub['color_class'] == cls]
-        sel_valid = sel.dropna(subset=[col])
-        if len(sel_valid) == 0:
+for i, (col, ylabel, lbl) in enumerate(metrics):
+    ax = axes[i]
+    means, sems, colors, labels = [], [], [], []
+    group_data = []
+    for cc in classes_present:
+        vals = df.loc[df['color_class'] == cc, col].dropna()
+        if len(vals) == 0:
             continue
-        ax.scatter(sel_valid[col], sel_valid['em_max'],
-                   c=CLASS_COLORS[cls], s=20, alpha=0.6,
-                   edgecolors='none', label=cls.capitalize(), zorder=2)
+        means.append(vals.mean())
+        sems.append(vals.sem())
+        colors.append(CLASS_COLORS.get(cc, 'gray'))
+        labels.append(f'{cc.capitalize()}\n(n={len(vals)})')
+        group_data.append(vals.values)
+    x = np.arange(len(means))
+    ax.bar(x, means, yerr=sems, capsize=3, color=colors,
+           edgecolor='black', linewidth=0.5, width=0.6,
+           error_kw=dict(lw=0.8))
+    ax.set_xticks(x)
+    ax.set_xticklabels(labels, fontsize=8)
+    ax.set_ylabel(ylabel)
     clean_spines(ax)
-    ax.set_xlabel(xlabel)
-    ax.set_ylabel('Emission Max (nm)')
-    txt = spearman_text(sub[col].values, sub['em_max'].values)
-    ax.text(0.05, 0.95, txt, transform=ax.transAxes, fontsize=9,
-            va='top', ha='left',
-            bbox=dict(facecolor='white', edgecolor='grey', alpha=0.8, pad=3))
-    panel_label(ax, lab)
-    safe_ylim(ax, sub['em_max'])
+    if len(group_data) >= 2:
+        h_stat, p_kw = stats.kruskal(*group_data)
+        kw_str = (f'H = {h_stat:.1f}, p < 0.001'
+                  if p_kw < 0.001 else f'H = {h_stat:.1f}, p = {p_kw:.3f}')
+        ax.text(0.98, 0.95, kw_str, transform=ax.transAxes,
+                ha='right', va='top', fontsize=7.5, fontstyle='italic',
+                bbox=dict(boxstyle='round,pad=0.3', facecolor='white',
+                          edgecolor='gray', alpha=0.8))
+    panel_label(ax, lbl)
 
-# Single legend below
-handles, lbls = axes[0].get_legend_handles_labels()
-fig.legend(handles, lbls, loc='lower center', ncol=6, frameon=False,
-           fontsize=9, bbox_to_anchor=(0.5, -0.02))
-
-fig.tight_layout(rect=[0, 0.05, 1, 1])
-path = f'{OUTDIR}/fig3_emission_vs_geometry.png'
+path = f'{OUTDIR}/figS1_color_class.png'
 fig.savefig(path, dpi=300, bbox_inches='tight', facecolor='white')
 plt.close(fig)
 print(f'Saved: {path}')
@@ -191,7 +207,7 @@ for ax, (col, ylabel), lab in zip(axes, metrics, labels_s2):
         ax.text(1.5, bar_y + 0.03*yrange, ptxt, ha='center', va='bottom', fontsize=8)
 
 fig.tight_layout()
-path = f'{OUTDIR}/fig9_cis_trans.png'
+path = f'{OUTDIR}/figS2_cis_trans.png'
 fig.savefig(path, dpi=300, bbox_inches='tight', facecolor='white')
 plt.close(fig)
 print(f'Saved: {path}')
@@ -252,7 +268,7 @@ ax.text(0.05, 0.85, f'n = {len(hires)} (< 2.0 Å)', transform=ax.transAxes,
 panel_label(ax, '(C)')
 
 fig.tight_layout()
-path = f'{OUTDIR}/fig6_resolution.png'
+path = f'{OUTDIR}/figS3_resolution.png'
 fig.savefig(path, dpi=300, bbox_inches='tight', facecolor='white')
 plt.close(fig)
 print(f'Saved: {path}')
@@ -309,7 +325,7 @@ ax.set_yticklabels(hm_labels, fontsize=10)
 ax.tick_params(top=False, bottom=True, left=True, right=False)
 
 fig.tight_layout()
-path = f'{OUTDIR}/fig7_heatmap.png'
+path = f'{OUTDIR}/figS4_heatmap.png'
 fig.savefig(path, dpi=300, bbox_inches='tight', facecolor='white')
 plt.close(fig)
 print(f'Saved: {path}')
@@ -375,7 +391,7 @@ for ax, (col, ylabel), lab in zip(axes, metrics_s5, labels_s5):
     safe_ylim(ax, all_vals)
 
 fig.tight_layout()
-path = f'{OUTDIR}/fig8_chromophore_types.png'
+path = f'{OUTDIR}/figS5_chromophore_types.png'
 fig.savefig(path, dpi=300, bbox_inches='tight', facecolor='white')
 plt.close(fig)
 print(f'Saved: {path}')

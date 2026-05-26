@@ -1,0 +1,64 @@
+Test,Type,Statistic,n,p_raw,p_BH,Survives_BH_q<0.05
+em_max vs convex_area,Spearman,+0.039,633,0.328,0.376,False
+lit_qy vs convex_area,Spearman,+0.002,293,0.967,0.967,False
+stokes_shift vs convex_area,Spearman,-0.018,633,0.66,0.693,False
+b_factor_ratio vs convex_area,Spearman,-0.011,739,0.773,0.798,False
+em_max vs eccentricity,Spearman,+0.320,633,1.61e-16,1.13e-15,True
+lit_qy vs eccentricity,Spearman,-0.283,293,8.15e-07,2.45e-06,True
+stokes_shift vs eccentricity,Spearman,+0.123,633,0.00189,0.00314,True
+b_factor_ratio vs eccentricity,Spearman,+0.280,739,7.94e-15,4.17e-14,True
+em_max vs circularity,Spearman,-0.258,633,4.21e-11,1.66e-10,True
+lit_qy vs circularity,Spearman,+0.335,293,4.29e-09,1.59e-08,True
+stokes_shift vs circularity,Spearman,-0.142,633,3.32e-04,6.55e-04,True
+b_factor_ratio vs circularity,Spearman,-0.243,739,2.10e-11,9.43e-11,True
+em_max vs minor_axis,Spearman,-0.328,633,2.16e-17,1.95e-16,True
+lit_qy vs minor_axis,Spearman,+0.313,293,4.21e-08,1.33e-07,True
+stokes_shift vs minor_axis,Spearman,-0.128,633,0.00121,0.00212,True
+b_factor_ratio vs minor_axis,Spearman,-0.303,739,4.06e-17,3.20e-16,True
+em_max vs major_axis,Spearman,+0.176,633,8.75e-06,2.30e-05,True
+lit_qy vs major_axis,Spearman,-0.127,293,0.0302,0.0413,True
+stokes_shift vs major_axis,Spearman,+0.079,633,0.0475,0.0636,False
+b_factor_ratio vs major_axis,Spearman,+0.120,739,0.00111,0.00199,True
+em_max vs barrel_length,Spearman,-0.027,633,0.5,0.552,False
+lit_qy vs barrel_length,Spearman,+0.233,293,5.80e-05,1.35e-04,True
+stokes_shift vs barrel_length,Spearman,-0.122,633,0.0021,0.00331,True
+b_factor_ratio vs barrel_length,Spearman,-0.148,739,5.32e-05,1.29e-04,True
+resolution vs convex_area,Spearman,-0.037,780,0.298,0.348,False
+resolution vs eccentricity,Spearman,+0.003,780,0.93,0.945,False
+resolution vs circularity,Spearman,-0.065,780,0.0681,0.0894,False
+resolution vs minor_axis,Spearman,-0.047,780,0.19,0.235,False
+resolution vs major_axis,Spearman,-0.053,780,0.137,0.176,False
+resolution vs barrel_length,Spearman,-0.113,780,0.00161,0.00275,True
+resolution vs em_max,Spearman,+0.050,633,0.206,0.25,False
+resolution vs lit_qy,Spearman,+0.055,293,0.35,0.394,False
+resolution vs stokes_shift,Spearman,-0.018,633,0.65,0.693,False
+resolution vs b_factor_ratio,Spearman,+0.283,739,4.87e-15,2.98e-14,True
+em_max vs lit_qy,Spearman,-0.724,293,8.45e-49,5.32e-47,True
+em_max vs stokes_shift,Spearman,-0.138,633,4.75e-04,8.92e-04,True
+em_max vs b_factor_ratio,Spearman,+0.422,600,3.01e-27,9.49e-26,True
+lit_qy vs b_factor_ratio,Spearman,-0.446,265,2.36e-14,1.14e-13,True
+lit_qy vs stokes_shift,Spearman,-0.436,293,5.21e-15,2.98e-14,True
+stokes_shift vs b_factor_ratio,Spearman,+0.095,600,0.0199,0.0298,True
+em_max vs chrom_contacts,Spearman,+0.219,633,2.49e-08,8.73e-08,True
+τ vs eccentricity,Spearman,-0.197,603,1.14e-06,3.14e-06,True
+φ vs eccentricity,Spearman,+0.089,603,0.0288,0.0412,True
+|τ| vs eccentricity,Spearman,+0.167,603,3.91e-05,9.84e-05,True
+|φ| vs eccentricity,Spearman,+0.197,603,1.11e-06,3.14e-06,True
+|τ| vs QY,Spearman,-0.246,225,1.95e-04,4.09e-04,True
+|φ| vs QY,Spearman,-0.204,225,0.0021,0.00331,True
+|τ| vs B-factor ratio,Spearman,+0.158,603,9.87e-05,2.22e-04,True
+|φ| vs B-factor ratio,Spearman,+0.155,603,1.31e-04,2.84e-04,True
+τ+φ vs emission,Spearman,+0.156,500,4.82e-04,8.92e-04,True
+τ+φ vs QY,Spearman,-0.240,225,2.74e-04,5.56e-04,True
+τ vs φ,Spearman,-0.357,603,1.29e-19,1.36e-18,True
+MW convex_area: chromophore present vs absent,Mann-Whitney,U=14445,780,0.616,0.669,False
+MW circularity: chromophore present vs absent,Mann-Whitney,U=16777,780,0.247,0.293,False
+MW eccentricity: chromophore present vs absent,Mann-Whitney,U=17147,780,0.155,0.195,False
+MW minor_axis: chromophore present vs absent,Mann-Whitney,U=5871,780,3.92e-11,1.65e-10,True
+MW major_axis: chromophore present vs absent,Mann-Whitney,U=7373,780,3.07e-08,1.02e-07,True
+MW eccentricity: cis vs trans,Mann-Whitney,U=23591,569,0.0135,0.0208,True
+MW circularity: cis vs trans,Mann-Whitney,U=31276,569,0.0228,0.0334,True
+MW minor_axis: cis vs trans,Mann-Whitney,U=31110,569,0.0297,0.0413,True
+KW eccentricity: by color class,Kruskal-Wallis,H=112.2,636,1.43e-22,3.01e-21,True
+KW minor_axis: by color class,Kruskal-Wallis,H=107.8,636,1.21e-21,1.91e-20,True
+KW circularity: by color class,Kruskal-Wallis,H=104.2,636,6.96e-21,8.77e-20,True

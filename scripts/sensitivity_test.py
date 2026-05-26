@@ -15,11 +15,19 @@ import warnings
 warnings.filterwarnings('ignore')
 
 import gemmi
+import os
 
-STRUCT_DIR = Path("/Users/lukebegg/Downloads/scop_gfp_structures")
-MERGED_CSV = Path("/Users/lukebegg/Downloads/deep_analysis/merged_complete_data.csv")
-ORIGINAL_CSV = Path("/Users/lukebegg/Downloads/cross_section_correct.csv")
-OUTPUT_FILE = Path("/Users/lukebegg/Downloads/deep_analysis/sensitivity_results.txt")
+_REPO = Path(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+_DATA = _REPO / 'data'
+
+# STRUCT_DIR holds the 908 CIF files; not committed to the repo because of size.
+# Override via the GFP_STRUCT_DIR env var, e.g.:
+#   GFP_STRUCT_DIR=~/Downloads/scop_gfp_structures python3 scripts/sensitivity_test.py
+STRUCT_DIR = Path(os.environ.get('GFP_STRUCT_DIR',
+                                 str(Path.home() / 'Downloads' / 'scop_gfp_structures')))
+MERGED_CSV = _DATA / 'merged_complete_data.csv'
+ORIGINAL_CSV = _DATA / 'cross_section_correct.csv'
+OUTPUT_FILE = _DATA / 'sensitivity_results.txt'
 
 CHROMOPHORE_RESIDUES = {'CRO', 'CR2', 'GYS', 'SYG', 'CRQ', 'CRF', 'CRW', 'CRY',
                         'NRQ', 'NYG', 'CH6', 'CH7', 'CRG', 'CRU', 'CRV', 'CRS',

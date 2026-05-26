@@ -11,6 +11,7 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 from matplotlib.patches import Ellipse
+from matplotlib.lines import Line2D
 from scipy import stats
 import warnings
 warnings.filterwarnings('ignore')
@@ -18,16 +19,27 @@ warnings.filterwarnings('ignore')
 # ============================================================
 # LOAD DATA
 # ============================================================
-main_csv = '/Users/lukebegg/Downloads/deep_analysis/merged_complete_data.csv'
-dihed_csv = '/Users/lukebegg/Downloads/deep_analysis/megley_dihedrals.csv'
-out_dir = '/Users/lukebegg/Downloads/deep_analysis/pub_figures/'
+import os
+_HERE = os.path.dirname(os.path.abspath(__file__))
+_REPO = os.path.dirname(os.path.dirname(_HERE))
+main_csv = os.path.join(_REPO, 'data', 'merged_complete_data.csv')
+dihed_csv = os.path.join(_REPO, 'data', 'megley_dihedrals.csv')
+out_dir = os.path.join(_REPO, 'figures', 'pub_figures') + '/'
 
-df = pd.read_csv(main_csv)
+_df_full = pd.read_csv(main_csv)
 dih = pd.read_csv(dihed_csv)
+
+# Use the canonical_cohort flag (seq_length 210-245 aa, minus the 5AQB
+# rogue-water outlier). The flag is defined in merged_complete_data.csv.
+df = _df_full[_df_full['canonical_cohort']].copy()
+# Restrict dihedral table to canonical-cohort PDB ids
+_canon_ids = set(df['pdb_id'].astype(str))
+dih = dih[dih['pdb_id'].astype(str).isin(_canon_ids)].copy()
 
 print("=== Main data columns ===")
 print(list(df.columns))
-print(f"Shape: {df.shape}")
+print(f"Full shape:      {_df_full.shape}")
+print(f"Canonical cohort: {df.shape}")
 print("\n=== Dihedral data columns ===")
 print(list(dih.columns))
 print(f"Shape: {dih.shape}")
@@ -134,9 +146,124 @@ ax2.set_ylabel('B-factor Ratio', fontsize=7)
 ax2.tick_params(labelsize=6)
 remove_top_right(ax2)
 
-for fmt, fname in [('png', 'graphical_abstract.png'), ('tiff', 'graphical_abstract.tif')]:
+# Replace simple 2-panel TOC with 3-panel layout (3D barrel sketch +
+# cross-section comparison + scatter). Save under same filenames so
+# the manuscript builder picks up the new TOC automatically.
+plt.close(fig)
+fig = plt.figure(figsize=(6.5, 1.95))
+gs = fig.add_gridspec(1, 3, width_ratios=[1.05, 0.85, 1.20],
+                      wspace=0.30, left=0.02, right=0.99,
+                      top=0.96, bottom=0.18)
+ax1 = fig.add_subplot(gs[0])
+ax2 = fig.add_subplot(gs[1])
+ax3 = fig.add_subplot(gs[2])
+
+# ---- Panel 1: 3D barrel schematic with axes labeled in the
+# chromophore-plane slice. Both axes lie in the slice plane,
+# perpendicular to each other and perpendicular to the barrel long
+# axis. The minor axis here is the foreshortened front-to-back
+# direction (NOT the barrel long axis).
+ax1.set_aspect('equal')
+ax1.set_xlim(-1.85, 1.55)
+ax1.set_ylim(-1.65, 1.85)
+ax1.axis('off')
+
+barrel_color = '#2E7D32'
+slice_color  = '#1E5DAA'
+a_barrel = 1.0
+b_barrel = 0.22
+top_y, bot_y, slice_y = 1.3, -1.3, 0.0
+
+n_strands = 14
+for k in range(n_strands):
+    theta = 2 * np.pi * k / n_strands
+    x = a_barrel * np.cos(theta)
+    front = np.sin(theta) <= 0
+    alpha = 0.95 if front else 0.30
+    ls = '-' if front else (0, (2, 1.5))
+    ax1.plot([x, x], [bot_y, top_y], color=barrel_color,
+             lw=1.0, alpha=alpha, ls=ls, zorder=2)
+
+top_el = Ellipse((0, top_y), width=2*a_barrel, height=2*b_barrel,
+                 fill=False, edgecolor=barrel_color, lw=1.3, zorder=3)
+bot_el = Ellipse((0, bot_y), width=2*a_barrel, height=2*b_barrel,
+                 fill=False, edgecolor=barrel_color, lw=1.3, zorder=3)
+slice_el = Ellipse((0, slice_y), width=2*a_barrel, height=2*b_barrel,
+                   fill=False, edgecolor=slice_color, lw=1.0,
+                   linestyle='--', alpha=0.85, zorder=4)
+ax1.add_patch(top_el); ax1.add_patch(bot_el); ax1.add_patch(slice_el)
+
+ax1.scatter([0], [slice_y], s=42, color='#FFC107',
+            edgecolors='black', linewidths=0.5, zorder=6)
+ax1.annotate('chromophore', xy=(0.07, slice_y + 0.05),
+             xytext=(0.55, slice_y + 0.65),
+             fontsize=6.2, color='black',
+             arrowprops=dict(arrowstyle='-', lw=0.5, color='black'),
+             zorder=7)
+
+# Major axis: horizontal, in the slice plane
+ax1.annotate('', xy=( a_barrel * 0.96, slice_y),
+             xytext=(-a_barrel * 0.96, slice_y),
+             arrowprops=dict(arrowstyle='<|-|>', color='black',
+                             lw=1.0, mutation_scale=8), zorder=5)
+ax1.text(0, slice_y - 0.12, 'major axis', fontsize=6.5,
+         ha='center', va='top', color='black')
+
+# Minor axis: perpendicular to major *within the same slice plane*
+# (the front-to-back direction, which appears foreshortened).
+ax1.annotate('', xy=(0,  slice_y + b_barrel),
+             xytext=(0,  slice_y - b_barrel),
+             arrowprops=dict(arrowstyle='<|-|>', color='black',
+                             lw=1.0, mutation_scale=6), zorder=5)
+ax1.text(0.08, slice_y + b_barrel + 0.04, 'minor axis',
+         fontsize=6.5, ha='left', va='bottom', color='black')
+
+# Barrel long-axis arrow (labeled separately to disambiguate)
+ax1.annotate('', xy=(-1.45, top_y), xytext=(-1.45, bot_y),
+             arrowprops=dict(arrowstyle='<|-|>', color='gray',
+                             lw=0.8, mutation_scale=6), zorder=2)
+ax1.text(-1.55, 0, 'barrel\nlong axis',
+         fontsize=5.8, ha='right', va='center', color='gray')
+
+# ---- Panel 2: cross-section comparison (Green vs Red FP)
+ax2.set_aspect('equal')
+green_el = Ellipse((0, 0), width=2.0, height=1.85, fill=False,
+                   edgecolor='#43A047', linewidth=1.6, linestyle='-')
+red_el = Ellipse((0, 0), width=2.3, height=1.55, fill=False,
+                 edgecolor='#E53935', linewidth=1.6, linestyle='--')
+ax2.add_patch(green_el); ax2.add_patch(red_el)
+ax2.text(0.65, 0.78, 'Green FP', fontsize=6.5, color='#43A047',
+         fontweight='bold')
+ax2.text(0.65, -0.92, 'Red FP', fontsize=6.5, color='#E53935',
+         fontweight='bold')
+ax2.text(0, -1.25, 'cross-section', fontsize=6.5, ha='center')
+ax2.set_xlim(-1.5, 1.5); ax2.set_ylim(-1.40, 1.20)
+ax2.set_xticks([]); ax2.set_yticks([])
+for sp in ax2.spines.values():
+    sp.set_visible(False)
+
+# ---- Panel 3: B-factor ratio vs QY scatter (headline result)
+sub = df.dropna(subset=['b_factor_ratio', 'lit_qy', 'color_class']).copy()
+for cc in CLASS_ORDER:
+    mask = sub['color_class'] == cc
+    if mask.sum() > 0:
+        ax3.scatter(sub.loc[mask, 'lit_qy'],
+                    sub.loc[mask, 'b_factor_ratio'],
+                    c=CLASS_COLORS.get(cc, 'gray'), s=11, alpha=0.7,
+                    edgecolors='none', zorder=3)
+rho, pval = stats.spearmanr(sub['lit_qy'], sub['b_factor_ratio'])
+ax3.text(0.05, 0.96, f'\u03c1 = {rho:.3f}', transform=ax3.transAxes,
+         fontsize=7, va='top', fontstyle='italic')
+ax3.set_xlabel('Quantum Yield', fontsize=7)
+ax3.set_ylabel('B-factor Ratio', fontsize=7)
+ax3.tick_params(labelsize=6)
+remove_top_right(ax3)
+
+for fmt, fname in [('png', 'graphical_abstract.png'),
+                   ('tiff', 'graphical_abstract.tif')]:
     path = out_dir + fname
-    fig.savefig(path, format=fmt, dpi=300, bbox_inches='tight', facecolor='white')
+    fig.savefig(path, format=fmt, dpi=300, bbox_inches='tight',
+                facecolor='white')
     saved_files.append(path)
 plt.close(fig)
 
@@ -146,15 +273,18 @@ plt.close(fig)
 print("--- Generating Figure 1 ---")
 
 metrics_fig1 = [
-    ('convex_area', 'Cross-sectional Area (\u00c5\u00b2)', '(A)'),
-    ('eccentricity', 'Eccentricity (dimensionless)', '(B)'),
-    ('circularity', 'Circularity (dimensionless)', '(C)'),
-    ('minor_axis', 'Minor Axis (\u00c5)', '(D)'),
+    ('convex_area',  'Cross-sectional Area (\u00c5\u00b2)',  '(A)'),
+    ('eccentricity', 'Eccentricity',                      '(B)'),
+    ('circularity',  'Circularity',                       '(C)'),
+    ('minor_axis',   'Minor Axis (\u00c5)',              '(D)'),
+    ('major_axis',   'Major Axis (\u00c5)',              '(E)'),
 ]
 
-fig, axes = plt.subplots(2, 2, figsize=(7.5, 6))
-fig.subplots_adjust(hspace=0.38, wspace=0.35)
+fig, axes = plt.subplots(2, 3, figsize=(10.0, 6.4))
+fig.subplots_adjust(hspace=0.42, wspace=0.40, top=0.95, bottom=0.08, left=0.08, right=0.98)
 axes = axes.flatten()
+# Hide the unused 6th panel
+axes[5].axis('off')
 
 chrom_present = df[df['has_chromophore'] == True]
 chrom_absent = df[df['has_chromophore'] == False]
@@ -198,73 +328,73 @@ for i, (col, ylabel, lbl) in enumerate(metrics_fig1):
     remove_top_right(ax)
     panel_label(ax, lbl)
 
-path = out_dir + 'fig1_chromophore_effect.png'
+path = out_dir + 'figS6_chromophore_effect.png'
 fig.savefig(path, dpi=300, bbox_inches='tight', facecolor='white')
 saved_files.append(path)
 plt.close(fig)
 
 # ============================================================
-# FIGURE 2: Color Class Geometry
+# FIGURE 1 (main text): Emission vs Barrel Geometry \u2014 scatter plots
+# (The color-class bar-chart version is now Figure S1.)
 # ============================================================
-print("--- Generating Figure 2 ---")
+print("--- Generating Figure 1 (emission scatter) ---")
 
-metrics_fig2 = [
-    ('minor_axis', 'Minor Axis (\u00c5)', '(A)'),
-    ('eccentricity', 'Eccentricity (dimensionless)', '(B)'),
-    ('circularity', 'Circularity (dimensionless)', '(C)'),
-    ('convex_area', 'Cross-sectional Area (\u00c5\u00b2)', '(D)'),
+metrics_fig1 = [
+    ('minor_axis',   'Minor Axis (\u00c5)',                 '(A)'),
+    ('eccentricity', 'Eccentricity',                         '(B)'),
+    ('circularity',  'Circularity',                          '(C)'),
+    ('major_axis',   'Major Axis (\u00c5)',                  '(D)'),
 ]
 
-fig, axes = plt.subplots(2, 2, figsize=(7.5, 6))
-fig.subplots_adjust(hspace=0.42, wspace=0.35)
+# Legend goes ABOVE the panels (between title strip and row 1) so it
+# never collides with the bottom row's x-axis labels.
+fig, axes = plt.subplots(2, 2, figsize=(7.5, 6.8))
+fig.subplots_adjust(hspace=0.42, wspace=0.32,
+                    top=0.90, bottom=0.09, left=0.10, right=0.97)
 axes = axes.flatten()
 
-# Filter to only classes present
-classes_present = [c for c in CLASS_ORDER if c in df['color_class'].values]
+sub_em = df.dropna(subset=['em_max'])
 
-for i, (col, ylabel, lbl) in enumerate(metrics_fig2):
+for i, (col, xlabel, lbl) in enumerate(metrics_fig1):
     ax = axes[i]
-    means, sems, colors, labels = [], [], [], []
-    group_data = []
-    for cc in classes_present:
-        vals = df.loc[df['color_class'] == cc, col].dropna()
-        if len(vals) == 0:
-            continue
-        means.append(vals.mean())
-        sems.append(vals.sem())
-        colors.append(CLASS_COLORS.get(cc, 'gray'))
-        labels.append(f'{cc.capitalize()}\n(n={len(vals)})')
-        group_data.append(vals.values)
-
-    x = np.arange(len(means))
-    bars = ax.bar(x, means, yerr=sems, capsize=3, color=colors, edgecolor='black',
-                  linewidth=0.5, width=0.6, error_kw=dict(lw=0.8))
-    ax.set_xticks(x)
-    ax.set_xticklabels(labels, fontsize=8)
-    ax.set_ylabel(ylabel)
+    valid = sub_em.dropna(subset=[col])
+    for cc in CLASS_ORDER:
+        mask = valid['color_class'] == cc
+        if mask.sum() > 0:
+            ax.scatter(valid.loc[mask, col], valid.loc[mask, 'em_max'],
+                       c=CLASS_COLORS.get(cc, 'gray'), s=18, alpha=0.55,
+                       edgecolors='none', label=cc.capitalize(), zorder=3)
+    # Regression overlay (least-squares on the displayed data)
+    x = valid[col].values
+    y = valid['em_max'].values
+    slope, intercept, r_lr, _, _ = stats.linregress(x, y)
+    xx = np.linspace(np.nanmin(x), np.nanmax(x), 100)
+    ax.plot(xx, slope * xx + intercept, 'k--', lw=1.0, alpha=0.6, zorder=2)
+    rho, p_sp = stats.spearmanr(x, y)
+    p_str = 'p < 10\u207b\u00b9\u2070' if p_sp < 1e-10 else f'p = {p_sp:.2g}'
+    ax.text(0.04, 0.96, f'\u03c1 = {rho:+.3f}, {p_str}',
+            transform=ax.transAxes, fontsize=8.5, va='top', ha='left',
+            bbox=dict(boxstyle='round,pad=0.3', facecolor='white',
+                      edgecolor='gray', alpha=0.85))
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel('Emission Maximum (nm)')
     remove_top_right(ax)
-
-    # Kruskal-Wallis
-    if len(group_data) >= 2:
-        h_stat, p_kw = stats.kruskal(*group_data)
-        if p_kw < 0.001:
-            kw_str = f'H = {h_stat:.1f}, p < 0.001'
-        else:
-            kw_str = f'H = {h_stat:.1f}, p = {p_kw:.3f}'
-        ax.text(0.98, 0.95, kw_str, transform=ax.transAxes, ha='right', va='top',
-                fontsize=7.5, fontstyle='italic',
-                bbox=dict(boxstyle='round,pad=0.3', facecolor='white', edgecolor='gray',
-                          alpha=0.8))
-
     panel_label(ax, lbl)
 
-path = out_dir + 'fig2_color_class.png'
+legend_handles = [Line2D([0], [0], marker='o', color='w',
+                         markerfacecolor=CLASS_COLORS[cc], markersize=6,
+                         label=cc.capitalize()) for cc in CLASS_ORDER]
+fig.legend(handles=legend_handles, loc='upper center', ncol=6,
+           frameon=False, fontsize=9,
+           bbox_to_anchor=(0.5, 0.985))
+
+path = out_dir + 'fig01_emission_scatter.png'
 fig.savefig(path, dpi=300, bbox_inches='tight', facecolor='white')
 saved_files.append(path)
 plt.close(fig)
 
 # ============================================================
-# FIGURE 3: B-Factor Ratio (saved as fig4_bfactor.png)
+# FIGURE 2 (main text): B-Factor Ratio
 # ============================================================
 print("--- Generating Figure 3 (B-factor) ---")
 
@@ -292,7 +422,11 @@ ax.text(0.03, 0.95, f'\u03c1 = {rho_a:.3f}, {p_a_str}', transform=ax.transAxes,
         fontsize=9, va='top', fontstyle='italic')
 ax.set_xlabel('Quantum Yield')
 ax.set_ylabel('B-factor Ratio')
-ax.legend(fontsize=7, ncol=3, loc='upper right', framealpha=0.8, markerscale=0.8)
+legend_handles = [Line2D([0], [0], marker='o', color='w',
+                         markerfacecolor=CLASS_COLORS[cc], markersize=5,
+                         label=cc.capitalize()) for cc in CLASS_ORDER]
+ax.legend(handles=legend_handles, fontsize=7, ncol=3, loc='upper right',
+          framealpha=0.8)
 remove_top_right(ax)
 panel_label(ax, '(A)')
 
@@ -314,34 +448,54 @@ ax.set_ylabel('B-factor Ratio')
 remove_top_right(ax)
 panel_label(ax, '(B)')
 
-# Panel C: B-ratio by color class bar plot
+# Panel C: B-ratio by color class — boxplot with jittered points
 ax = axes[2]
-means, sems, colors, labels = [], [], [], []
+classes_present = [c for c in CLASS_ORDER if c in df['color_class'].values]
+class_data = []
+class_colors = []
+class_labels = []
 for cc in classes_present:
     vals = df.loc[df['color_class'] == cc, 'b_factor_ratio'].dropna()
     if len(vals) == 0:
         continue
-    means.append(vals.mean())
-    sems.append(vals.sem())
-    colors.append(CLASS_COLORS.get(cc, 'gray'))
-    labels.append(f'{cc.capitalize()}\n(n={len(vals)})')
-x = np.arange(len(means))
-ax.bar(x, means, yerr=sems, capsize=3, color=colors, edgecolor='black',
-       linewidth=0.5, width=0.6, error_kw=dict(lw=0.8))
-ax.axhline(y=1.0, color='black', linestyle='--', linewidth=0.8, alpha=0.6)
-ax.set_xticks(x)
-ax.set_xticklabels(labels, fontsize=8)
+    class_data.append(vals.values)
+    class_colors.append(CLASS_COLORS.get(cc, 'gray'))
+    class_labels.append(f'{cc.capitalize()}\n(n={len(vals)})')
+positions = np.arange(len(class_data)) + 1
+
+# Boxplot (median, IQR, whiskers to 1.5×IQR; outliers shown separately)
+bp = ax.boxplot(class_data, positions=positions, widths=0.55,
+                patch_artist=True, showfliers=False,
+                medianprops=dict(color='black', linewidth=1.4),
+                whiskerprops=dict(color='black', linewidth=0.8),
+                capprops=dict(color='black', linewidth=0.8),
+                boxprops=dict(linewidth=0.8))
+for patch, c in zip(bp['boxes'], class_colors):
+    patch.set_facecolor(c)
+    patch.set_alpha(0.30)
+    patch.set_edgecolor('black')
+
+# Jittered individual points (deterministic jitter for reproducibility)
+rng = np.random.default_rng(seed=42)
+for pos, vals, c in zip(positions, class_data, class_colors):
+    jitter = rng.uniform(-0.20, 0.20, size=len(vals))
+    ax.scatter(np.full(len(vals), pos) + jitter, vals,
+               c=c, s=10, alpha=0.55, edgecolors='none', zorder=3)
+
+ax.axhline(y=1.0, color='black', linestyle='--', linewidth=0.8, alpha=0.6, zorder=1)
+ax.set_xticks(positions)
+ax.set_xticklabels(class_labels, fontsize=8)
 ax.set_ylabel('B-factor Ratio')
 remove_top_right(ax)
 panel_label(ax, '(C)')
 
-path = out_dir + 'fig4_bfactor.png'
+path = out_dir + 'fig02_bfactor.png'
 fig.savefig(path, dpi=300, bbox_inches='tight', facecolor='white')
 saved_files.append(path)
 plt.close(fig)
 
 # ============================================================
-# FIGURE 4: Dihedral Angles (saved as fig5_megley.png)
+# FIGURE S7 (supporting): Chromophore Dihedral Angles
 # ============================================================
 print("--- Generating Figure 4 (Dihedrals) ---")
 
@@ -427,7 +581,7 @@ ax.set_ylabel('Emission Maximum (nm)', fontsize=10)
 remove_top_right(ax)
 panel_label(ax, '(C)')
 
-path = out_dir + 'fig5_megley.png'
+path = out_dir + 'figS7_megley.png'
 fig.savefig(path, dpi=300, bbox_inches='tight', facecolor='white')
 saved_files.append(path)
 plt.close(fig)
