@@ -24,6 +24,12 @@ dih = pd.read_csv(os.path.join(_DATA, 'megley_dihedrals.csv'))
 df.columns = [c.strip().lower() for c in df.columns]
 dih.columns = [c.strip().lower() for c in dih.columns]
 
+# Restrict to the canonical 780-structure cohort (all manuscript statistics use it).
+# This cohort retains 41 chromophore-absent structures, so the chromophore
+# present-vs-absent group comparisons below remain valid.
+df = df[df['canonical_cohort'] == True].copy()
+dih = dih[dih['pdb_id'].isin(set(df['pdb_id']))].copy()
+
 out_lines = []
 def report(text=""):
     out_lines.append(text)

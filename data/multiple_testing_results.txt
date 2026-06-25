@@ -1,0 +1,260 @@
+================================================================================
+MULTIPLE TESTING CORRECTIONS FOR GFP BARREL GEOMETRY MANUSCRIPT
+================================================================================
+
+Dataset: 780 structures in merged data
+Dihedral dataset: 603 structures
+
+================================================================================
+SECTION 1: ALL SPEARMAN CORRELATIONS (uncorrected)
+================================================================================
+
+Test                                     rho      p-value      n
+-----------------------------------------------------------------
+Emission vs eccentricity              0.3204     1.39e-16    633 ***
+Emission vs minor_axis               -0.3291     1.88e-17    633 ***
+Emission vs circularity              -0.2578     4.53e-11    633 ***
+Emission vs major_axis                0.1761     8.30e-06    633 ***
+Emission vs barrel_length            -0.0285     4.74e-01    633 
+Emission vs convex_area               0.0392     3.25e-01    633 
+QY vs b_factor_ratio                 -0.3092     2.72e-08    310 ***
+Emission vs b_factor_ratio            0.4229     1.98e-27    600 ***
+Emission vs chrom_contacts            0.2196     2.38e-08    633 ***
+tau vs eccentricity                   0.1023     1.08e-02    621 *
+|tau| vs QY                          -0.2892     3.33e-06    250 ***
+|phi| vs QY                          -0.2995     1.42e-06    250 ***
+|tau|+|phi| vs Emission               0.1556     4.82e-04    500 ***
+|tau|+|phi| vs QY                    -0.3743     9.85e-10    250 ***
+Resolution vs convex_area            -0.0373     2.98e-01    780 
+Resolution vs eccentricity            0.0032     9.30e-01    780 
+Resolution vs minor_axis             -0.0469     1.90e-01    780 
+
+================================================================================
+SECTION 2: MANN-WHITNEY U TESTS (chromophore vs no-chromophore)
+================================================================================
+
+Chromophore present: n=739, absent: n=41
+
+convex_area:
+  Chromophore:    median=684.5392, n=739
+  No chromophore: median=688.2352, n=41
+  U=14445.0, p=6.16e-01
+
+eccentricity:
+  Chromophore:    median=0.4194, n=739
+  No chromophore: median=0.3798, n=41
+  U=17147.0, p=1.55e-01
+
+circularity:
+  Chromophore:    median=0.9236, n=739
+  No chromophore: median=0.9212, n=41
+  U=16777.0, p=2.47e-01
+
+minor_axis:
+  Chromophore:    median=29.4636, n=739
+  No chromophore: median=30.9654, n=41
+  U=5871.0, p=3.92e-11
+
+================================================================================
+SECTION 3: KRUSKAL-WALLIS TESTS (by color class)
+================================================================================
+
+Color classes: ['blue', 'cyan', 'green', 'orange', 'red', 'yellow']
+  blue: n=10
+  cyan: n=47
+  green: n=414
+  orange: n=11
+  red: n=90
+  yellow: n=64
+
+eccentricity by color class:
+  blue        : median=0.2620, n=10
+  cyan        : median=0.4214, n=47
+  green       : median=0.3837, n=414
+  orange      : median=0.4697, n=11
+  red         : median=0.5240, n=90
+  yellow      : median=0.4094, n=64
+  H=113.214, p=8.57e-23
+
+minor_axis by color class:
+  blue        : median=30.4178, n=10
+  cyan        : median=29.3692, n=47
+  green       : median=29.8944, n=414
+  orange      : median=29.0597, n=11
+  red         : median=28.2825, n=90
+  yellow      : median=29.5307, n=64
+  H=108.915, p=6.95e-22
+
+circularity by color class:
+  blue        : median=0.9326, n=10
+  cyan        : median=0.9169, n=47
+  green       : median=0.9270, n=414
+  orange      : median=0.8979, n=11
+  red         : median=0.9069, n=90
+  yellow      : median=0.9284, n=64
+  H=103.032, p=1.21e-20
+
+================================================================================
+SECTION 4: BENJAMINI-HOCHBERG FDR CORRECTION
+================================================================================
+
+Total number of tests being corrected: 24
+FDR threshold: q = 0.05
+(Verified with scipy.stats.false_discovery_control)
+
+Test                                            p_raw    p_adj(BH)   FDR<0.05
+------------------------------------------------------------------------------
+Emission vs b_factor_ratio                   1.98e-27     4.75e-26        YES
+KW: eccentricity by color_class              8.57e-23     1.03e-21        YES
+KW: minor_axis by color_class                6.95e-22     5.56e-21        YES
+KW: circularity by color_class               1.21e-20     7.28e-20        YES
+Emission vs minor_axis                       1.88e-17     9.05e-17        YES
+Emission vs eccentricity                     1.39e-16     5.57e-16        YES
+MW: minor_axis (chrom vs no-chrom)           3.92e-11     1.34e-10        YES
+Emission vs circularity                      4.53e-11     1.36e-10        YES
+|tau|+|phi| vs QY                            9.85e-10     2.63e-09        YES
+Emission vs chrom_contacts                   2.38e-08     5.70e-08        YES
+QY vs b_factor_ratio                         2.72e-08     5.92e-08        YES
+|phi| vs QY                                  1.42e-06     2.84e-06        YES
+|tau| vs QY                                  3.33e-06     6.15e-06        YES
+Emission vs major_axis                       8.30e-06     1.42e-05        YES
+|tau|+|phi| vs Emission                      4.82e-04     7.71e-04        YES
+tau vs eccentricity                          1.08e-02     1.61e-02        YES
+MW: eccentricity (chrom vs no-chrom)         1.55e-01     2.19e-01         no
+Resolution vs minor_axis                     1.90e-01     2.54e-01         no
+MW: circularity (chrom vs no-chrom)          2.47e-01     3.12e-01         no
+Resolution vs convex_area                    2.98e-01     3.58e-01         no
+Emission vs convex_area                      3.25e-01     3.71e-01         no
+Emission vs barrel_length                    4.74e-01     5.18e-01         no
+MW: convex_area (chrom vs no-chrom)          6.16e-01     6.43e-01         no
+Resolution vs eccentricity                   9.30e-01     9.30e-01         no
+
+Tests surviving FDR correction: 16 / 24
+
+--- Tests that SURVIVE BH-FDR correction (q < 0.05) ---
+  Emission vs b_factor_ratio: p_raw=1.98e-27, p_adj=4.75e-26 (rho=0.4229, n=600)
+  KW: eccentricity by color_class: p_raw=8.57e-23, p_adj=1.03e-21 (stat=113.2)
+  KW: minor_axis by color_class: p_raw=6.95e-22, p_adj=5.56e-21 (stat=108.9)
+  KW: circularity by color_class: p_raw=1.21e-20, p_adj=7.28e-20 (stat=103.0)
+  Emission vs minor_axis: p_raw=1.88e-17, p_adj=9.05e-17 (rho=-0.3291, n=633)
+  Emission vs eccentricity: p_raw=1.39e-16, p_adj=5.57e-16 (rho=0.3204, n=633)
+  MW: minor_axis (chrom vs no-chrom): p_raw=3.92e-11, p_adj=1.34e-10 (stat=5871.0)
+  Emission vs circularity: p_raw=4.53e-11, p_adj=1.36e-10 (rho=-0.2578, n=633)
+  |tau|+|phi| vs QY: p_raw=9.85e-10, p_adj=2.63e-09 (rho=-0.3743, n=250)
+  Emission vs chrom_contacts: p_raw=2.38e-08, p_adj=5.70e-08 (rho=0.2196, n=633)
+  QY vs b_factor_ratio: p_raw=2.72e-08, p_adj=5.92e-08 (rho=-0.3092, n=310)
+  |phi| vs QY: p_raw=1.42e-06, p_adj=2.84e-06 (rho=-0.2995, n=250)
+  |tau| vs QY: p_raw=3.33e-06, p_adj=6.15e-06 (rho=-0.2892, n=250)
+  Emission vs major_axis: p_raw=8.30e-06, p_adj=1.42e-05 (rho=0.1761, n=633)
+  |tau|+|phi| vs Emission: p_raw=4.82e-04, p_adj=7.71e-04 (rho=0.1556, n=500)
+  tau vs eccentricity: p_raw=1.08e-02, p_adj=1.61e-02 (rho=0.1023, n=621)
+
+--- Tests that DO NOT survive BH-FDR correction ---
+  MW: eccentricity (chrom vs no-chrom): p_raw=1.55e-01, p_adj=2.19e-01 (stat=17147.0)
+  Resolution vs minor_axis: p_raw=1.90e-01, p_adj=2.54e-01 (rho=-0.0469, n=780)
+  MW: circularity (chrom vs no-chrom): p_raw=2.47e-01, p_adj=3.12e-01 (stat=16777.0)
+  Resolution vs convex_area: p_raw=2.98e-01, p_adj=3.58e-01 (rho=-0.0373, n=780)
+  Emission vs convex_area: p_raw=3.25e-01, p_adj=3.71e-01 (rho=0.0392, n=633)
+  Emission vs barrel_length: p_raw=4.74e-01, p_adj=5.18e-01 (rho=-0.0285, n=633)
+  MW: convex_area (chrom vs no-chrom): p_raw=6.16e-01, p_adj=6.43e-01 (stat=14445.0)
+  Resolution vs eccentricity: p_raw=9.30e-01, p_adj=9.30e-01 (rho=0.0032, n=780)
+
+================================================================================
+SECTION 5: PARTIAL CORRELATIONS (controlling for resolution)
+================================================================================
+
+METHOD: Partial Spearman correlations via the residual method.
+For each partial correlation of X vs Y controlling for Z (resolution):
+  1. Rank-transform X, Y, and Z
+  2. Regress ranked X on ranked Z using OLS: X_resid = ranked_X - predicted(ranked_X | ranked_Z)
+  3. Regress ranked Y on ranked Z using OLS: Y_resid = ranked_Y - predicted(ranked_Y | ranked_Z)
+  4. Compute Pearson correlation of X_resid and Y_resid
+     (Pearson on rank-residuals = partial Spearman correlation)
+  5. Test significance using t = r * sqrt((n-3) / (1-r^2)), df = n-3
+
+
+Emission vs eccentricity | resolution:
+  n = 633
+  Partial Spearman rho = 0.3219
+  t-statistic = 8.532, df = 630
+  p-value = 1.07e-16
+  (Zero-order Spearman: rho=0.3204, p=1.39e-16)
+
+Emission vs minor_axis | resolution:
+  n = 633
+  Partial Spearman rho = -0.3277
+  t-statistic = -8.707, df = 630
+  p-value = 2.74e-17
+  (Zero-order Spearman: rho=-0.3291, p=1.88e-17)
+
+Emission vs area | resolution:
+  n = 633
+  Partial Spearman rho = 0.0413
+  t-statistic = 1.038, df = 630
+  p-value = 3.00e-01
+  (Zero-order Spearman: rho=0.0392, p=3.25e-01)
+
+QY vs b_factor_ratio | resolution:
+  n = 310
+  Partial Spearman rho = -0.2821
+  t-statistic = -5.151, df = 307
+  p-value = 4.64e-07
+  (Zero-order Spearman: rho=-0.3092, p=2.72e-08)
+
+--- Partial correlations with BH correction ---
+Test                                           r_partial        p_raw        p_adj   FDR<0.05
+--------------------------------------------------------------------------------------------
+Emission vs eccentricity | resolution             0.3219     1.07e-16     2.14e-16        YES
+Emission vs minor_axis | resolution              -0.3277     2.74e-17     1.09e-16        YES
+Emission vs area | resolution                     0.0413     3.00e-01     3.00e-01         no
+QY vs b_factor_ratio | resolution                -0.2821     4.64e-07     6.19e-07        YES
+
+================================================================================
+SECTION 6: SUMMARY FOR MANUSCRIPT
+================================================================================
+
+METHODS TEXT (partial correlations):
+"Partial Spearman correlations controlling for crystallographic resolution
+were computed using the residual method. Variables were first rank-transformed,
+then each ranked variable was regressed on ranked resolution via ordinary
+least squares. The Pearson correlation of the resulting residuals yields the
+partial Spearman correlation coefficient. Significance was assessed using the
+t-distribution with n - 3 degrees of freedom, where t = r_partial * sqrt((n-3)
+/ (1 - r_partial^2)). All p-values (Spearman correlations, Mann-Whitney U tests,
+Kruskal-Wallis tests, and partial correlations) were corrected for multiple
+comparisons using the Benjamini-Hochberg procedure to control the false
+discovery rate at q = 0.05."
+
+CORRELATIONS SURVIVING FDR (q < 0.05):
+  - Emission vs b_factor_ratio: rho/stat from rho=0.4229, n=600, p_adj=4.75e-26
+  - KW: eccentricity by color_class: rho/stat from stat=113.2, p_adj=1.03e-21
+  - KW: minor_axis by color_class: rho/stat from stat=108.9, p_adj=5.56e-21
+  - KW: circularity by color_class: rho/stat from stat=103.0, p_adj=7.28e-20
+  - Emission vs minor_axis: rho/stat from rho=-0.3291, n=633, p_adj=9.05e-17
+  - Emission vs eccentricity: rho/stat from rho=0.3204, n=633, p_adj=5.57e-16
+  - MW: minor_axis (chrom vs no-chrom): rho/stat from stat=5871.0, p_adj=1.34e-10
+  - Emission vs circularity: rho/stat from rho=-0.2578, n=633, p_adj=1.36e-10
+  - |tau|+|phi| vs QY: rho/stat from rho=-0.3743, n=250, p_adj=2.63e-09
+  - Emission vs chrom_contacts: rho/stat from rho=0.2196, n=633, p_adj=5.70e-08
+  - QY vs b_factor_ratio: rho/stat from rho=-0.3092, n=310, p_adj=5.92e-08
+  - |phi| vs QY: rho/stat from rho=-0.2995, n=250, p_adj=2.84e-06
+  - |tau| vs QY: rho/stat from rho=-0.2892, n=250, p_adj=6.15e-06
+  - Emission vs major_axis: rho/stat from rho=0.1761, n=633, p_adj=1.42e-05
+  - |tau|+|phi| vs Emission: rho/stat from rho=0.1556, n=500, p_adj=7.71e-04
+  - tau vs eccentricity: rho/stat from rho=0.1023, n=621, p_adj=1.61e-02
+
+CORRELATIONS NOT SURVIVING FDR:
+  - MW: eccentricity (chrom vs no-chrom): p_raw=1.55e-01, p_adj=2.19e-01
+  - Resolution vs minor_axis: p_raw=1.90e-01, p_adj=2.54e-01
+  - MW: circularity (chrom vs no-chrom): p_raw=2.47e-01, p_adj=3.12e-01
+  - Resolution vs convex_area: p_raw=2.98e-01, p_adj=3.58e-01
+  - Emission vs convex_area: p_raw=3.25e-01, p_adj=3.71e-01
+  - Emission vs barrel_length: p_raw=4.74e-01, p_adj=5.18e-01
+  - MW: convex_area (chrom vs no-chrom): p_raw=6.16e-01, p_adj=6.43e-01
+  - Resolution vs eccentricity: p_raw=9.30e-01, p_adj=9.30e-01
+
+PARTIAL CORRELATIONS SUMMARY:
+  - Emission vs eccentricity | resolution: partial rho=0.3219 (zero-order: 0.3204, strengthened)
+  - Emission vs minor_axis | resolution: partial rho=-0.3277 (zero-order: -0.3291, attenuated)
+  - Emission vs area | resolution: partial rho=0.0413 (zero-order: 0.0392, strengthened)
+  - QY vs b_factor_ratio | resolution: partial rho=-0.2821 (zero-order: -0.3092, attenuated)

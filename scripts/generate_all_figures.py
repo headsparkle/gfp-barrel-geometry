@@ -4,6 +4,7 @@ Generate all publication figures for JCIM GFP barrel geometry manuscript.
 TOC graphic + Figures 1-4 (5 output files total).
 """
 
+import os
 import numpy as np
 import pandas as pd
 import matplotlib
@@ -18,12 +19,19 @@ warnings.filterwarnings('ignore')
 # ============================================================
 # LOAD DATA
 # ============================================================
-main_csv = '/Users/lukebegg/Downloads/deep_analysis/merged_complete_data.csv'
-dihed_csv = '/Users/lukebegg/Downloads/deep_analysis/megley_dihedrals.csv'
-out_dir = '/Users/lukebegg/Downloads/deep_analysis/pub_figures/'
+REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+main_csv = os.path.join(REPO, 'data', 'merged_complete_data.csv')
+dihed_csv = os.path.join(REPO, 'data', 'megley_dihedrals.csv')
+out_dir = os.path.join(REPO, 'figures', 'pub_figures') + '/'
+os.makedirs(out_dir, exist_ok=True)
 
 df = pd.read_csv(main_csv)
 dih = pd.read_csv(dihed_csv)
+
+# Canonical 780-structure cohort. All QY, B-factor, and dihedral statistics in the
+# manuscript refer to this cohort (see Methods); the QY figures below use it so that
+# figure annotations match the reported numbers.
+df_canon = df[df['canonical_cohort'] == True].copy()
 
 print("=== Main data columns ===")
 print(list(df.columns))
@@ -273,13 +281,19 @@ fig.subplots_adjust(hspace=0.40)
 
 # Panel A: B-ratio vs QY scatter
 ax = axes[0]
-sub_a = df.dropna(subset=['b_factor_ratio', 'lit_qy', 'color_class']).copy()
+sub_a = df_canon.dropna(subset=['b_factor_ratio', 'lit_qy']).copy()
 for cc in CLASS_ORDER:
     mask = sub_a['color_class'] == cc
     if mask.sum() > 0:
         ax.scatter(sub_a.loc[mask, 'lit_qy'], sub_a.loc[mask, 'b_factor_ratio'],
                    c=CLASS_COLORS.get(cc, 'gray'), s=25, alpha=0.6,
                    edgecolors='none', label=cc.capitalize(), zorder=3)
+# Structures with a curated QY but no spectral class (no em_max) shown in gray
+un = sub_a['color_class'].isna()
+if un.sum() > 0:
+    ax.scatter(sub_a.loc[un, 'lit_qy'], sub_a.loc[un, 'b_factor_ratio'],
+               c='lightgray', s=25, alpha=0.6, edgecolors='none',
+               label='Unclassified', zorder=2)
 # Regression line
 x_vals = sub_a['lit_qy'].values
 y_vals = sub_a['b_factor_ratio'].values
@@ -298,7 +312,7 @@ panel_label(ax, '(A)')
 
 # Panel B: B-ratio vs Emission scatter
 ax = axes[1]
-sub_b = df.dropna(subset=['b_factor_ratio', 'em_max', 'color_class']).copy()
+sub_b = df_canon.dropna(subset=['b_factor_ratio', 'em_max', 'color_class']).copy()
 for cc in CLASS_ORDER:
     mask = sub_b['color_class'] == cc
     if mask.sum() > 0:
@@ -314,28 +328,38 @@ ax.set_ylabel('B-factor Ratio')
 remove_top_right(ax)
 panel_label(ax, '(B)')
 
-# Panel C: B-ratio by color class bar plot
+# Panel C: B-ratio by color class box plot with jittered points
 ax = axes[2]
-means, sems, colors, labels = [], [], [], []
+box_data, colors, labels, positions = [], [], [], []
+pos = 0
 for cc in classes_present:
-    vals = df.loc[df['color_class'] == cc, 'b_factor_ratio'].dropna()
+    vals = df_canon.loc[df_canon['color_class'] == cc, 'b_factor_ratio'].dropna()
     if len(vals) == 0:
         continue
-    means.append(vals.mean())
-    sems.append(vals.sem())
+    box_data.append(vals.values)
     colors.append(CLASS_COLORS.get(cc, 'gray'))
     labels.append(f'{cc.capitalize()}\n(n={len(vals)})')
-x = np.arange(len(means))
-ax.bar(x, means, yerr=sems, capsize=3, color=colors, edgecolor='black',
-       linewidth=0.5, width=0.6, error_kw=dict(lw=0.8))
+    positions.append(pos)
+    pos += 1
+bp = ax.boxplot(box_data, positions=positions, widths=0.6, showfliers=False,
+                patch_artist=True, medianprops=dict(color='black', lw=1.0))
+for patch, col in zip(bp['boxes'], colors):
+    patch.set_facecolor(col)
+    patch.set_alpha(0.55)
+    patch.set_edgecolor('black')
+    patch.set_linewidth(0.5)
+for i, vals in enumerate(box_data):
+    jitter = np.random.RandomState(0).normal(0, 0.06, size=len(vals))
+    ax.scatter(np.full(len(vals), positions[i]) + jitter, vals,
+               c=colors[i], s=8, alpha=0.5, edgecolors='none', zorder=3)
 ax.axhline(y=1.0, color='black', linestyle='--', linewidth=0.8, alpha=0.6)
-ax.set_xticks(x)
+ax.set_xticks(positions)
 ax.set_xticklabels(labels, fontsize=8)
 ax.set_ylabel('B-factor Ratio')
 remove_top_right(ax)
 panel_label(ax, '(C)')
 
-path = out_dir + 'fig4_bfactor.png'
+path = out_dir + 'fig02_bfactor.png'
 fig.savefig(path, dpi=300, bbox_inches='tight', facecolor='white')
 saved_files.append(path)
 plt.close(fig)
@@ -348,7 +372,7 @@ print("--- Generating Figure 4 (Dihedrals) ---")
 # Merge dihedral data with main data
 # Use tau_megley and phi_megley from dihedral file
 # phi_megley corresponds to the tau_main-like angle in the main dataset
-merged = dih.merge(df[['pdb_id', 'em_max', 'lit_qy', 'color_class']].drop_duplicates(),
+merged = dih.merge(df_canon[['pdb_id', 'em_max', 'lit_qy', 'color_class']].drop_duplicates(),
                    on='pdb_id', how='inner', suffixes=('_dih', ''))
 # Resolve color_class if duplicated
 if 'color_class_dih' in merged.columns and 'color_class' in merged.columns:
@@ -364,13 +388,17 @@ fig.subplots_adjust(hspace=0.50)
 
 # Panel A: tau vs phi scatter colored by emission class
 ax = axes[0]
-sub_d = merged.dropna(subset=['tau_megley', 'phi_megley', 'color_class']).copy()
+sub_d = merged.dropna(subset=['tau_megley', 'phi_megley']).copy()
 for cc in CLASS_ORDER:
     mask = sub_d['color_class'] == cc
     if mask.sum() > 0:
         ax.scatter(sub_d.loc[mask, 'tau_megley'], sub_d.loc[mask, 'phi_megley'],
                    c=CLASS_COLORS.get(cc, 'gray'), s=20, alpha=0.55,
                    edgecolors='none', label=cc.capitalize(), zorder=3)
+un_d = sub_d['color_class'].isna()
+if un_d.sum() > 0:
+    ax.scatter(sub_d.loc[un_d, 'tau_megley'], sub_d.loc[un_d, 'phi_megley'],
+               c='lightgray', s=20, alpha=0.55, edgecolors='none', zorder=2)
 ax.axhline(y=0, color='gray', linestyle='--', lw=0.7, alpha=0.5)
 ax.axvline(x=0, color='gray', linestyle='--', lw=0.7, alpha=0.5)
 rho_d1, p_d1 = stats.spearmanr(sub_d['tau_megley'], sub_d['phi_megley'])
@@ -389,7 +417,7 @@ panel_label(ax, '(A)')
 
 # Panel B: |tau| vs QY
 ax = axes[1]
-sub_b2 = merged.dropna(subset=['tau_megley', 'lit_qy', 'color_class']).copy()
+sub_b2 = merged.dropna(subset=['tau_megley', 'lit_qy']).copy()
 sub_b2['abs_tau'] = sub_b2['tau_megley'].abs()
 for cc in CLASS_ORDER:
     mask = sub_b2['color_class'] == cc
@@ -397,6 +425,10 @@ for cc in CLASS_ORDER:
         ax.scatter(sub_b2.loc[mask, 'abs_tau'], sub_b2.loc[mask, 'lit_qy'],
                    c=CLASS_COLORS.get(cc, 'gray'), s=20, alpha=0.55,
                    edgecolors='none', zorder=3)
+un2 = sub_b2['color_class'].isna()
+if un2.sum() > 0:
+    ax.scatter(sub_b2.loc[un2, 'abs_tau'], sub_b2.loc[un2, 'lit_qy'],
+               c='lightgray', s=20, alpha=0.55, edgecolors='none', zorder=2)
 if len(sub_b2) > 2:
     rho_d2, p_d2 = stats.spearmanr(sub_b2['abs_tau'], sub_b2['lit_qy'])
     p_d2_str = f'p < 0.001' if p_d2 < 0.001 else f'p = {p_d2:.3f}'
@@ -409,7 +441,7 @@ panel_label(ax, '(B)')
 
 # Panel C: tau+phi vs emission
 ax = axes[2]
-sub_c2 = merged.dropna(subset=['tau_megley', 'phi_megley', 'em_max', 'color_class']).copy()
+sub_c2 = merged.dropna(subset=['tau_megley', 'phi_megley', 'em_max']).copy()
 sub_c2['tau_plus_phi'] = sub_c2['tau_megley'] + sub_c2['phi_megley']
 for cc in CLASS_ORDER:
     mask = sub_c2['color_class'] == cc
@@ -417,6 +449,10 @@ for cc in CLASS_ORDER:
         ax.scatter(sub_c2.loc[mask, 'tau_plus_phi'], sub_c2.loc[mask, 'em_max'],
                    c=CLASS_COLORS.get(cc, 'gray'), s=20, alpha=0.55,
                    edgecolors='none', zorder=3)
+un_c = sub_c2['color_class'].isna()
+if un_c.sum() > 0:
+    ax.scatter(sub_c2.loc[un_c, 'tau_plus_phi'], sub_c2.loc[un_c, 'em_max'],
+               c='lightgray', s=20, alpha=0.55, edgecolors='none', zorder=2)
 if len(sub_c2) > 2:
     rho_d3, p_d3 = stats.spearmanr(sub_c2['tau_plus_phi'], sub_c2['em_max'])
     p_d3_str = f'p < 0.001' if p_d3 < 0.001 else f'p = {p_d3:.3f}'
@@ -427,7 +463,7 @@ ax.set_ylabel('Emission Maximum (nm)', fontsize=10)
 remove_top_right(ax)
 panel_label(ax, '(C)')
 
-path = out_dir + 'fig5_megley.png'
+path = out_dir + 'figS7_megley.png'
 fig.savefig(path, dpi=300, bbox_inches='tight', facecolor='white')
 saved_files.append(path)
 plt.close(fig)

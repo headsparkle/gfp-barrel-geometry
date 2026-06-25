@@ -5,10 +5,18 @@ A systematic computational analysis of fluorescent protein (FP) beta-barrel cros
 geometry across 908 crystal structures from the RCSB PDB. The paper is being submitted to
 the Journal of Chemical Information and Modeling (JCIM).
 
-**Key finding:** Red-shifted FPs have narrower, more elliptical barrels. The B-factor ratio
-(chromophore/barrel B-factors) is the strongest predictor of quantum yield (ρ = −0.493).
-AlphaFold correctly reproduces barrel shape but slightly underestimates cross-sectional
-dimensions (~0.5–0.9 Å per axis) due to absence of the mature chromophore.
+**Key finding:** Red-shifted FPs have narrower, more elliptical barrels. After re-curating
+quantum yield from FPbase (see below), chromophore dihedral twist (|τ|+|φ|: ρ = −0.374) is
+the strongest predictor of quantum yield, with the B-factor ratio a secondary correlate
+(ρ = −0.309). All QY statistics use the 780-structure canonical cohort. AlphaFold correctly reproduces barrel shape but slightly underestimates
+cross-sectional dimensions (~0.5–0.9 Å per axis) due to absence of the mature chromophore.
+
+> **QY re-curation (June 2026):** The original `lit_qy` was corrupted by FPbase keyword
+> inheritance — 82% of structures (all 256 greens) were pinned at the wild-type avGFP value
+> 0.79. `scripts/recurate_qy_fpbase.py` re-curated QY by PDB-id and chain-A sequence (≥99%)
+> matching to FPbase: 354 structures, 0.0001–0.97 (mapping in `data/qy_recuration_fpbase.csv`).
+> This overturned the old "B-factor ratio is the strongest QY predictor (ρ = −0.443)" claim.
+> Old values preserved as `lit_qy_uncurated`.
 
 ---
 
@@ -54,7 +62,7 @@ figures/pub_figures/                 ← All publication-quality figures (.png)
 ## Dataset summary
 - **908 crystal structures** (877 from SCOP/CATH/Pfam curation + 31 added manually)
 - **843** have a validated mature chromophore; **65** do not
-- **697** matched to FPbase spectral data (76.8%); **316** have quantum yield values
+- **697** matched to FPbase spectral data (76.8%); **354** have re-curated FPbase quantum yields
 - **690** have Megley τ/φ dihedral angles computed
 - Color class distribution: green (474), red (94), yellow (69), cyan (48), orange (11), blue (1)
 

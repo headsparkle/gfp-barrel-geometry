@@ -22,6 +22,10 @@ def p(s=""):
 main = pd.read_csv(os.path.join(_DATA, 'merged_complete_data.csv'))
 dihed = pd.read_csv(os.path.join(_DATA, 'megley_dihedrals.csv'))
 
+# Restrict to the canonical 780-structure cohort. All correlations, regressions,
+# and group comparisons reported in the manuscript use this cohort (see Methods).
+main = main[main['canonical_cohort'] == True].copy()
+
 p("=== COLUMN NAMES ===")
 p(f"Main data columns ({len(main.columns)}): {list(main.columns)}")
 p(f"Dihedral columns ({len(dihed.columns)}): {list(dihed.columns)}")
