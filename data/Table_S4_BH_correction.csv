@@ -7,22 +7,22 @@ em_max vs eccentricity,Spearman,+0.320,633,1.39e-16,1.10e-15,True
 lit_qy vs eccentricity,Spearman,-0.140,318,0.0125,0.0202,True
 stokes_shift vs eccentricity,Spearman,+0.127,633,0.00137,0.00251,True
 b_factor_ratio vs eccentricity,Spearman,+0.280,739,7.94e-15,5.00e-14,True
-em_max vs circularity,Spearman,-0.258,633,4.53e-11,2.19e-10,True
+em_max vs circularity,Spearman,-0.258,633,4.53e-11,2.04e-10,True
 lit_qy vs circularity,Spearman,+0.086,318,0.127,0.166,False
-stokes_shift vs circularity,Spearman,-0.142,633,3.47e-04,7.54e-04,True
-b_factor_ratio vs circularity,Spearman,-0.243,739,2.10e-11,1.20e-10,True
+stokes_shift vs circularity,Spearman,-0.142,633,3.47e-04,7.29e-04,True
+b_factor_ratio vs circularity,Spearman,-0.243,739,2.10e-11,1.10e-10,True
 em_max vs minor_axis,Spearman,-0.329,633,1.88e-17,1.98e-16,True
 lit_qy vs minor_axis,Spearman,+0.155,318,0.00558,0.00924,True
 stokes_shift vs minor_axis,Spearman,-0.132,633,8.55e-04,0.00168,True
 b_factor_ratio vs minor_axis,Spearman,-0.303,739,4.06e-17,3.66e-16,True
-em_max vs major_axis,Spearman,+0.176,633,8.30e-06,2.27e-05,True
+em_max vs major_axis,Spearman,+0.176,633,8.30e-06,2.18e-05,True
 lit_qy vs major_axis,Spearman,-0.121,318,0.0309,0.0433,True
 stokes_shift vs major_axis,Spearman,+0.081,633,0.0421,0.0576,False
 b_factor_ratio vs major_axis,Spearman,+0.120,739,0.00111,0.00211,True
 em_max vs barrel_length,Spearman,-0.028,633,0.474,0.515,False
 lit_qy vs barrel_length,Spearman,-0.048,318,0.395,0.436,False
 stokes_shift vs barrel_length,Spearman,-0.127,633,0.00139,0.00251,True
-b_factor_ratio vs barrel_length,Spearman,-0.148,739,5.32e-05,1.29e-04,True
+b_factor_ratio vs barrel_length,Spearman,-0.148,739,5.32e-05,1.24e-04,True
 resolution vs convex_area,Spearman,-0.037,780,0.298,0.342,False
 resolution vs eccentricity,Spearman,+0.003,780,0.93,0.93,False
 resolution vs circularity,Spearman,-0.065,780,0.0681,0.0913,False
@@ -33,28 +33,28 @@ resolution vs em_max,Spearman,+0.051,633,0.198,0.236,False
 resolution vs lit_qy,Spearman,-0.166,318,0.00299,0.00509,True
 resolution vs stokes_shift,Spearman,-0.015,633,0.7,0.722,False
 resolution vs b_factor_ratio,Spearman,+0.283,739,4.87e-15,3.41e-14,True
-em_max vs lit_qy,Spearman,-0.264,265,1.32e-05,3.48e-05,True
+em_max vs lit_qy,Spearman,-0.264,265,1.32e-05,3.34e-05,True
 em_max vs stokes_shift,Spearman,-0.132,633,8.55e-04,0.00168,True
 em_max vs b_factor_ratio,Spearman,+0.423,600,1.98e-27,1.25e-25,True
 lit_qy vs b_factor_ratio,Spearman,-0.309,310,2.72e-08,1.07e-07,True
 lit_qy vs stokes_shift,Spearman,-0.314,265,1.71e-07,6.00e-07,True
 stokes_shift vs b_factor_ratio,Spearman,+0.101,600,0.0132,0.0208,True
-em_max vs chrom_contacts,Spearman,+0.220,633,2.38e-08,9.98e-08,True
-τ vs eccentricity,Spearman,-0.197,603,1.14e-06,3.61e-06,True
+em_max vs chrom_contacts,Spearman,+0.203,600,5.57e-07,1.85e-06,True
+τ vs eccentricity,Spearman,-0.197,603,1.14e-06,3.43e-06,True
 φ vs eccentricity,Spearman,+0.089,603,0.0288,0.0422,True
-|τ| vs eccentricity,Spearman,+0.167,603,3.91e-05,9.84e-05,True
-|φ| vs eccentricity,Spearman,+0.197,603,1.11e-06,3.61e-06,True
-|τ| vs QY,Spearman,-0.289,250,3.33e-06,9.53e-06,True
-|φ| vs QY,Spearman,-0.299,250,1.42e-06,4.25e-06,True
-|τ| vs B-factor ratio,Spearman,+0.158,603,9.87e-05,2.30e-04,True
-|φ| vs B-factor ratio,Spearman,+0.155,603,1.31e-04,2.94e-04,True
-τ+φ vs emission,Spearman,+0.154,500,5.50e-04,0.00115,True
-τ+φ vs QY,Spearman,-0.374,250,9.85e-10,4.43e-09,True
+|τ| vs eccentricity,Spearman,+0.167,603,3.91e-05,9.47e-05,True
+|φ| vs eccentricity,Spearman,+0.197,603,1.11e-06,3.43e-06,True
+|τ| vs QY,Spearman,-0.289,250,3.33e-06,9.12e-06,True
+|φ| vs QY,Spearman,-0.299,250,1.42e-06,4.06e-06,True
+|τ| vs B-factor ratio,Spearman,+0.158,603,9.87e-05,2.22e-04,True
+|φ| vs B-factor ratio,Spearman,+0.155,603,1.31e-04,2.84e-04,True
+τ+φ vs emission,Spearman,-0.311,500,1.12e-12,6.42e-12,True
+|τ|+|φ| vs QY,Spearman,-0.374,250,9.85e-10,4.14e-09,True
 τ vs φ,Spearman,-0.357,603,1.29e-19,1.63e-18,True
 MW convex_area: chromophore present vs absent,Mann-Whitney,U=14445,780,0.616,0.658,False
 MW circularity: chromophore present vs absent,Mann-Whitney,U=16777,780,0.247,0.288,False
 MW eccentricity: chromophore present vs absent,Mann-Whitney,U=17147,780,0.155,0.195,False
-MW minor_axis: chromophore present vs absent,Mann-Whitney,U=5871,780,3.92e-11,2.06e-10,True
+MW minor_axis: chromophore present vs absent,Mann-Whitney,U=5871,780,3.92e-11,1.90e-10,True
 MW major_axis: chromophore present vs absent,Mann-Whitney,U=7373,780,3.07e-08,1.14e-07,True
 MW eccentricity: cis vs trans,Mann-Whitney,U=23591,569,0.0135,0.0208,True
 MW circularity: cis vs trans,Mann-Whitney,U=31276,569,0.0228,0.0342,True

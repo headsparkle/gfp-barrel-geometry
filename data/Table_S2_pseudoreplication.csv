@@ -4,7 +4,7 @@ Emission vs Minor Axis,-0.33,1.88e-17,633,-0.54,1.88e-06,69,Yes
 Emission vs Circularity,-0.26,4.53e-11,633,-0.47,4.34e-05,69,Yes
 QY vs B-Factor Ratio,-0.31,2.72e-08,310,-0.32,0.0456,40,Yes
 Emission vs B-Factor Ratio,0.42,1.98e-27,600,0.56,6.75e-07,68,Yes
-|τ|+|φ| vs Emission,0.15,5.50e-04,500,0.41,0.00206,55,Yes
+τ+φ vs Emission,-0.31,1.12e-12,500,-0.35,0.00913,55,Yes
 KW Eccentricity by Color,113.2,8.57e-23,636,20.2,4.56e-04,69,Yes
 KW Minor Axis by Color,108.9,6.95e-22,636,21.6,2.38e-04,69,Yes
 KW Circularity by Color,103.0,1.21e-20,636,17.1,0.00185,69,Yes

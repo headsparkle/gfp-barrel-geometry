@@ -41,9 +41,11 @@ U = U.merge(dih[['pdb_id', 'tau_megley', 'phi_megley']], on='pdb_id', how='left'
 F['abs_tau'] = F['tau_megley'].abs()
 F['abs_phi'] = F['phi_megley'].abs()
 F['tau_phi_sum_abs'] = F['abs_tau'] + F['abs_phi']
+F['tau_phi_sum'] = F['tau_megley'] + F['phi_megley']   # signed algebraic sum (emission predictor)
 U['abs_tau'] = U['tau_megley'].abs()
 U['abs_phi'] = U['phi_megley'].abs()
 U['tau_phi_sum_abs'] = U['abs_tau'] + U['abs_phi']
+U['tau_phi_sum'] = U['tau_megley'] + U['phi_megley']
 
 def sp(df_, x, y):
     sub = df_.dropna(subset=[x, y])
@@ -78,7 +80,7 @@ spearman_tests = [
     ('Emission vs Circularity',       'circularity',    'em_max'),
     ('QY vs B-Factor Ratio',          'b_factor_ratio', 'lit_qy'),
     ('Emission vs B-Factor Ratio',    'b_factor_ratio', 'em_max'),
-    ('|τ|+|φ| vs Emission',           'tau_phi_sum_abs','em_max'),
+    ('τ+φ vs Emission',               'tau_phi_sum',    'em_max'),
 ]
 for name, x, y in spearman_tests:
     r_o, p_o = sp(F, x, y)
