@@ -1352,22 +1352,27 @@ for ref in refs:
     run.font.name = 'Times New Roman'
 
 # ═══════════════════════════════════════════════════════════
-# Save the main manuscript; Supporting Information follows as a SEPARATE file
+# Supporting Information. By default the SI is written to a SEPARATE file
 # (JCIM requires a standalone Supporting Information for Publication file).
+# Set JCIM_COMBINED=1 to instead keep everything in one document — used to
+# produce a combined revised file for the tracked-changes comparison against
+# the (combined) submitted manuscript.
 # ═══════════════════════════════════════════════════════════
-_main_path = os.path.join(REPO_ROOT, 'GFP_JCIM_Manuscript.docx')
-doc.save(_main_path)
-print(f"Saved: {_main_path}")
-
-# ── Supporting Information as a standalone document ──
-doc = Document()
-for section in doc.sections:
-    section.top_margin = Inches(1)
-    section.bottom_margin = Inches(1)
-    section.left_margin = Inches(1)
-    section.right_margin = Inches(1)
-    _enable_line_numbers(section)
-    _add_page_number_footer(section)
+_COMBINED = bool(os.environ.get('JCIM_COMBINED'))
+if not _COMBINED:
+    _main_path = os.path.join(REPO_ROOT, 'GFP_JCIM_Manuscript.docx')
+    doc.save(_main_path)
+    print(f"Saved: {_main_path}")
+    # ── Supporting Information as a standalone document ──
+    doc = Document()
+    for section in doc.sections:
+        section.top_margin = Inches(1)
+        section.bottom_margin = Inches(1)
+        section.left_margin = Inches(1)
+        section.right_margin = Inches(1)
+        _enable_line_numbers(section)
+        _add_page_number_footer(section)
+doc.add_page_break()
 add_heading('Supporting Information')
 
 add_body(
@@ -1641,7 +1646,10 @@ add_figure('figS8_chromophore_types.png',
     'n < 5 are omitted for legibility; this excludes the four His66-derived '
     '(blue) codes (IIC, CRG, CSH, XXY; n = 1, 3, 4, and 1 respectively).')
 
-# ── Save Supporting Information ──
-si_path = os.path.join(REPO_ROOT, 'GFP_JCIM_SI.docx')
-doc.save(si_path)
-print(f"Saved: {si_path}")
+# ── Save (SI standalone, or combined full document) ──
+if _COMBINED:
+    out = os.path.join(REPO_ROOT, 'GFP_JCIM_Manuscript_full.docx')
+else:
+    out = os.path.join(REPO_ROOT, 'GFP_JCIM_SI.docx')
+doc.save(out)
+print(f"Saved: {out}")
