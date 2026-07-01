@@ -1282,6 +1282,9 @@ add_body(
     'approval to the final version of the manuscript.'
 )
 
+add_subheading('Funding.')
+add_body('This research received no external funding.')
+
 add_subheading('Notes.')
 add_body('The authors declare no competing financial interest.')
 
