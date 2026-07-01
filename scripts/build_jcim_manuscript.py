@@ -621,9 +621,9 @@ add_body(
     'cross-structure comparisons with crystallographic B-factor ratios. '
     'Paired comparisons used two-sided Wilcoxon signed-rank tests; the '
     '95% confidence intervals reported in Results are normal-approximation '
-    'intervals on the mean paired difference (\u0394\u0304 \u00b1 1.96 SE), '
-    'while Figure S8 plots the 95% limits of agreement '
-    '(\u0394\u0304 \u00b1 1.96 SD).'
+    'intervals on the mean paired difference (\u0394\u0304 \u00b1 1.96 SE); the '
+    'Bland\u2013Altman plots in the Supporting Information show the 95% limits '
+    'of agreement (\u0394\u0304 \u00b1 1.96 SD).'
 )
 
 doc.add_paragraph()
@@ -710,7 +710,7 @@ add_body(
     '29.4 \u00b1 1.2 \u00c5 vs 30.9 \u00b1 1.1 \u00c5 (p = 3.9 \u00d7 10\u207b\u00b9\u00b9) and '
     'major axis 32.6 \u00b1 1.4 \u00c5 vs 33.8 \u00b1 1.4 \u00c5 '
     '(p = 3.1 \u00d7 10\u207b\u2078), while the convex-hull area was preserved '
-    '(Figure S6). However, the two groups in this comparison are '
+    '(Figure S1). However, the two groups in this comparison are '
     'highly unbalanced both in size (739 vs 41) and in protein diversity '
     '(210 unique chromophore-positive proteins, six unique chromophore-'
     'absent proteins, mostly avGFP precursor variants), and the '
@@ -728,7 +728,7 @@ add_body(
     'much smaller than the within-crystal contraction. The minor-axis '
     'shift is not significant (\u0394_minor = +0.23 \u00c5, p = 0.25); the '
     'major-axis shift is significant but small (\u0394_major = +0.45 \u00c5, '
-    'p = 0.02), both \u226a 1.2\u20131.5 \u00c5 within-crystal effect (Figure S8). '
+    'p = 0.02), both \u226a 1.2\u20131.5 \u00c5 within-crystal effect. '
     'We therefore conclude only that the gross barrel cross-section is '
     'largely established at the pre-cyclization stage and that any '
     'geometric imprint of chromophore maturation, if real, is too small '
@@ -737,7 +737,7 @@ add_body(
 
 add_subheading('Barrel Geometry by Emission Color Class.')
 add_body(
-    'Barrel geometry varied with emission color class (Figure S1). Eccentricity '
+    'Barrel geometry varied with emission color class (Figure S2). Eccentricity '
     '(Kruskal\u2013Wallis H = 113.2, p = 8.6 \u00d7 10\u207b\u00b2\u00b3), '
     'minor axis (H = 108.9, p = 7.0 \u00d7 10\u207b\u00b2\u00b2), and '
     'circularity (H = 103.0, p = 1.2 \u00d7 10\u207b\u00b2\u2070) all '
@@ -789,7 +789,7 @@ add_figure('fig01_emission_scatter.png',
     'collapsed to one point per protein (Tables S2, S7). Red-shifted variants '
     'populate the narrower, more elliptical '
     'tail of each distribution. The same data summarized by emission '
-    'color class are shown as bar charts in Figure S1.')
+    'color class are shown as bar charts in Figure S2.')
 
 add_subheading('B-Factor Ratio and Quantum Yield.')
 add_body(
@@ -859,7 +859,7 @@ add_body(
     '\u03c1 = +0.167; |\u03c6|: \u03c1 = +0.197) and B-factor ratio '
     '(|\u03c4|: \u03c1 = +0.158; |\u03c6|: \u03c1 = +0.155). The '
     'signed sum \u03c4 + \u03c6 was the strongest dihedral predictor '
-    'of emission (\u03c1 = \u20130.311, p = 1.0 \u00d7 10\u207b\u00b9\u00b2; Figure S7C). '
+    'of emission (\u03c1 = \u20130.311, p = 1.0 \u00d7 10\u207b\u00b9\u00b2; Figure S3C). '
     'We note that \u03c4 + \u03c6 is used here as a descriptive algebraic '
     'sum of two static crystallographic dihedral angles, not in the '
     'mechanistic sense of the hula-twist photoisomerization pathway. '
@@ -905,7 +905,7 @@ add_body(
     'This extends the findings of Megley et al.\u00b2\u2077 from a small '
     'set of structures to 603. Within this dataset, \u03c4 and \u03c6 are '
     'negatively correlated across all structures (\u03c1 = \u20130.357, '
-    'p < 0.001; Figure S7A), forming two parallel bands in the \u03c4\u2013\u03c6 '
+    'p < 0.001; Figure S3A), forming two parallel bands in the \u03c4\u2013\u03c6 '
     'plane corresponding to cis and trans configurations. This anticorrelation '
     'primarily reflects the bimodal distribution of configurational states: '
     'cis structures (\u03c4 \u2248 0\u00b0) and trans structures '
@@ -923,8 +923,8 @@ add_body(
     'non-planar distortion and increased non-radiative decay. Trans-configured chromophores had higher '
     'eccentricity than cis (0.44 vs 0.40, p < 0.001), lower circularity '
     '(0.918 vs 0.923, p = 0.019), and narrower minor axes '
-    '(29.2 vs 29.6 \u00c5, p = 0.003; Figure S2). The full dihedral '
-    'analysis is shown in Figure S7.'
+    '(29.2 vs 29.6 \u00c5, p = 0.003; Figure S4). The full dihedral '
+    'analysis is shown in Figure S3.'
 )
 
 add_subheading('Resolution Confound and Barrel Size.')
@@ -946,7 +946,7 @@ add_body(
     'emission (\u03c1 = +0.039, p = 0.33), and barrel length is similarly '
     'uninformative (\u03c1 = \u20130.027, p = 0.50). Resolution-vs-minor-axis '
     'and emission-vs-minor-axis scatters, with resolution color-coded, '
-    'are shown in Figure S3. The photophysically relevant variation is '
+    'are shown in Figure S5. The photophysically relevant variation is '
     'in barrel shape, not size. This '
     'suggests that optimization of quantum yield should target the symmetry '
     'and tightness of chromophore packing in the minor-axis direction, not '
@@ -1081,7 +1081,7 @@ add_body(
     '(Δ = +0.45 Å, p = 0.02, 95% CI [−0.05, +0.96]) and a '
     'longer barrel (Δ = +3.74 Å, p < 10⁻⁴, 95% CI '
     '[+0.98, +6.49]). Bland–Altman plots for all six metrics are shown '
-    'in Figure S8. The barrel-length excess likely reflects AlphaFold '
+    'in Figure S6. The barrel-length excess likely reflects AlphaFold '
     'modeling of flexible terminal regions that are disordered and '
     'excluded from electron density in crystal structures. The lack of '
     'a measurable cross-sectional offset is notable given that AlphaFold '
@@ -1165,8 +1165,8 @@ add_body(
     'structures by eccentricity, circularity, and minor axis (Table S3). '
     'Quantum-yield values were available for only 293 canonical-cohort '
     'structures, from measurements under heterogeneous conditions. The '
-    'full Spearman correlation matrix (Figure S4) and barrel geometry '
-    'by chromophore type (Figure S5) are provided in Supporting '
+    'full Spearman correlation matrix (Figure S7) and barrel geometry '
+    'by chromophore type (Figure S8) are provided in Supporting '
     'Information.'
 )
 
@@ -1233,7 +1233,7 @@ add_subheading('Corresponding Author.')
 add_body(
     'Marc Zimmer — Chemistry Department, Connecticut College, '
     'New London, CT 06320, United States. '
-    'ORCID: 0000-0000-0000-0000. *E-mail: mzim@conncoll.edu.'
+    'ORCID: 0000-0000-0000-0000. *E-mail: mzimconncoll.edu.'
 )
 
 add_subheading('Authors.')
@@ -1540,33 +1540,8 @@ add_body(
     'Supporting Information.'
 )
 
-add_figure('figS1_color_class.png',
-    'S1. Barrel geometry by emission color class within the canonical '
-    'cohort. Mean (± SEM) minor axis, eccentricity, circularity, and '
-    'cross-sectional area by color class, with Kruskal–Wallis H and '
-    'p-values annotated. This is the categorical summary of the '
-    'continuous relationships shown in Figure 1.')
-
-add_figure('figS2_cis_trans.png',
-    'S2. Barrel geometry by chromophore configuration (cis, trans, '
-    'and twisted).')
-
-add_figure('figS3_resolution.png',
-    'S3. Resolution control. (A) Resolution vs minor axis. '
-    '(B) Emission vs minor axis colored by resolution. (C) High-resolution '
-    'subset (<2.0 \u00c5) only.')
-
-add_figure('figS4_heatmap.png',
-    'S4. Spearman correlation matrix for all variables. Asterisks '
-    'indicate * p < 0.05, ** p < 0.01, *** p < 0.001.')
-
-add_figure('figS5_chromophore_types.png',
-    'S5. Barrel geometry by chromophore residue type. Chromophore codes with '
-    'n < 5 are omitted for legibility; this excludes the four His66-derived '
-    '(blue) codes (IIC, CRG, CSH, XXY; n = 1, 3, 4, and 1 respectively).')
-
-add_figure('figS6_chromophore_effect.png',
-    'S6. Effect of chromophore maturation on barrel geometry within the '
+add_figure('figS1_chromophore_effect.png',
+    'S1. Effect of chromophore maturation on barrel geometry within the '
     'canonical cohort (n = 780). Boxplots compare structures with '
     '(n = 739, blue) and without (n = 41, orange) a validated mature '
     'chromophore. (A) Cross-sectional area, (B) eccentricity, and '
@@ -1579,8 +1554,15 @@ add_figure('figS6_chromophore_effect.png',
     '(n = 6) and the unbalanced group sizes. See main-text Chromophore '
     'Maturation section for interpretation.')
 
-add_figure('figS7_megley.png',
-    'S7. Chromophore dihedral analysis. (A) τ vs φ plot '
+add_figure('figS2_color_class.png',
+    'S2. Barrel geometry by emission color class within the canonical '
+    'cohort. Mean (± SEM) minor axis, eccentricity, circularity, and '
+    'cross-sectional area by color class, with Kruskal–Wallis H and '
+    'p-values annotated. This is the categorical summary of the '
+    'continuous relationships shown in Figure 1.')
+
+add_figure('figS3_megley.png',
+    'S3. Chromophore dihedral analysis. (A) τ vs φ plot '
     'colored by emission class. (B) Ground-state planarity (distance from '
     'the nearest planar reference, folding the phenol symmetry) vs quantum '
     'yield; the panel shows all canonical structures (per-structure '
@@ -1588,8 +1570,17 @@ add_figure('figS7_megley.png',
     '(C) Dihedral sum (τ + φ) vs emission wavelength.',
     width=5.5)
 
-add_figure('figS8_alphafold_paired.png',
-    'S8. Bland–Altman plots of the paired AlphaFold–crystal comparison '
+add_figure('figS4_cis_trans.png',
+    'S4. Barrel geometry by chromophore configuration (cis, trans, '
+    'and twisted).')
+
+add_figure('figS5_resolution.png',
+    'S5. Resolution control. (A) Resolution vs minor axis. '
+    '(B) Emission vs minor axis colored by resolution. (C) High-resolution '
+    'subset (<2.0 \u00c5) only.')
+
+add_figure('figS6_alphafold_paired.png',
+    'S6. Bland–Altman plots of the paired AlphaFold–crystal comparison '
     '(n = 51 wild-type FPs, one paired observation per protein). Each '
     'point is one protein; the x-axis is the mean of the AlphaFold and '
     'crystal values and the y-axis is AlphaFold minus crystal. The solid '
@@ -1604,6 +1595,15 @@ add_figure('figS8_alphafold_paired.png',
     '(Δ̄ = +9.6 Å², p = 0.23). AlphaFold predicts slightly '
     'wider major axes (Δ̄ = +0.45 Å, p = 0.02) and longer '
     'barrels (Δ̄ = +3.7 Å, p < 10⁻⁴).')
+
+add_figure('figS7_heatmap.png',
+    'S7. Spearman correlation matrix for all variables. Asterisks '
+    'indicate * p < 0.05, ** p < 0.01, *** p < 0.001.')
+
+add_figure('figS8_chromophore_types.png',
+    'S8. Barrel geometry by chromophore residue type. Chromophore codes with '
+    'n < 5 are omitted for legibility; this excludes the four His66-derived '
+    '(blue) codes (IIC, CRG, CSH, XXY; n = 1, 3, 4, and 1 respectively).')
 
 # ── Save ──
 output_path = os.path.join(REPO_ROOT, 'GFP_JCIM_Manuscript.docx')

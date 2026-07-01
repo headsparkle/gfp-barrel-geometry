@@ -72,7 +72,7 @@ def spearman_text(x, y):
 
 
 # ══════════════════════════════════════════════════════════════════════════════
-# FIGURE S1: Barrel geometry by emission color class  (2×2 bar charts)
+# FIGURE S2: Barrel geometry by emission color class  (2×2 bar charts)
 # (Promoted continuous scatter version is now main-text Figure 1.)
 # ══════════════════════════════════════════════════════════════════════════════
 CLASS_ORDER = ['blue', 'cyan', 'green', 'yellow', 'orange', 'red']
@@ -120,14 +120,14 @@ for i, (col, ylabel, lbl) in enumerate(metrics):
                           edgecolor='gray', alpha=0.8))
     panel_label(ax, lbl)
 
-path = f'{OUTDIR}/figS1_color_class.png'
+path = f'{OUTDIR}/figS2_color_class.png'
 save_fig(fig, path)
 plt.close(fig)
 print(f'Saved: {path}')
 
 
 # ══════════════════════════════════════════════════════════════════════════════
-# FIGURE S2: Cis/Trans Configuration  (2×2)
+# FIGURE S4: Cis/Trans Configuration  (2×2)
 # ══════════════════════════════════════════════════════════════════════════════
 fig, axes = plt.subplots(2, 2, figsize=(7.5, 6))
 axes = axes.flatten()
@@ -184,14 +184,14 @@ for ax, (col, ylabel), lab in zip(axes, metrics, labels_s2):
         ax.text(1.5, bar_y + 0.03*yrange, ptxt, ha='center', va='bottom', fontsize=8)
 
 fig.tight_layout()
-path = f'{OUTDIR}/figS2_cis_trans.png'
+path = f'{OUTDIR}/figS4_cis_trans.png'
 save_fig(fig, path)
 plt.close(fig)
 print(f'Saved: {path}')
 
 
 # ══════════════════════════════════════════════════════════════════════════════
-# FIGURE S3: Resolution Control  (1×3)
+# FIGURE S5: Resolution Control  (1×3)
 # ══════════════════════════════════════════════════════════════════════════════
 fig, axes = plt.subplots(1, 3, figsize=(7.5, 6))
 
@@ -245,14 +245,14 @@ ax.text(0.05, 0.85, f'n = {len(hires)} (< 2.0 Å)', transform=ax.transAxes,
 panel_label(ax, '(C)')
 
 fig.tight_layout()
-path = f'{OUTDIR}/figS3_resolution.png'
+path = f'{OUTDIR}/figS5_resolution.png'
 save_fig(fig, path)
 plt.close(fig)
 print(f'Saved: {path}')
 
 
 # ══════════════════════════════════════════════════════════════════════════════
-# FIGURE S4: Correlation Heatmap  (square)
+# FIGURE S7: Correlation Heatmap  (square)
 # ══════════════════════════════════════════════════════════════════════════════
 hm_cols = ['convex_area', 'minor_axis', 'major_axis', 'eccentricity',
            'circularity', 'em_max', 'lit_qy', 'b_factor_ratio',
@@ -302,14 +302,14 @@ ax.set_yticklabels(hm_labels, fontsize=10)
 ax.tick_params(top=False, bottom=True, left=True, right=False)
 
 fig.tight_layout()
-path = f'{OUTDIR}/figS4_heatmap.png'
+path = f'{OUTDIR}/figS7_heatmap.png'
 save_fig(fig, path)
 plt.close(fig)
 print(f'Saved: {path}')
 
 
 # ══════════════════════════════════════════════════════════════════════════════
-# FIGURE S5: Chromophore Types  (3×1 stacked)
+# FIGURE S8: Chromophore Types  (3×1 stacked)
 # ══════════════════════════════════════════════════════════════════════════════
 ct_counts = df['chromophore_type'].value_counts()
 valid_types = ct_counts[ct_counts >= 5].index.tolist()
@@ -368,7 +368,7 @@ for ax, (col, ylabel), lab in zip(axes, metrics_s5, labels_s5):
     safe_ylim(ax, all_vals)
 
 fig.tight_layout()
-path = f'{OUTDIR}/figS5_chromophore_types.png'
+path = f'{OUTDIR}/figS8_chromophore_types.png'
 save_fig(fig, path)
 plt.close(fig)
 print(f'Saved: {path}')

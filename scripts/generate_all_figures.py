@@ -164,9 +164,9 @@ saved_files.append(path)
 plt.close(fig)
 
 # ============================================================
-# FIGURE S6: Chromophore Maturation Effect (canonical cohort, 5 panels)
+# FIGURE S1: Chromophore Maturation Effect (canonical cohort, 5 panels)
 # ============================================================
-print("--- Generating Figure S6 (chromophore effect) ---")
+print("--- Generating Figure S1 (chromophore effect) ---")
 
 metrics_figS6 = [
     ('convex_area', 'Cross-sectional Area (\u00c5\u00b2)', '(A)'),
@@ -216,7 +216,7 @@ for i, (col, ylabel, lbl) in enumerate(metrics_figS6):
     panel_label(ax, lbl)
 
 axes[5].set_visible(False)  # 6th cell unused (5 panels)
-path = out_dir + 'figS6_chromophore_effect.png'
+path = out_dir + 'figS1_chromophore_effect.png'
 save_fig(fig, path)
 saved_files.append(path)
 plt.close(fig)
@@ -472,15 +472,15 @@ ax.set_ylabel('Emission Maximum (nm)', fontsize=10)
 remove_top_right(ax)
 panel_label(ax, '(C)')
 
-path = out_dir + 'figS7_megley.png'
+path = out_dir + 'figS3_megley.png'
 save_fig(fig, path)
 saved_files.append(path)
 plt.close(fig)
 
 # ============================================================
-# FIGURE S8: AlphaFold - crystal Bland-Altman (n = 51 paired)
+# FIGURE S6: AlphaFold - crystal Bland-Altman (n = 51 paired)
 # ============================================================
-print("--- Generating Figure S8 (AlphaFold Bland-Altman) ---")
+print("--- Generating Figure S6 (AlphaFold Bland-Altman) ---")
 
 af = pd.read_csv(os.path.join(REPO, 'data', 'alphafold_vs_crystal_n51.csv'))
 ba_metrics = [
@@ -513,7 +513,7 @@ for ax, (acol, ccol, label, lbl) in zip(axes, ba_metrics):
     ax.set_ylabel('AF − crystal', fontsize=9.5)
     remove_top_right(ax)
     panel_label(ax, lbl)
-path = out_dir + 'figS8_alphafold_paired.png'
+path = out_dir + 'figS6_alphafold_paired.png'
 save_fig(fig, path)
 saved_files.append(path)
 plt.close(fig)
