@@ -128,7 +128,7 @@ abs_text = (
     'form the canonical analysis cohort. Barrel shape, but not size, '
     'correlates with emission wavelength: red-shifted proteins have '
     'narrower, more elliptical barrels (\u03c1 = \u20130.329 for minor axis, '
-    'p = 1.9 \u00d7 10\u207b\u00b9\u2077). Quantum yield, by contrast, is not governed by '
+    'p = 1.9 \u00d7 10\u207b\u00b9\u2077). Fluorescence quantum yield, by contrast, is not governed by '
     'barrel size: it tracks how rigidly the barrel holds the chromophore '
     '(chromophore-to-barrel B-factor ratio, \u03c1 = \u20130.49 per unique FP), '
     'together with the chromophore\u2019s ground-state planarity (\u03c1 = \u20130.42) '
@@ -248,7 +248,9 @@ add_body(
     'by autocatalytic post-translational cyclization of residues '
     'Ser65\u2013Tyr66\u2013Gly67, is positioned at the geometric center and '
     'shielded from solvent.\u00b9\u2070\u02c9\u00b9\u00b9 The rigid encapsulation '
-    'minimizes non-radiative decay, enabling high quantum yields. The same '
+    'minimizes non-radiative decay, enabling high fluorescence quantum yields '
+    '(the fraction of absorbed photons re-emitted as fluorescence; hereafter '
+    'quantum yield for brevity). The same '
     '11-stranded topology is conserved across all known fluorescent protein '
     'families, including GFP-derived variants and fluorescent proteins from '
     'anthozoan organisms such as DsRed, despite sequence identities as low as 25%.\u00b9\u00b2\u02c9\u00b9\u00b3'
@@ -304,7 +306,8 @@ add_body(
     'Here, we report a systematic analysis of beta-barrel cross-sectional '
     'geometry across 908 fluorescent protein crystal structures from the '
     'RCSB Protein Data Bank. For each structure, the barrel axis was '
-    'determined by PCA of backbone C\u03b1 coordinates, the structure was '
+    'determined by principal component analysis (PCA) of backbone C\u03b1 '
+    'coordinates, the structure was '
     'rotated to align this axis with the z-axis, and a perpendicular '
     'cross-sectional slice was extracted at the chromophore level. Convex '
     'hull analysis yielded area, eccentricity, circularity, and axis lengths '
@@ -765,9 +768,14 @@ add_figure('fig01_emission_scatter.png',
     'FPbase em_max). Each point is one structure, colored by emission '
     'class. (A) Minor axis (\u03c1 = \u20130.329). (B) Eccentricity '
     '(\u03c1 = +0.320). (C) Circularity (\u03c1 = \u20130.258). (D) Major '
-    'axis (\u03c1 = +0.176). Dashed lines are least-squares fits, included '
-    'as visual guides; Spearman \u03c1 and p-values are reported in the '
-    'panels. Red-shifted variants populate the narrower, more elliptical '
+    'axis (\u03c1 = +0.176). The relationships are monotonic but modest and '
+    'display substantial scatter at the single-structure level; the reported '
+    'Spearman \u03c1 (rank correlation) and its p-value, not the visual spread, '
+    'quantify each association, and the dashed lines are linear least-squares '
+    'fits included only as guides to the eye (the trends are not assumed to '
+    'be linear). The associations strengthen when replicate crystals are '
+    'collapsed to one point per protein (Tables S2, S7). Red-shifted variants '
+    'populate the narrower, more elliptical '
     'tail of each distribution. The same data summarized by emission '
     'color class are shown as bar charts in Figure S1.')
 
@@ -875,6 +883,13 @@ add_body(
     'span a wide range of ground-state twist, versus green FPs, which '
     'cluster near planar with little spread \u2014 is characterized in detail in '
     'a companion analysis of chromophore torsional space.\u2074\u00b2 '
+    'These two structural routes are consistent with recent excited-state '
+    'studies: in red FPs a pre-twisted ground-state chromophore brings the '
+    'S\u2081/S\u2080 conical intersection to or below the Franck\u2013Condon energy, making '
+    'non-radiative decay nearly barrierless,\u2074\u00b3 while chromophore rigidity \u2014 '
+    'not planarity alone \u2014 can be the decisive factor in engineered '
+    'variants,\u2074\u2074 paralleling the independent B-factor-ratio signal reported '
+    'here. '
     'This extends the findings of Megley et al.\u00b2\u2077 from a small '
     'set of structures to 603. Within this dataset, \u03c4 and \u03c6 are '
     'negatively correlated across all structures (\u03c1 = \u20130.357, '
@@ -999,9 +1014,20 @@ add_body(
     'chromophore-to-barrel B-factor ratio the dominant feature '
     '(permutation importance 0.53) and chromophore ground-state planarity '
     'second (0.41); barrel cross-sectional metrics ranked well below both. '
-    'The model\u2019s modest performance indicates that how the barrel holds '
-    'the chromophore constrains, but does not fully determine, quantum '
-    'yield.'
+    'The modest R\u00b2 values of both the linear (0.18) and Random Forest (0.18) '
+    'models are expected and informative rather than a deficiency: quantum '
+    'yield is set at the electronic-structure level \u2014 by excited-state '
+    'potential-energy-surface topology, conical-intersection accessibility,\u2074\u00b3 '
+    'chromophore protonation and intramolecular charge transfer, local '
+    'electrostatic fields, and dark-state-mediated pathways \u2014 none of which '
+    'is encoded in a static ground-state crystal geometry. A structure-only '
+    'predictor therefore has a natural ceiling; the companion study, adding '
+    'hydrogen-bond and electrostatic descriptors, reaches only a '
+    'leave-one-protein-out rank correlation of \u2248 0.44,\u2074\u00b2 and rigidity itself '
+    'can outweigh geometry in individual variants.\u2074\u2074 Our models are best read '
+    'as identifying which static structural features carry reproducible '
+    'quantum-yield signal (chromophore-to-barrel rigidity and ground-state '
+    'planarity), not as quantitative predictors of brightness.'
 )
 
 add_subheading('Implications for Engineering.')
@@ -1277,6 +1303,8 @@ refs = [
     '(40) Pedregosa, F.; et al. Scikit-learn: Machine Learning in Python. J. Mach. Learn. Res. 2011, 12, 2825\u20132830.',
     '(41) Hirano, M.; Ando, R.; Shimozono, S.; Sugiyama, M.; Takeda, N.; Kurokawa, H.; Deguchi, R.; Endo, K.; Haga, K.; Takai-Todaka, R.; et al. A Highly Photostable and Bright Green Fluorescent Protein. Nat. Biotechnol. 2022, 40, 1132\u20131142.',
     '(42) Zimmer, M. Ground-State Chromophore Geometry, Not Cage Size, Tracks Quantum Yield in Fluorescent Proteins. Biophys. J. 2026, submitted. [companion paper; this work is cited therein]',
+    '(43) Pieri, E.; Walker, A. R.; Zhu, M.; Martínez, T. J. Conical Intersection Accessibility Dictates Brightness in Red Fluorescent Proteins. J. Am. Chem. Soc. 2024, 146, 17646–17658.',
+    '(44) Chen, C.; Pathiranage, V.; Ong, W. S. Y.; Dodani, S. C.; Walker, A. R.; Fang, C. A Twisted Chromophore Powers a Turn-On Fluorescent Protein Chloride Sensor. Proc. Natl. Acad. Sci. U. S. A. 2025, 122, e2508094122.',
 ]
 
 for ref in refs:
