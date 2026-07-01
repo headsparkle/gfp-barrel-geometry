@@ -35,7 +35,7 @@ p()
 
 # ── Merge ──
 # Dihedral file has many columns that overlap; only take pdb_id and tau_megley
-dihed_sub = dihed[['pdb_id', 'tau_megley']].copy()
+dihed_sub = dihed[['pdb_id', 'tau_megley', 'd_planar']].copy()
 df = main.merge(dihed_sub, on='pdb_id', how='inner')
 p(f"After merge: {len(df)} rows")
 
@@ -142,7 +142,7 @@ def run_rf(df, outcome_col, predictor_cols, label):
 
 
 # ── Run analyses ──
-predictors = ['b_factor_ratio', 'eccentricity', 'minor_axis', 'circularity', 'abs_tau', 'resolution']
+predictors = ['b_factor_ratio', 'eccentricity', 'minor_axis', 'circularity', 'd_planar', 'resolution']
 
 # 1. QY regression
 run_ols(df, 'lit_qy', predictors, "Predicting Quantum Yield (lit_qy)")

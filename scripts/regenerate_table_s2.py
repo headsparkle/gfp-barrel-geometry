@@ -78,7 +78,8 @@ spearman_tests = [
     ('Emission vs Eccentricity',      'eccentricity',   'em_max'),
     ('Emission vs Minor Axis',        'minor_axis',     'em_max'),
     ('Emission vs Circularity',       'circularity',    'em_max'),
-    ('QY vs B-Factor Ratio',          'b_factor_ratio', 'lit_qy'),
+    # QY per-unique-FP correlations are reported in Table S6 (companion-comparable
+    # collapse over all QY-bearing proteins); not duplicated here.
     ('Emission vs B-Factor Ratio',    'b_factor_ratio', 'em_max'),
     ('τ+φ vs Emission',               'tau_phi_sum',    'em_max'),
 ]

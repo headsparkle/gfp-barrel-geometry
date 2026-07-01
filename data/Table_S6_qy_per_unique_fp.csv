@@ -1,0 +1,3 @@
+Predictor,rho_vs_QY,p,n_unique_FP,partial_rho_adj_for_other
+Ground-state planarity (distance from planar),-0.424,1.24e-04,77,-0.352
+Chromophore/barrel B-factor ratio,-0.514,1.73e-06,77,-0.463

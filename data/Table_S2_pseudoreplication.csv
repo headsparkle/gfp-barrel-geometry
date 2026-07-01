@@ -2,7 +2,6 @@ Test,Original_rho_or_H,Original_p,Original_n,Unique_rho_or_H,Unique_p,Unique_n,S
 Emission vs Eccentricity,0.32,1.39e-16,633,0.50,1.52e-05,69,Yes
 Emission vs Minor Axis,-0.33,1.88e-17,633,-0.54,1.88e-06,69,Yes
 Emission vs Circularity,-0.26,4.53e-11,633,-0.47,4.34e-05,69,Yes
-QY vs B-Factor Ratio,-0.31,2.72e-08,310,-0.32,0.0456,40,Yes
 Emission vs B-Factor Ratio,0.42,1.98e-27,600,0.56,6.75e-07,68,Yes
 τ+φ vs Emission,-0.31,1.12e-12,500,-0.35,0.00913,55,Yes
 KW Eccentricity by Color,113.2,8.57e-23,636,20.2,4.56e-04,69,Yes

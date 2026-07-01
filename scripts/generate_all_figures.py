@@ -415,26 +415,25 @@ ax.legend(fontsize=8, ncol=3, loc='upper center',
 remove_top_right(ax)
 panel_label(ax, '(A)')
 
-# Panel B: |tau| vs QY
+# Panel B: ground-state planarity (distance from planar) vs QY
 ax = axes[1]
-sub_b2 = merged.dropna(subset=['tau_megley', 'lit_qy']).copy()
-sub_b2['abs_tau'] = sub_b2['tau_megley'].abs()
+sub_b2 = merged.dropna(subset=['d_planar', 'lit_qy']).copy()
 for cc in CLASS_ORDER:
     mask = sub_b2['color_class'] == cc
     if mask.sum() > 0:
-        ax.scatter(sub_b2.loc[mask, 'abs_tau'], sub_b2.loc[mask, 'lit_qy'],
+        ax.scatter(sub_b2.loc[mask, 'd_planar'], sub_b2.loc[mask, 'lit_qy'],
                    c=CLASS_COLORS.get(cc, 'gray'), s=20, alpha=0.55,
                    edgecolors='none', zorder=3)
 un2 = sub_b2['color_class'].isna()
 if un2.sum() > 0:
-    ax.scatter(sub_b2.loc[un2, 'abs_tau'], sub_b2.loc[un2, 'lit_qy'],
+    ax.scatter(sub_b2.loc[un2, 'd_planar'], sub_b2.loc[un2, 'lit_qy'],
                c='lightgray', s=20, alpha=0.55, edgecolors='none', zorder=2)
 if len(sub_b2) > 2:
-    rho_d2, p_d2 = stats.spearmanr(sub_b2['abs_tau'], sub_b2['lit_qy'])
+    rho_d2, p_d2 = stats.spearmanr(sub_b2['d_planar'], sub_b2['lit_qy'])
     p_d2_str = f'p < 0.001' if p_d2 < 0.001 else f'p = {p_d2:.3f}'
     ax.text(0.97, 0.97, f'\u03c1 = {rho_d2:.3f}, {p_d2_str}', transform=ax.transAxes,
             fontsize=9, va='top', ha='right', fontstyle='italic')
-ax.set_xlabel('|\u03c4| (\u00b0)', fontsize=10)
+ax.set_xlabel('Distance from planar (\u00b0)', fontsize=10)
 ax.set_ylabel('Quantum Yield', fontsize=10)
 remove_top_right(ax)
 panel_label(ax, '(B)')

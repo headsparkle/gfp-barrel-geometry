@@ -1,6 +1,6 @@
 === COLUMN NAMES ===
 Main data columns (47): ['pdb_id', 'has_chromophore', 'chromophore_type', 'n_atoms', 'convex_area', 'convex_perimeter', 'major_axis', 'minor_axis', 'eccentricity', 'circularity', 'barrel_length', 'original_axis_angle', 'eigenvalue_ratio', 'expected_chromophore', 'ex_max', 'em_max', 'match_name', 'source', 'config', 'tau_main', 'planarity_deviation', 'aspect_ratio', 'compactness', 'stokes_shift', 'color_class', 'resolution', 'r_factor', 'seq_length', 'mean_b_factor', 'std_b_factor', 'mean_b_ca', 'chrom_b_factor', 'barrel_b_factor', 'b_factor_ratio', 'chrom_contacts', 'chrom_contact_density', 'n_disulfides', 'n_waters', 'lit_qy', 'lit_ec', 'lit_brightness', 'n_residues', 'canonical_cohort', 'lit_qy_uncurated', 'qy_source', 'qy_match_identity', 'qy_fpbase_name']
-Dihedral columns (19): ['pdb_id', 'chromophore_type', 'tau_megley', 'phi_megley', 'phi_cd2', 'convex_area', 'eccentricity', 'circularity', 'major_axis', 'minor_axis', 'barrel_length', 'em_max', 'ex_max', 'lit_qy', 'b_factor_ratio', 'chrom_contacts', 'color_class', 'resolution', 'lit_qy_uncurated']
+Dihedral columns (20): ['pdb_id', 'chromophore_type', 'tau_megley', 'phi_megley', 'phi_cd2', 'convex_area', 'eccentricity', 'circularity', 'major_axis', 'minor_axis', 'barrel_length', 'em_max', 'ex_max', 'lit_qy', 'b_factor_ratio', 'chrom_contacts', 'color_class', 'resolution', 'lit_qy_uncurated', 'd_planar']
 Main data rows: 780
 Dihedral rows: 690
 
@@ -9,64 +9,64 @@ After merge: 603 rows
 ============================================================
   MULTIPLE REGRESSION: Predicting Quantum Yield (lit_qy)
   Outcome: lit_qy
-  Predictors: ['b_factor_ratio', 'eccentricity', 'minor_axis', 'circularity', 'abs_tau', 'resolution']
+  Predictors: ['b_factor_ratio', 'eccentricity', 'minor_axis', 'circularity', 'd_planar', 'resolution']
 ============================================================
   N (complete cases): 250
 
-  R²          = 0.1980
-  Adjusted R² = 0.1782
-  F-statistic = 10.00, p = 7.25e-10
+  R²          = 0.1953
+  Adjusted R² = 0.1754
+  F-statistic = 9.83, p = 1.06e-09
   N = 250, df_resid = 243
 
   Predictor              Std Beta         SE          t      p-value   Sig
   -------------------------------------------------------------------
-  b_factor_ratio          -0.0495     0.0174     -2.843   4.8534e-03    **
-  eccentricity             0.0070     0.0227      0.310   7.5670e-01      
-  minor_axis               0.0257     0.0223      1.150   2.5130e-01      
-  circularity              0.0249     0.0168      1.485   1.3884e-01      
-  abs_tau                 -0.0671     0.0160     -4.183   4.0181e-05   ***
-  resolution              -0.0323     0.0156     -2.074   3.9118e-02     *
+  b_factor_ratio          -0.0596     0.0169     -3.523   5.0889e-04   ***
+  eccentricity             0.0023     0.0227      0.101   9.1988e-01      
+  minor_axis               0.0182     0.0224      0.811   4.1792e-01      
+  circularity              0.0149     0.0168      0.889   3.7475e-01      
+  d_planar                -0.0642     0.0157     -4.078   6.1491e-05   ***
+  resolution              -0.0308     0.0156     -1.977   4.9188e-02     *
 
   Intercept: 0.5532
 
   Correlation matrix of predictors:
-    b_factor_ratio         1.00   0.32  -0.35  -0.16   0.32   0.20
-    eccentricity           0.32   1.00  -0.72  -0.42   0.17  -0.06
-    minor_axis            -0.35  -0.72   1.00   0.37  -0.15   0.03
-    circularity           -0.16  -0.42   0.37   1.00  -0.01   0.01
-    abs_tau                0.32   0.17  -0.15  -0.01   1.00   0.01
-    resolution             0.20  -0.06   0.03   0.01   0.01   1.00
+    b_factor_ratio         1.00   0.32  -0.35  -0.16   0.23   0.20
+    eccentricity           0.32   1.00  -0.72  -0.42   0.20  -0.06
+    minor_axis            -0.35  -0.72   1.00   0.37  -0.22   0.03
+    circularity           -0.16  -0.42   0.37   1.00  -0.15   0.01
+    d_planar               0.23   0.20  -0.22  -0.15   1.00   0.00
+    resolution             0.20  -0.06   0.03   0.01   0.00   1.00
 
 ============================================================
   MULTIPLE REGRESSION: Predicting Emission Maximum (em_max)
   Outcome: em_max
-  Predictors: ['b_factor_ratio', 'eccentricity', 'minor_axis', 'circularity', 'abs_tau', 'resolution']
+  Predictors: ['b_factor_ratio', 'eccentricity', 'minor_axis', 'circularity', 'd_planar', 'resolution']
 ============================================================
   N (complete cases): 500
 
-  R²          = 0.3641
-  Adjusted R² = 0.3564
-  F-statistic = 47.05, p = 1.41e-45
+  R²          = 0.3655
+  Adjusted R² = 0.3578
+  F-statistic = 47.34, p = 8.23e-46
   N = 500, df_resid = 493
 
   Predictor              Std Beta         SE          t      p-value   Sig
   -------------------------------------------------------------------
-  b_factor_ratio          14.1922     1.5351      9.245   7.0640e-19   ***
-  eccentricity             5.1421     2.1740      2.365   1.8403e-02     *
-  minor_axis              -3.3192     2.1958     -1.512   1.3127e-01      
-  circularity             -8.1922     1.5303     -5.353   1.3250e-07   ***
-  abs_tau                  2.6614     1.4685      1.812   7.0540e-02      
-  resolution              -1.5890     1.4197     -1.119   2.6356e-01      
+  b_factor_ratio          14.1126     1.5342      9.198   1.0261e-18   ***
+  eccentricity             5.3470     2.1639      2.471   1.3813e-02     *
+  minor_axis              -3.3461     2.1886     -1.529   1.2694e-01      
+  circularity             -7.7092     1.4970     -5.150   3.7776e-07   ***
+  d_planar                 3.0010     1.4341      2.093   3.6892e-02     *
+  resolution              -1.7105     1.4182     -1.206   2.2835e-01      
 
   Intercept: 523.7500
 
   Correlation matrix of predictors:
-    b_factor_ratio         1.00   0.29  -0.33  -0.24   0.21   0.22
-    eccentricity           0.29   1.00  -0.76  -0.35   0.24  -0.04
-    minor_axis            -0.33  -0.76   1.00   0.35  -0.25  -0.01
-    circularity           -0.24  -0.35   0.35   1.00   0.07  -0.05
-    abs_tau                0.21   0.24  -0.25   0.07   1.00   0.00
-    resolution             0.22  -0.04  -0.01  -0.05   0.00   1.00
+    b_factor_ratio         1.00   0.29  -0.33  -0.24   0.24   0.22
+    eccentricity           0.29   1.00  -0.76  -0.35   0.20  -0.04
+    minor_axis            -0.33  -0.76   1.00   0.35  -0.23  -0.01
+    circularity           -0.24  -0.35   0.35   1.00  -0.08  -0.05
+    d_planar               0.24   0.20  -0.23  -0.08   1.00   0.06
+    resolution             0.22  -0.04  -0.01  -0.05   0.06   1.00
 
 ============================================================
   RANDOM FOREST: Predicting Quantum Yield (lit_qy)
@@ -74,24 +74,24 @@ After merge: 603 rows
 ============================================================
   N (complete cases): 250
 
-  OOB R² = 0.1866
+  OOB R² = 0.1786
 
   Feature importances (Mean Decrease Impurity):
   Predictor              Importance
   ----------------------------------
-  abs_tau                    0.2621
-  b_factor_ratio             0.2430
-  minor_axis                 0.1496
-  eccentricity               0.1342
-  resolution                 0.1061
-  circularity                0.1049
+  b_factor_ratio             0.2677
+  d_planar                   0.2324
+  minor_axis                 0.1489
+  eccentricity               0.1352
+  circularity                0.1122
+  resolution                 0.1036
 
   Permutation importances (30 repeats):
   Predictor                  Mean        Std
   ------------------------------------------
-  b_factor_ratio           0.4874     0.0384
-  abs_tau                  0.4864     0.0486
-  minor_axis               0.2004     0.0144
-  eccentricity             0.1666     0.0102
-  resolution               0.1430     0.0148
-  circularity              0.1307     0.0096
+  b_factor_ratio           0.5284     0.0358
+  d_planar                 0.4065     0.0329
+  minor_axis               0.1944     0.0130
+  eccentricity             0.1655     0.0101
+  circularity              0.1346     0.0102
+  resolution               0.1252     0.0098

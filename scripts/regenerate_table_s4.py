@@ -33,11 +33,12 @@ F = df[df['canonical_cohort']].copy()
 print(f'Canonical cohort: n = {len(F)}')
 
 # Merge dihedrals
-F_dih = F.merge(dih[['pdb_id','tau_megley','phi_megley']], on='pdb_id', how='left')
+F_dih = F.merge(dih[['pdb_id','tau_megley','phi_megley','d_planar']], on='pdb_id', how='left')
 F_dih['abs_tau']  = F_dih['tau_megley'].abs()
 F_dih['abs_phi']  = F_dih['phi_megley'].abs()
-F_dih['tau_plus_phi'] = F_dih['abs_tau'] + F_dih['abs_phi']           # |τ|+|φ| (QY predictor)
+F_dih['tau_plus_phi'] = F_dih['abs_tau'] + F_dih['abs_phi']           # |τ|+|φ| (legacy unfolded sum)
 F_dih['tau_plus_phi_signed'] = F_dih['tau_megley'] + F_dih['phi_megley']  # signed τ+φ (emission predictor)
+# d_planar = symmetry-folded distance from planar (ground-state QY predictor; see add_dplanar.py)
 
 rows = []
 
@@ -132,7 +133,7 @@ spearman_dih('|φ| vs QY', 'abs_phi', 'lit_qy')
 spearman_dih('|τ| vs B-factor ratio', 'abs_tau', 'b_factor_ratio')
 spearman_dih('|φ| vs B-factor ratio', 'abs_phi', 'b_factor_ratio')
 spearman_dih('τ+φ vs emission', 'tau_plus_phi_signed', 'em_max')
-spearman_dih('|τ|+|φ| vs QY', 'tau_plus_phi', 'lit_qy')
+spearman_dih('planarity (d_planar) vs QY', 'd_planar', 'lit_qy')
 spearman_dih('τ vs φ', 'tau_megley', 'phi_megley')
 
 # === 3. Group comparisons ===
