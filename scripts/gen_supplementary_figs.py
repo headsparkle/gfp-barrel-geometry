@@ -11,36 +11,13 @@ from scipy import stats
 import warnings
 warnings.filterwarnings('ignore')
 
-# ── Global style ──────────────────────────────────────────────────────────────
-plt.rcParams.update({
-    'font.family': 'sans-serif',
-    'font.sans-serif': ['Helvetica', 'Arial', 'DejaVu Sans'],
-    'font.size': 10,
-    'axes.labelsize': 11,
-    'axes.titlesize': 12,
-    'axes.linewidth': 1.0,
-    'xtick.major.width': 0.8,
-    'ytick.major.width': 0.8,
-    'xtick.direction': 'out',
-    'ytick.direction': 'out',
-    'figure.facecolor': 'white',
-    'axes.facecolor': 'white',
-    'savefig.facecolor': 'white',
-    'savefig.dpi': 300,
-    'savefig.bbox': 'tight',
-})
-
-# ── Color scheme ──────────────────────────────────────────────────────────────
-CLASS_COLORS = {
-    'cyan':   '#00ACC1',
-    'green':  '#43A047',
-    'yellow': '#FDD835',
-    'orange': '#FB8C00',
-    'red':    '#E53935',
-    'blue':   '#1E88E5',
-}
-
+# ── Shared publication style (scripts/_figstyle.py) ─────────────────────────────
 import os as _os
+import sys as _sys
+_sys.path.insert(0, _os.path.dirname(_os.path.abspath(__file__)))
+from _figstyle import (apply_style, CLASS_COLORS, CLASS_ORDER, MARKERS, save_fig,
+                       remove_top_right as _fs_rtr, panel_label as _fs_plabel)
+apply_style()
 _REPO = _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))
 OUTDIR = _os.path.join(_REPO, 'figures', 'pub_figures')
 
@@ -144,7 +121,7 @@ for i, (col, ylabel, lbl) in enumerate(metrics):
     panel_label(ax, lbl)
 
 path = f'{OUTDIR}/figS1_color_class.png'
-fig.savefig(path, dpi=300, bbox_inches='tight', facecolor='white')
+save_fig(fig, path)
 plt.close(fig)
 print(f'Saved: {path}')
 
@@ -208,7 +185,7 @@ for ax, (col, ylabel), lab in zip(axes, metrics, labels_s2):
 
 fig.tight_layout()
 path = f'{OUTDIR}/figS2_cis_trans.png'
-fig.savefig(path, dpi=300, bbox_inches='tight', facecolor='white')
+save_fig(fig, path)
 plt.close(fig)
 print(f'Saved: {path}')
 
@@ -269,7 +246,7 @@ panel_label(ax, '(C)')
 
 fig.tight_layout()
 path = f'{OUTDIR}/figS3_resolution.png'
-fig.savefig(path, dpi=300, bbox_inches='tight', facecolor='white')
+save_fig(fig, path)
 plt.close(fig)
 print(f'Saved: {path}')
 
@@ -326,7 +303,7 @@ ax.tick_params(top=False, bottom=True, left=True, right=False)
 
 fig.tight_layout()
 path = f'{OUTDIR}/figS4_heatmap.png'
-fig.savefig(path, dpi=300, bbox_inches='tight', facecolor='white')
+save_fig(fig, path)
 plt.close(fig)
 print(f'Saved: {path}')
 
@@ -392,7 +369,7 @@ for ax, (col, ylabel), lab in zip(axes, metrics_s5, labels_s5):
 
 fig.tight_layout()
 path = f'{OUTDIR}/figS5_chromophore_types.png'
-fig.savefig(path, dpi=300, bbox_inches='tight', facecolor='white')
+save_fig(fig, path)
 plt.close(fig)
 print(f'Saved: {path}')
 

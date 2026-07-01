@@ -5,6 +5,7 @@ TOC graphic + Figures 1-4 (5 output files total).
 """
 
 import os
+import sys
 import numpy as np
 import pandas as pd
 import matplotlib
@@ -43,42 +44,12 @@ print(f"\nColor classes: {df['color_class'].value_counts().to_dict()}")
 print(f"has_chromophore: {df['has_chromophore'].value_counts().to_dict()}")
 
 # ============================================================
-# GLOBAL STYLE
+# GLOBAL STYLE (shared publication style; see scripts/_figstyle.py)
 # ============================================================
-plt.rcParams.update({
-    'font.family': 'sans-serif',
-    'font.sans-serif': ['Helvetica', 'Arial', 'DejaVu Sans'],
-    'font.size': 10,
-    'axes.labelsize': 11,
-    'axes.titlesize': 12,
-    'axes.linewidth': 1.0,
-    'xtick.major.width': 0.8,
-    'ytick.major.width': 0.8,
-    'lines.linewidth': 1.5,
-    'figure.dpi': 300,
-    'savefig.dpi': 300,
-    'savefig.facecolor': 'white',
-    'savefig.bbox': 'tight',
-})
-
-# Color palette for emission classes
-CLASS_COLORS = {
-    'blue': '#1E88E5',
-    'cyan': '#00ACC1',
-    'green': '#43A047',
-    'yellow': '#FDD835',
-    'orange': '#FB8C00',
-    'red': '#E53935',
-}
-CLASS_ORDER = ['blue', 'cyan', 'green', 'yellow', 'orange', 'red']
-
-def remove_top_right(ax):
-    ax.spines['top'].set_visible(False)
-    ax.spines['right'].set_visible(False)
-
-def panel_label(ax, label, x=-0.12, y=1.08):
-    ax.text(x, y, label, transform=ax.transAxes,
-            fontsize=14, fontweight='bold', va='top', ha='left')
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from _figstyle import (apply_style, CLASS_COLORS, CLASS_ORDER, MARKERS,
+                       remove_top_right, panel_label, save_fig)
+apply_style()
 
 def safe_ylim(ax, data_list):
     """Set ylim safely, filtering NaN/inf."""
@@ -149,56 +120,94 @@ for fmt, fname in [('png', 'graphical_abstract.png'), ('tiff', 'graphical_abstra
 plt.close(fig)
 
 # ============================================================
-# FIGURE 1: Chromophore Maturation Effect
+# FIGURE 1: Emission wavelength vs barrel geometry (4-panel scatter)
 # ============================================================
-print("--- Generating Figure 1 ---")
+print("--- Generating Figure 1 (emission scatter) ---")
 
-metrics_fig1 = [
+emi_metrics = [
+    ('minor_axis', 'Minor Axis (Å)', '(A)'),
+    ('eccentricity', 'Eccentricity', '(B)'),
+    ('circularity', 'Circularity', '(C)'),
+    ('major_axis', 'Major Axis (Å)', '(D)'),
+]
+fig, axes = plt.subplots(2, 2, figsize=(7.5, 6.5))
+fig.subplots_adjust(hspace=0.33, wspace=0.30, top=0.90)
+axes = axes.flatten()
+_leg_done = False
+for ax, (col, xlabel, lbl) in zip(axes, emi_metrics):
+    sub = df_canon.dropna(subset=[col, 'em_max', 'color_class'])
+    for cc in CLASS_ORDER:
+        m = sub['color_class'] == cc
+        if m.sum() > 0:
+            ax.scatter(sub.loc[m, col], sub.loc[m, 'em_max'],
+                       c=CLASS_COLORS[cc], s=16, alpha=0.6, edgecolors='none',
+                       label=(cc.capitalize() if not _leg_done else None), zorder=3)
+    _leg_done = True
+    x = sub[col].values; y = sub['em_max'].values
+    slope, intercept = np.polyfit(x, y, 1)
+    xs = np.linspace(x.min(), x.max(), 100)
+    ax.plot(xs, slope * xs + intercept, 'k--', lw=1.0, alpha=0.7, zorder=2)
+    rho, p = stats.spearmanr(x, y)
+    p_str = r'$p < 10^{-10}$' if p < 1e-10 else f'p = {p:.1e}'
+    ax.text(0.04, 0.96, f'ρ = {rho:+.3f}, {p_str}', transform=ax.transAxes,
+            fontsize=8.5, va='top', fontstyle='italic')
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel('Emission Maximum (nm)')
+    remove_top_right(ax)
+    panel_label(ax, lbl)
+_h, _l = axes[0].get_legend_handles_labels()
+fig.legend(_h, _l, loc='upper center', ncol=6, frameon=False,
+           bbox_to_anchor=(0.5, 1.0), fontsize=9)
+path = out_dir + 'fig01_emission_scatter.png'
+save_fig(fig, path)
+saved_files.append(path)
+plt.close(fig)
+
+# ============================================================
+# FIGURE S6: Chromophore Maturation Effect (canonical cohort, 5 panels)
+# ============================================================
+print("--- Generating Figure S6 (chromophore effect) ---")
+
+metrics_figS6 = [
     ('convex_area', 'Cross-sectional Area (\u00c5\u00b2)', '(A)'),
-    ('eccentricity', 'Eccentricity (dimensionless)', '(B)'),
-    ('circularity', 'Circularity (dimensionless)', '(C)'),
+    ('eccentricity', 'Eccentricity', '(B)'),
+    ('circularity', 'Circularity', '(C)'),
     ('minor_axis', 'Minor Axis (\u00c5)', '(D)'),
+    ('major_axis', 'Major Axis (\u00c5)', '(E)'),
 ]
 
-fig, axes = plt.subplots(2, 2, figsize=(7.5, 6))
-fig.subplots_adjust(hspace=0.38, wspace=0.35)
+fig, axes = plt.subplots(2, 3, figsize=(9.5, 6))
+fig.subplots_adjust(hspace=0.40, wspace=0.38)
 axes = axes.flatten()
 
-chrom_present = df[df['has_chromophore'] == True]
-chrom_absent = df[df['has_chromophore'] == False]
+chrom_present = df_canon[df_canon['has_chromophore'] == True]
+chrom_absent = df_canon[df_canon['has_chromophore'] == False]
 n_pres = len(chrom_present)
 n_abs = len(chrom_absent)
 
-blue_c = '#1E88E5'
-orange_c = '#FB8C00'
+pres_c = CLASS_COLORS['blue']
+abs_c = CLASS_COLORS['orange']
 
-for i, (col, ylabel, lbl) in enumerate(metrics_fig1):
+for i, (col, ylabel, lbl) in enumerate(metrics_figS6):
     ax = axes[i]
     data_pres = chrom_present[col].dropna().values
     data_abs = chrom_absent[col].dropna().values
 
     bp = ax.boxplot([data_pres, data_abs], positions=[1, 2], widths=0.5,
                     patch_artist=True, showfliers=True,
-                    flierprops=dict(marker='o', markersize=2, alpha=0.4),
-                    medianprops=dict(color='black', linewidth=1.2))
-    bp['boxes'][0].set_facecolor(blue_c)
-    bp['boxes'][0].set_alpha(0.7)
-    bp['boxes'][1].set_facecolor(orange_c)
-    bp['boxes'][1].set_alpha(0.7)
+                    flierprops=dict(marker='o', markersize=2, alpha=0.35),
+                    medianprops=dict(color='black', linewidth=1.3))
+    for patch, col_c in zip(bp['boxes'], (pres_c, abs_c)):
+        patch.set_facecolor(col_c); patch.set_alpha(0.65); patch.set_edgecolor('black')
 
-    # Mann-Whitney U
     stat_u, p_mw = stats.mannwhitneyu(data_pres, data_abs, alternative='two-sided')
-    if p_mw < 0.001:
-        p_str = f'p < 0.001'
-    else:
-        p_str = f'p = {p_mw:.3f}'
-
+    p_str = 'p < 0.001' if p_mw < 0.001 else f'p = {p_mw:.3f}'
     ymax = max(np.nanmax(data_pres), np.nanmax(data_abs))
     yrange = ymax - min(np.nanmin(data_pres), np.nanmin(data_abs))
     bar_y = ymax + yrange * 0.08
     ax.plot([1, 1, 2, 2], [bar_y, bar_y + yrange*0.02, bar_y + yrange*0.02, bar_y],
             lw=0.8, color='black')
-    ax.text(1.5, bar_y + yrange*0.04, p_str, ha='center', va='bottom', fontsize=8)
+    ax.text(1.5, bar_y + yrange*0.04, p_str, ha='center', va='bottom', fontsize=8.5)
 
     ax.set_xticks([1, 2])
     ax.set_xticklabels([f'With\n(n={n_pres})', f'Without\n(n={n_abs})'], fontsize=9)
@@ -206,8 +215,9 @@ for i, (col, ylabel, lbl) in enumerate(metrics_fig1):
     remove_top_right(ax)
     panel_label(ax, lbl)
 
-path = out_dir + 'fig1_chromophore_effect.png'
-fig.savefig(path, dpi=300, bbox_inches='tight', facecolor='white')
+axes[5].set_visible(False)  # 6th cell unused (5 panels)
+path = out_dir + 'figS6_chromophore_effect.png'
+save_fig(fig, path)
 saved_files.append(path)
 plt.close(fig)
 
@@ -267,7 +277,7 @@ for i, (col, ylabel, lbl) in enumerate(metrics_fig2):
     panel_label(ax, lbl)
 
 path = out_dir + 'fig2_color_class.png'
-fig.savefig(path, dpi=300, bbox_inches='tight', facecolor='white')
+save_fig(fig, path)
 saved_files.append(path)
 plt.close(fig)
 
@@ -360,7 +370,7 @@ remove_top_right(ax)
 panel_label(ax, '(C)')
 
 path = out_dir + 'fig02_bfactor.png'
-fig.savefig(path, dpi=300, bbox_inches='tight', facecolor='white')
+save_fig(fig, path)
 saved_files.append(path)
 plt.close(fig)
 
@@ -463,7 +473,48 @@ remove_top_right(ax)
 panel_label(ax, '(C)')
 
 path = out_dir + 'figS7_megley.png'
-fig.savefig(path, dpi=300, bbox_inches='tight', facecolor='white')
+save_fig(fig, path)
+saved_files.append(path)
+plt.close(fig)
+
+# ============================================================
+# FIGURE S8: AlphaFold - crystal Bland-Altman (n = 51 paired)
+# ============================================================
+print("--- Generating Figure S8 (AlphaFold Bland-Altman) ---")
+
+af = pd.read_csv(os.path.join(REPO, 'data', 'alphafold_vs_crystal_n51.csv'))
+ba_metrics = [
+    ('af_minor', 'cry_minor', 'Minor Axis (Å)', '(A)'),
+    ('af_major', 'cry_major', 'Major Axis (Å)', '(B)'),
+    ('af_area',  'cry_area',  'Area (Å²)',      '(C)'),
+    ('af_blen',  'cry_blen',  'Barrel Length (Å)', '(D)'),
+    ('af_ecc',   'cry_ecc',   'Eccentricity',   '(E)'),
+    ('af_circ',  'cry_circ',  'Circularity',    '(F)'),
+]
+fig, axes = plt.subplots(2, 3, figsize=(9.5, 6))
+fig.subplots_adjust(hspace=0.42, wspace=0.40)
+axes = axes.flatten()
+for ax, (acol, ccol, label, lbl) in zip(axes, ba_metrics):
+    s = af[[acol, ccol]].dropna()
+    mean = (s[acol] + s[ccol]) / 2.0
+    diff = s[acol] - s[ccol]
+    dbar = diff.mean(); sd = diff.std()
+    _, p = stats.wilcoxon(diff)
+    ax.scatter(mean, diff, s=22, alpha=0.6, c=CLASS_COLORS['cyan'],
+               edgecolors='none', zorder=3)
+    ax.axhline(dbar, color='black', lw=1.2, zorder=2)
+    ax.axhline(dbar + 1.96 * sd, color='gray', lw=0.9, ls='--', zorder=2)
+    ax.axhline(dbar - 1.96 * sd, color='gray', lw=0.9, ls='--', zorder=2)
+    ax.axhline(0, color='black', lw=0.7, ls=':', alpha=0.6, zorder=1)
+    p_str = 'p < 0.001' if p < 0.001 else f'p = {p:.2f}'
+    ax.text(0.03, 0.97, f'Δ̄ = {dbar:+.2f}\n{p_str}', transform=ax.transAxes,
+            fontsize=8.5, va='top', ha='left')
+    ax.set_xlabel(f'Mean of AF & crystal — {label}', fontsize=9.5)
+    ax.set_ylabel('AF − crystal', fontsize=9.5)
+    remove_top_right(ax)
+    panel_label(ax, lbl)
+path = out_dir + 'figS8_alphafold_paired.png'
+save_fig(fig, path)
 saved_files.append(path)
 plt.close(fig)
 
