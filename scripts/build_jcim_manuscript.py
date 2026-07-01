@@ -173,13 +173,26 @@ def add_subheading(text):
     run.font.size = Pt(12)
     run.font.name = 'Times New Roman'
 
+import re as _re
+# Whole-word configurational descriptors that must be italicized (cis / trans).
+_ITALIC_TERMS = _re.compile(r'\b(cis|trans|Cis|Trans)\b')
+
+def _emit_runs(p, text, size, name):
+    """Add runs to paragraph p, italicizing whole-word cis/trans."""
+    pos = 0
+    for m in _ITALIC_TERMS.finditer(text):
+        if m.start() > pos:
+            r = p.add_run(text[pos:m.start()]); r.font.size = Pt(size); r.font.name = name
+        r = p.add_run(m.group()); r.font.size = Pt(size); r.font.name = name; r.italic = True
+        pos = m.end()
+    if pos < len(text):
+        r = p.add_run(text[pos:]); r.font.size = Pt(size); r.font.name = name
+
 def add_body(text):
     p = doc.add_paragraph()
     p.paragraph_format.first_line_indent = Inches(0.5)
     p.paragraph_format.line_spacing = 2.0
-    run = p.add_run(text)
-    run.font.size = Pt(12)
-    run.font.name = 'Times New Roman'
+    _emit_runs(p, text, 12, 'Times New Roman')
     return p
 
 def add_body_mixed(parts):
@@ -212,9 +225,7 @@ def add_figure(filename, caption, width=6.5):
         cap.paragraph_format.space_after = Pt(6)
         # Keep caption lines together so a caption can't be split mid-paragraph.
         cap.paragraph_format.keep_together = True
-        run = cap.add_run(caption)
-        run.font.size = Pt(10)
-        run.font.name = 'Times New Roman'
+        _emit_runs(cap, caption, 10, 'Times New Roman')
         doc.add_paragraph()
 
 
