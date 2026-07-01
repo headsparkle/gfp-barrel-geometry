@@ -808,7 +808,15 @@ add_body(
     'class (Figure 2C): blue 0.66 \u00b1 0.19, cyan 0.70 \u00b1 0.15, green 0.76 \u00b1 0.17, '
     'yellow 0.79 \u00b1 0.16, orange 0.88 \u00b1 0.22, red 1.02 \u00b1 0.24. '
     'In red fluorescent proteins, the chromophore is on average no more '
-    'rigid than the barrel.'
+    'rigid than the barrel. This is not simply a chromophore-size effect: '
+    'although the acylimine-extended red chromophore is larger and forms '
+    'more barrel contacts than the green HBI chromophore (mean 138 vs 122 '
+    'non-hydrogen atoms within 4 Å), its absolute B-factor (≈ 28 Å²) is '
+    'comparable to that of its barrel rather than lower, so the additional '
+    'bulk and contacts do not translate into greater relative thermal '
+    'immobilization. Whether this reflects genuine chromophore dynamics or '
+    'the refinement behavior of the extended conjugated system cannot be '
+    'resolved from crystallographic B-factors alone.'
 )
 
 add_body(
@@ -924,7 +932,18 @@ add_body(
     'eccentricity than cis (0.44 vs 0.40, p < 0.001), lower circularity '
     '(0.918 vs 0.923, p = 0.019), and narrower minor axes '
     '(29.2 vs 29.6 \u00c5, p = 0.003; Figure S4). The full dihedral '
-    'analysis is shown in Figure S3.'
+    'analysis is shown in Figure S3. In panel C, the signed sum \u03c4 + \u03c6 falls '
+    'into three groups \u2014 a central cluster near 0\u00b0 (cis chromophores) and '
+    'two flanking clusters near \u00b1200\u00b0 (trans chromophores, split by the sign '
+    'of the wrapped dihedrals) \u2014 so the visible structure reflects the '
+    'discrete cis/trans configurations rather than a continuous emission '
+    'trend, with red-shifted variants sitting toward the top of each cluster. '
+    'Panel B instead plots the symmetry-folded distance from planar, which '
+    'collapses the cis/trans and ring-flip degeneracies: most chromophores '
+    'lie near planar and are bright, while a sparse tail of strongly twisted '
+    'chromophores \u2014 predominantly red FPs, including the isolated point '
+    'beyond 90\u00b0 \u2014 are consistently dimmer, giving the negative '
+    'distance-from-planar\u2013quantum-yield association.'
 )
 
 add_subheading('Resolution Confound and Barrel Size.')
@@ -1052,8 +1071,9 @@ add_body(
     'be expected to increase quantum yield. Similarly, barrel eccentricity '
     'in a crystal structure might serve as a coarse diagnostic: high '
     'eccentricity could flag variants that are candidates for improvement, '
-    'though other factors (chromophore chemistry, protonation state, '
-    'excited-state dynamics) will also be important. The engineering '
+    'though other factors — chromophore chemistry,⁴⁷ protonation state and '
+    'electrostatic environment,⁴⁶ and excited-state dynamics⁴⁵ — will also '
+    'be important. The engineering '
     'successes of mTurquoise2,\u00b9\u2077 StayGold,\u2074\u00b9 and '
     'YuzuFP\u00b2\u2078\u2014each achieved through mutations altering '
     'chromophore\u2013barrel packing\u2014are consistent with these hypotheses '
@@ -1317,6 +1337,9 @@ refs = [
     '(42) Zimmer, M. Ground-State Chromophore Geometry, Not Cage Size, Tracks Quantum Yield in Fluorescent Proteins. Biophys. J. 2026, submitted. [companion paper; this work is cited therein]',
     '(43) Pieri, E.; Walker, A. R.; Zhu, M.; Martínez, T. J. Conical Intersection Accessibility Dictates Brightness in Red Fluorescent Proteins. J. Am. Chem. Soc. 2024, 146, 17646–17658.',
     '(44) Chen, C.; Pathiranage, V.; Ong, W. S. Y.; Dodani, S. C.; Walker, A. R.; Fang, C. A Twisted Chromophore Powers a Turn-On Fluorescent Protein Chloride Sensor. Proc. Natl. Acad. Sci. U. S. A. 2025, 122, e2508094122.',
+    '(45) Meech, S. R. Excited-State Reactions in Fluorescent Proteins. Chem. Soc. Rev. 2009, 38, 2922–2934.',
+    '(46) Park, J. W.; Rhee, Y. M. Electric Field Keeps Chromophore Planar and Produces High Yield Fluorescence in Green Fluorescent Protein. J. Am. Chem. Soc. 2016, 138, 13619–13629.',
+    '(47) Jones, C. M.; List, N. H.; Martínez, T. J. Steric and Electronic Origins of Fluorescence in GFP and GFP-like Proteins. J. Am. Chem. Soc. 2022, 144, 12732–12746.',
 ]
 
 for ref in refs:
