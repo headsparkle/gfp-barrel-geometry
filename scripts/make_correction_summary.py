@@ -86,7 +86,7 @@ body(
 bullet(
     'Quantum yield is not governed by barrel size. It tracks instead how rigidly the '
     'barrel holds the chromophore — the chromophore-to-barrel B-factor ratio '
-    '(ρ = –0.51 per unique protein) — together with the chromophore’s ground-state '
+    '(ρ = –0.49 per unique protein) — together with the chromophore’s ground-state '
     'planarity (ρ = –0.42) as an independent signal of comparable strength. This '
     'replaces the single-predictor framing of the submitted version, in which the '
     'B-factor ratio alone appeared strongest because the uncurated quantum yields '
@@ -120,7 +120,7 @@ rows = [
     ('Primary QY conclusion',
      'B-factor ratio is the single strongest predictor (ρ = –0.443)',
      'Two independent signals: chromophore-to-barrel B-factor ratio '
-     '(ρ = –0.51) and chromophore ground-state planarity (ρ = –0.42); '
+     '(ρ = –0.49) and chromophore ground-state planarity (ρ = –0.42); '
      'barrel size is not predictive'),
     ('Chromophore-twist metric', 'unfolded |τ| + |φ| sum',
      'symmetry-folded distance-from-planar'),

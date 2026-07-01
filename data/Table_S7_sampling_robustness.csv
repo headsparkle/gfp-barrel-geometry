@@ -1,0 +1,17 @@
+Relationship,Subsample,rho,p,n
+Emission vs minor axis,Full cohort (per structure),-0.329,1.9e-17,633
+Emission vs minor axis,Per unique FP,-0.431,3.2e-17,350
+Emission vs minor axis,Monomer-only (per unique FP),-0.462,4.5e-06,90
+Emission vs minor axis,Excluding blue+orange (per structure),-0.311,2.8e-15,615
+Emission vs minor axis,Within green only (per structure),-0.203,3.2e-05,414
+Emission vs eccentricity,Full cohort (per structure),+0.320,1.4e-16,633
+Emission vs eccentricity,Per unique FP,+0.428,4.8e-17,350
+Emission vs eccentricity,Monomer-only (per unique FP),+0.476,2.1e-06,90
+Emission vs eccentricity,Excluding blue+orange (per structure),+0.296,7.1e-14,615
+Emission vs eccentricity,Within green only (per structure),+0.091,6.4e-02,414
+FQY vs ground-state planarity,Full cohort (per structure),-0.316,3.2e-07,250
+FQY vs ground-state planarity,Per unique FP,-0.421,1.2e-06,123
+FQY vs ground-state planarity,Monomer-only (per unique FP),-0.453,5.2e-04,55
+FQY vs B-factor ratio,Full cohort (per structure),-0.335,5.7e-08,250
+FQY vs B-factor ratio,Per unique FP,-0.490,9.1e-09,123
+FQY vs B-factor ratio,Monomer-only (per unique FP),-0.509,7.2e-05,55

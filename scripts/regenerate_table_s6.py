@@ -17,9 +17,13 @@ df = pd.read_csv(os.path.join(REPO, 'data', 'merged_complete_data.csv'))
 dih = pd.read_csv(os.path.join(REPO, 'data', 'megley_dihedrals.csv'))
 
 canon = df[df['canonical_cohort'] == True]
-m = dih[dih['pdb_id'].isin(set(canon['pdb_id']))].merge(
-    canon[['pdb_id', 'match_name']], on='pdb_id', how='left')
-m['prot'] = m['match_name'].fillna(m['pdb_id'])
+# Collapse by the granular FPbase/sequence protein identity (build_protein_identity.py),
+# not the coarse match_name which lumps 227 diverse structures as "gfp".
+# Use merged_complete_data as the single source for b_factor_ratio and lit_qy
+# (dih only supplies d_planar), so Tables S6 and S7 report identical numbers.
+m = canon[['pdb_id', 'protein_id', 'b_factor_ratio', 'lit_qy']].merge(
+    dih[['pdb_id', 'd_planar']], on='pdb_id', how='left')
+m['prot'] = m['protein_id'].fillna(m['pdb_id'])
 
 # Per-unique-FP collapse by median (companion study's method)
 common = m.dropna(subset=['d_planar', 'b_factor_ratio', 'lit_qy'])
