@@ -1352,9 +1352,22 @@ for ref in refs:
     run.font.name = 'Times New Roman'
 
 # ═══════════════════════════════════════════════════════════
-# SUPPORTING INFORMATION
+# Save the main manuscript; Supporting Information follows as a SEPARATE file
+# (JCIM requires a standalone Supporting Information for Publication file).
 # ═══════════════════════════════════════════════════════════
-doc.add_page_break()
+_main_path = os.path.join(REPO_ROOT, 'GFP_JCIM_Manuscript.docx')
+doc.save(_main_path)
+print(f"Saved: {_main_path}")
+
+# ── Supporting Information as a standalone document ──
+doc = Document()
+for section in doc.sections:
+    section.top_margin = Inches(1)
+    section.bottom_margin = Inches(1)
+    section.left_margin = Inches(1)
+    section.right_margin = Inches(1)
+    _enable_line_numbers(section)
+    _add_page_number_footer(section)
 add_heading('Supporting Information')
 
 add_body(
@@ -1628,7 +1641,7 @@ add_figure('figS8_chromophore_types.png',
     'n < 5 are omitted for legibility; this excludes the four His66-derived '
     '(blue) codes (IIC, CRG, CSH, XXY; n = 1, 3, 4, and 1 respectively).')
 
-# ── Save ──
-output_path = os.path.join(REPO_ROOT, 'GFP_JCIM_Manuscript.docx')
-doc.save(output_path)
-print(f"Saved: {output_path}")
+# ── Save Supporting Information ──
+si_path = os.path.join(REPO_ROOT, 'GFP_JCIM_SI.docx')
+doc.save(si_path)
+print(f"Saved: {si_path}")
