@@ -489,7 +489,7 @@ add_body(
     'monomeric FP barrel has a sequence length of approximately 220\u2013240 '
     'residues; we therefore restrict the geometric analysis to structures '
     'with seq_length between 210 and 245 (inclusive). A secondary '
-    'chain-selection audit (Note S1(b)) identified 15 FP-complex co-crystals '
+    'chain-selection audit (Table S5; Note S1(b)) identified 15 FP-complex co-crystals '
     'in which the original pipeline analyzed the binding partner rather '
     'than the FP chain; these entries were reprocessed using the '
     'chromophore-containing chain, which placed 13 of them into the canonical '
