@@ -28,7 +28,7 @@ def _enable_line_numbers(section):
     sectPr.append(ln)
 
 
-def _add_page_number_footer(section):
+def _add_page_number_footer(section, prefix=''):
     footer = section.footer
     footer.is_linked_to_previous = False
     p = footer.paragraphs[0] if footer.paragraphs else footer.add_paragraph()
@@ -36,6 +36,8 @@ def _add_page_number_footer(section):
     # Clear any existing content
     for r in list(p.runs):
         r._r.getparent().remove(r._r)
+    if prefix:
+        pre = p.add_run(prefix); pre.font.size = Pt(11); pre.font.name = 'Times New Roman'
     run = p.add_run()
     run.font.size = Pt(11)
     run.font.name = 'Times New Roman'
@@ -90,6 +92,12 @@ run = affil.add_run('Chemistry Department, Connecticut College, New London, CT 0
 run.font.size = Pt(11)
 run.font.name = 'Times New Roman'
 run.italic = True
+
+corr = doc.add_paragraph()
+corr.alignment = WD_ALIGN_PARAGRAPH.CENTER
+run = corr.add_run('*Corresponding author. E-mail: mzim@conncoll.edu')
+run.font.size = Pt(11)
+run.font.name = 'Times New Roman'
 doc.add_paragraph()
 
 kw = doc.add_paragraph()
@@ -1291,6 +1299,22 @@ add_body('The authors declare no competing financial interest.')
 doc.add_paragraph()
 
 # ═══════════════════════════════════════════════════════════
+# DATA AND SOFTWARE AVAILABILITY (ACS-required main-text section)
+# ═══════════════════════════════════════════════════════════
+add_subheading('Data and Software Availability.')
+add_body(
+    'All Python scripts used for CIF parsing, PCA-based barrel axis '
+    'determination, cross-sectional slicing, convex hull analysis, spectral '
+    'data matching, B-factor extraction, dihedral angle computation, '
+    'statistical analysis, and figure generation were developed with the '
+    'assistance of Claude (Anthropic) via Claude Code and are available at '
+    'https://github.com/LukeBegg1/gfp-barrel-geometry. The complete '
+    'per-structure dataset (Table S1) is provided as a CSV file in the '
+    'Supporting Information.'
+)
+doc.add_paragraph()
+
+# ═══════════════════════════════════════════════════════════
 # REFERENCES
 # ═══════════════════════════════════════════════════════════
 add_heading('References')
@@ -1366,17 +1390,32 @@ if not _COMBINED:
     _main_path = os.path.join(REPO_ROOT, 'GFP_JCIM_Manuscript.docx')
     doc.save(_main_path)
     print(f"Saved: {_main_path}")
-    # ── Supporting Information as a standalone document ──
+    # ── Supporting Information as a standalone document: title page matching
+    #    the manuscript, and pages numbered S1, S2, … (JCIM requirements) ──
     doc = Document()
     for section in doc.sections:
         section.top_margin = Inches(1)
         section.bottom_margin = Inches(1)
         section.left_margin = Inches(1)
         section.right_margin = Inches(1)
-        _enable_line_numbers(section)
-        _add_page_number_footer(section)
-doc.add_page_break()
-add_heading('Supporting Information')
+        _add_page_number_footer(section, prefix='S')
+
+    def _ctr(text, bold=False, italic=False, size=12):
+        p = doc.add_paragraph(); p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        r = p.add_run(text); r.bold = bold; r.italic = italic
+        r.font.size = Pt(size); r.font.name = 'Times New Roman'
+
+    _ctr('Supporting Information', bold=True, size=13)
+    _ctr('Barrel Shape and Chromophore Rigidity Predict Fluorescent-Protein Photophysics',
+         bold=True, size=13)
+    _ctr('Luke P. Begg, Madeline L. Mason, Marc Zimmer*', size=11)
+    _ctr('Chemistry Department, Connecticut College, New London, CT 06320, United States',
+         italic=True, size=11)
+    _ctr('*E-mail: mzim@conncoll.edu', size=11)
+    doc.add_paragraph()
+else:
+    doc.add_page_break()
+    add_heading('Supporting Information')
 
 add_body(
     'The Supporting Information contains the following items:'
@@ -1572,20 +1611,8 @@ add_body(
     'atom-selection choice.'
 )
 
-add_body(
-    'Code and Data Availability. All Python scripts used for CIF parsing, '
-    'PCA-based barrel axis determination, cross-sectional slicing, '
-    'convex hull analysis, spectral data matching, B-factor extraction, '
-    'dihedral angle computation, statistical analysis, and figure '
-    'generation were generated with the assistance of Claude (Anthropic) '
-    'via Claude Code and are available at '
-    'https://github.com/LukeBegg1/gfp-barrel-geometry. '
-    'The complete dataset (Table S1) is provided as a CSV file in the '
-    'Supporting Information.'
-)
-
 add_figure('figS1_chromophore_effect.png',
-    'S1. Effect of chromophore maturation on barrel geometry within the '
+    'Figure S1. Effect of chromophore maturation on barrel geometry within the '
     'canonical cohort (n = 780). Boxplots compare structures with '
     '(n = 739, blue) and without (n = 41, orange) a validated mature '
     'chromophore. (A) Cross-sectional area, (B) eccentricity, and '
@@ -1599,14 +1626,14 @@ add_figure('figS1_chromophore_effect.png',
     'Maturation section for interpretation.')
 
 add_figure('figS2_color_class.png',
-    'S2. Barrel geometry by emission color class within the canonical '
+    'Figure S2. Barrel geometry by emission color class within the canonical '
     'cohort. Mean (± SEM) minor axis, eccentricity, circularity, and '
     'cross-sectional area by color class, with Kruskal–Wallis H and '
     'p-values annotated. This is the categorical summary of the '
     'continuous relationships shown in Figure 1.')
 
 add_figure('figS3_megley.png',
-    'S3. Chromophore dihedral analysis. (A) τ vs φ plot '
+    'Figure S3. Chromophore dihedral analysis. (A) τ vs φ plot '
     'colored by emission class. (B) Ground-state planarity (distance from '
     'the nearest planar reference, folding the phenol symmetry) vs quantum '
     'yield; the panel shows all canonical structures (per-structure '
@@ -1615,16 +1642,16 @@ add_figure('figS3_megley.png',
     width=5.5)
 
 add_figure('figS4_cis_trans.png',
-    'S4. Barrel geometry by chromophore configuration (cis, trans, '
+    'Figure S4. Barrel geometry by chromophore configuration (cis, trans, '
     'and twisted).')
 
 add_figure('figS5_resolution.png',
-    'S5. Resolution control. (A) Resolution vs minor axis. '
+    'Figure S5. Resolution control. (A) Resolution vs minor axis. '
     '(B) Emission vs minor axis colored by resolution. (C) High-resolution '
     'subset (<2.0 \u00c5) only.')
 
 add_figure('figS6_alphafold_paired.png',
-    'S6. Bland–Altman plots of the paired AlphaFold–crystal comparison '
+    'Figure S6. Bland–Altman plots of the paired AlphaFold–crystal comparison '
     '(n = 51 wild-type FPs, one paired observation per protein). Each '
     'point is one protein; the x-axis is the mean of the AlphaFold and '
     'crystal values and the y-axis is AlphaFold minus crystal. The solid '
@@ -1641,11 +1668,11 @@ add_figure('figS6_alphafold_paired.png',
     'barrels (Δ̄ = +3.7 Å, p < 10⁻⁴).')
 
 add_figure('figS7_heatmap.png',
-    'S7. Spearman correlation matrix for all variables. Asterisks '
+    'Figure S7. Spearman correlation matrix for all variables. Asterisks '
     'indicate * p < 0.05, ** p < 0.01, *** p < 0.001.')
 
 add_figure('figS8_chromophore_types.png',
-    'S8. Barrel geometry by chromophore residue type. Chromophore codes with '
+    'Figure S8. Barrel geometry by chromophore residue type. Chromophore codes with '
     'n < 5 are omitted for legibility; this excludes the four His66-derived '
     '(blue) codes (IIC, CRG, CSH, XXY; n = 1, 3, 4, and 1 respectively).')
 
