@@ -96,17 +96,22 @@ ax1.set_yticks([])
 for sp in ax1.spines.values():
     sp.set_visible(False)
 
-# RIGHT panel: B-factor ratio vs QY scatter
-sub = df.dropna(subset=['b_factor_ratio', 'lit_qy', 'color_class']).copy()
+# RIGHT panel: B-factor ratio vs QY scatter (canonical cohort, matches Figure 2A;
+# includes color-less structures so the correlation is over the full n as in Fig 2A)
+sub = df_canon.dropna(subset=['b_factor_ratio', 'lit_qy']).copy()
 for cc in CLASS_ORDER:
     mask = sub['color_class'] == cc
     if mask.sum() > 0:
         ax2.scatter(sub.loc[mask, 'lit_qy'], sub.loc[mask, 'b_factor_ratio'],
                     c=CLASS_COLORS.get(cc, 'gray'), s=12, alpha=0.7,
-                    edgecolors='none', zorder=3)
-# Correlation
+                    edgecolors='none', marker=MARKERS.get(cc, 'o'), zorder=3)
+_nocc = sub['color_class'].isna()
+if _nocc.sum() > 0:
+    ax2.scatter(sub.loc[_nocc, 'lit_qy'], sub.loc[_nocc, 'b_factor_ratio'],
+                c='0.6', s=12, alpha=0.6, edgecolors='none', zorder=2)
+# Correlation (all canonical structures with both metrics, as in Figure 2A)
 rho, pval = stats.spearmanr(sub['lit_qy'], sub['b_factor_ratio'])
-ax2.text(0.05, 0.95, f'\u03c1 = {rho:.3f}', transform=ax2.transAxes,
+ax2.text(0.05, 0.95, f'\u03c1 = {rho:.2f}'.replace('-', '\u2212'), transform=ax2.transAxes,
          fontsize=6.5, va='top', fontstyle='italic')
 ax2.set_xlabel('Quantum Yield', fontsize=7)
 ax2.set_ylabel('B-factor Ratio', fontsize=7)
@@ -141,6 +146,7 @@ for ax, (col, xlabel, lbl) in zip(axes, emi_metrics):
         if m.sum() > 0:
             ax.scatter(sub.loc[m, col], sub.loc[m, 'em_max'],
                        c=CLASS_COLORS[cc], s=16, alpha=0.6, edgecolors='none',
+                       marker=MARKERS[cc],
                        label=(cc.capitalize() if not _leg_done else None), zorder=3)
     _leg_done = True
     x = sub[col].values; y = sub['em_max'].values
@@ -297,7 +303,8 @@ for cc in CLASS_ORDER:
     if mask.sum() > 0:
         ax.scatter(sub_a.loc[mask, 'lit_qy'], sub_a.loc[mask, 'b_factor_ratio'],
                    c=CLASS_COLORS.get(cc, 'gray'), s=25, alpha=0.6,
-                   edgecolors='none', label=cc.capitalize(), zorder=3)
+                   edgecolors='none', marker=MARKERS.get(cc, 'o'),
+                   label=cc.capitalize(), zorder=3)
 # Structures with a curated QY but no spectral class (no em_max) shown in gray
 un = sub_a['color_class'].isna()
 if un.sum() > 0:
@@ -328,7 +335,7 @@ for cc in CLASS_ORDER:
     if mask.sum() > 0:
         ax.scatter(sub_b.loc[mask, 'em_max'], sub_b.loc[mask, 'b_factor_ratio'],
                    c=CLASS_COLORS.get(cc, 'gray'), s=25, alpha=0.6,
-                   edgecolors='none', zorder=3)
+                   edgecolors='none', marker=MARKERS.get(cc, 'o'), zorder=3)
 rho_b, p_b = stats.spearmanr(sub_b['em_max'], sub_b['b_factor_ratio'])
 p_b_str = f'p < 0.001' if p_b < 0.001 else f'p = {p_b:.3f}'
 ax.text(0.03, 0.95, f'\u03c1 = {rho_b:.3f}, {p_b_str}', transform=ax.transAxes,
@@ -340,13 +347,14 @@ panel_label(ax, '(B)')
 
 # Panel C: B-ratio by color class box plot with jittered points
 ax = axes[2]
-box_data, colors, labels, positions = [], [], [], []
+box_data, colors, labels, positions, box_classes = [], [], [], [], []
 pos = 0
 for cc in classes_present:
     vals = df_canon.loc[df_canon['color_class'] == cc, 'b_factor_ratio'].dropna()
     if len(vals) == 0:
         continue
     box_data.append(vals.values)
+    box_classes.append(cc)
     colors.append(CLASS_COLORS.get(cc, 'gray'))
     labels.append(f'{cc.capitalize()}\n(n={len(vals)})')
     positions.append(pos)
@@ -361,7 +369,8 @@ for patch, col in zip(bp['boxes'], colors):
 for i, vals in enumerate(box_data):
     jitter = np.random.RandomState(0).normal(0, 0.06, size=len(vals))
     ax.scatter(np.full(len(vals), positions[i]) + jitter, vals,
-               c=colors[i], s=8, alpha=0.5, edgecolors='none', zorder=3)
+               c=colors[i], s=8, alpha=0.5, edgecolors='none',
+               marker=MARKERS.get(box_classes[i], 'o'), zorder=3)
 ax.axhline(y=1.0, color='black', linestyle='--', linewidth=0.8, alpha=0.6)
 ax.set_xticks(positions)
 ax.set_xticklabels(labels, fontsize=8)
@@ -491,8 +500,8 @@ ba_metrics = [
     ('af_ecc',   'cry_ecc',   'Eccentricity',   '(E)'),
     ('af_circ',  'cry_circ',  'Circularity',    '(F)'),
 ]
-fig, axes = plt.subplots(2, 3, figsize=(9.5, 6))
-fig.subplots_adjust(hspace=0.42, wspace=0.40)
+fig, axes = plt.subplots(2, 3, figsize=(11, 7))
+fig.subplots_adjust(hspace=0.45, wspace=0.42)
 axes = axes.flatten()
 for ax, (acol, ccol, label, lbl) in zip(axes, ba_metrics):
     s = af[[acol, ccol]].dropna()
@@ -508,9 +517,10 @@ for ax, (acol, ccol, label, lbl) in zip(axes, ba_metrics):
     ax.axhline(0, color='black', lw=0.7, ls=':', alpha=0.6, zorder=1)
     p_str = 'p < 0.001' if p < 0.001 else f'p = {p:.2f}'
     ax.text(0.03, 0.97, f'Δ̄ = {dbar:+.2f}\n{p_str}', transform=ax.transAxes,
-            fontsize=8.5, va='top', ha='left')
-    ax.set_xlabel(f'Mean of AF & crystal — {label}', fontsize=9.5)
-    ax.set_ylabel('AF − crystal', fontsize=9.5)
+            fontsize=10, va='top', ha='left')
+    ax.set_xlabel(f'Mean of AF & crystal — {label}', fontsize=11)
+    ax.set_ylabel('AF − crystal', fontsize=11)
+    ax.tick_params(labelsize=9.5)
     remove_top_right(ax)
     panel_label(ax, lbl)
 path = out_dir + 'figS6_alphafold_paired.png'

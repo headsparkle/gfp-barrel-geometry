@@ -1,0 +1,50 @@
+  #  Author (first)         Year   Short title/ID
+------------------------------------------------------------------------------------------
+  1  Shimomura et al.       1962   Extraction, Purification and Properties of Aequo
+  2  Stepanenko et al.      2008   Fluorescent Proteins as Biomarkers and Biosensor
+  3  Chalfie et al.         1994   Green Fluorescent Protein as a Marker for Gene E
+  4  The Nobel Foundation   2008   The Nobel Prize in Chemistry 2008
+  5  Tsien                  1998   The Green Fluorescent Protein
+  6  Day et al.             2009   The Fluorescent Protein Palette: Tools for Cellu
+  7  Rodriguez et al.       2017   The Growing and Glowing Toolbox of Fluorescent a
+  8  Ormö et al.            1996   Crystal Structure of the Aequorea victoria Green
+  9  Yang et al.            1996   The Molecular Structure of Green Fluorescent Pro
+ 10  Heim et al.            1995   Improved Green Fluorescence
+ 11  Cubitt et al.          1995   Understanding, Improving and Using Green Fluores
+ 12  Matz et al.            1999   Fluorescent Proteins from Nonbioluminescent Anth
+ 13  Stepanenko et al.      2013   Beta-Barrel Scaffold of Fluorescent Proteins: Fo
+ 14  Heim et al.            1996   Engineering Green Fluorescent Protein for Improv
+ 15  Wachter et al.         1998   Structural Basis of Spectral Shifts in the Yello
+ 16  Gross et al.           2000   The Structure of the Chromophore within DsRed, a
+ 17  Goedhart et al.        2012   Structure-Guided Evolution of Cyan Fluorescent P
+ 18  Ai et al.              2006   Directed Evolution of a Monomeric, Bright and Ph
+ 19  Davidson et al.        2009   Engineered Fluorescent Proteins: Innovations and
+ 20  Shaner et al.          2005   A Guide to Choosing Fluorescent Proteins
+ 21  Remington              2006   Fluorescent Proteins: Maturation, Photochemistry
+ 22  Craggs                 2009   Green Fluorescent Protein: Structure, Folding an
+ 23  Zimmer                 2002   Green Fluorescent Protein (GFP): Applications, S
+ 24  Li et al.              2012   Water Diffusion In and Out of the Beta-Barrel of
+ 25  Zimmer et al.          2014   Structural Consequences of Chromophore Formation
+ 26  Nwafor et al.          2021   Why Are Gly31, Gly33, and Gly35 Highly Conserved
+ 27  Megley et al.          2009   Photophysics and Dihedral Freedom of the Chromop
+ 28  Ahmed et al.           2025   Molecular Dynamics Guided Identification of a Br
+ 29  Anthropic              2026   Claude Code
+ 30  Schwartz               2026   Vibe Physics: The AI Grad Student
+ 31  Hartley et al.         2022   AlphaFold2 and RoseTTAFold Predict Posttranslati
+ 32  Hayes et al.           2025   Simulating 500 Million Years of Evolution with a
+ 33  Gelman et al.          2025   Biophysics-Based Protein Language Models for Pro
+ 34  Lambert                2019   FPbase: A Community-Editable Fluorescent Protein
+ 35  Sievers et al.         2011   Fast, Scalable Generation of High-Quality Protei
+ 36  Waterhouse et al.      2009   Jalview Version 2: A Multiple Sequence Alignment
+ 37  Barber et al.          1996   The Quickhull Algorithm for Convex Hulls
+ 38  Cranfill et al.        2016   Quantitative Assessment of Fluorescent Proteins
+ 39  Virtanen et al.        2020   Methods 2020, 17, 261–272
+ 40  Pedregosa et al.       2011   Scikit-learn: Machine Learning in Python
+ 41  Hirano et al.          2022   A Highly Photostable and Bright Green Fluorescen
+ 42  Zimmer                 2026   Ground-State Chromophore Geometry, Not Cage Size
+ 43  Pieri et al.           2024   Conical Intersection Accessibility Dictates Brig
+ 44  Chen et al.            2025   A Twisted Chromophore Powers a Turn-On Fluoresce
+ 45  Meech                  2009   Excited-State Reactions in Fluorescent Proteins
+ 46  Park et al.            2016   Electric Field Keeps Chromophore Planar and Prod
+ 47  Jones et al.           2022   Steric and Electronic Origins of Fluorescence in
+ 48  Varadi et al.          2024   AlphaFold Protein Structure Database in 2024: Pr

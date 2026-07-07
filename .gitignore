@@ -4,10 +4,19 @@
 scop_gfp_structures/
 missing_fp_structures/
 alphafold_all347_structures/
+.cif_cache/
+data/cif_cache/
+
+# Pre-publication submission documents (not for a public code repo)
+*.docx
+*.doc
+~$*
+GFP_JCIM_Supplementary.zip
+*.tif
+*.tiff
 
 # Backups
 *_backup.csv
-~$*.docx
 
 # macOS
 .DS_Store

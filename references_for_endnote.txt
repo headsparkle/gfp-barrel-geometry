@@ -1,0 +1,48 @@
+Shimomura, O.; Johnson, F. H.; Saiga, Y. Extraction, Purification and Properties of Aequorin, a Bioluminescent Protein from the Luminous Hydromedusan, Aequorea. J. Cell. Comp. Physiol. 1962, 59, 223–239.
+Stepanenko, O. V.; Verkhusha, V. V.; Kuznetsova, I. M.; Uversky, V. N.; Turoverov, K. K. Fluorescent Proteins as Biomarkers and Biosensors: Throwing Color Lights on Molecular and Cellular Processes. Curr. Protein Pept. Sci. 2008, 9, 338–369.
+Chalfie, M.; Tu, Y.; Euskirchen, G.; Ward, W. W.; Prasher, D. C. Green Fluorescent Protein as a Marker for Gene Expression. Science 1994, 263, 802–805.
+The Nobel Foundation. The Nobel Prize in Chemistry 2008. https://www.nobelprize.org/prizes/chemistry/2008/ (accessed 2026-04-07).
+Tsien, R. Y. The Green Fluorescent Protein. Annu. Rev. Biochem. 1998, 67, 509–544.
+Day, R. N.; Davidson, M. W. The Fluorescent Protein Palette: Tools for Cellular Imaging. Chem. Soc. Rev. 2009, 38, 2887–2921.
+Rodriguez, E. A.; Campbell, R. E.; Lin, J. Y.; Lin, M. Z.; Miyawaki, A.; Palmer, A. E.; Shu, X.; Zhang, J.; Tsien, R. Y. The Growing and Glowing Toolbox of Fluorescent and Photoactive Proteins. Trends Biochem. Sci. 2017, 42, 111–129.
+Ormö, M.; Cubitt, A. B.; Kallio, K.; Gross, L. A.; Tsien, R. Y.; Remington, S. J. Crystal Structure of the Aequorea victoria Green Fluorescent Protein. Science 1996, 273, 1392–1395.
+Yang, F.; Moss, L. G.; Phillips, G. N., Jr. The Molecular Structure of Green Fluorescent Protein. Nat. Biotechnol. 1996, 14, 1246–1251.
+Heim, R.; Cubitt, A. B.; Tsien, R. Y. Improved Green Fluorescence. Nature 1995, 373, 663–664.
+Cubitt, A. B.; Heim, R.; Adams, S. R.; Boyd, A. E.; Gross, L. A.; Tsien, R. Y. Understanding, Improving and Using Green Fluorescent Proteins. Trends Biochem. Sci. 1995, 20, 448–455.
+Matz, M. V.; Fradkov, A. F.; Labas, Y. A.; Savitsky, A. P.; Zaraisky, A. G.; Markelov, M. L.; Lukyanov, S. A. Fluorescent Proteins from Nonbioluminescent Anthozoa Species. Nat. Biotechnol. 1999, 17, 969–973.
+Stepanenko, O. V.; Kuznetsova, I. M.; Verkhusha, V. V.; Turoverov, K. K. Beta-Barrel Scaffold of Fluorescent Proteins: Folding, Stability and Role in Chromophore Formation. Int. Rev. Cell Mol. Biol. 2013, 302, 221–278.
+Heim, R.; Tsien, R. Y. Engineering Green Fluorescent Protein for Improved Brightness, Longer Wavelengths and Fluorescence Resonance Energy Transfer. Curr. Biol. 1996, 6, 178–182.
+Wachter, R. M.; Elsliger, M. A.; Kallio, K.; Hanson, G. T.; Remington, S. J. Structural Basis of Spectral Shifts in the Yellow-Emission Variants of Green Fluorescent Protein. Structure 1998, 6, 1267–1277.
+Gross, L. A.; Baird, G. S.; Hoffman, R. C.; Baldridge, K. K.; Tsien, R. Y. The Structure of the Chromophore within DsRed, a Red Fluorescent Protein from Coral. Proc. Natl. Acad. Sci. U.S.A. 2000, 97, 11990–11995.
+Goedhart, J.; von Stetten, D.; Noirclerc-Savoye, M.; Lelimousin, M.; Joosen, L.; Hink, M. A.; van Weeren, L.; Gadella, T. W. J., Jr.; Royant, A. Structure-Guided Evolution of Cyan Fluorescent Proteins towards a Quantum Yield of 93%. Nat. Commun. 2012, 3, 751.
+Ai, H. W.; Henderson, J. N.; Remington, S. J.; Campbell, R. E. Directed Evolution of a Monomeric, Bright and Photostable Version of Clavularia Cyan Fluorescent Protein. Biochem. J. 2006, 400, 531–540.
+Davidson, M. W.; Campbell, R. E. Engineered Fluorescent Proteins: Innovations and Applications. Nat. Methods 2009, 6, 713–717.
+Shaner, N. C.; Steinbach, P. A.; Tsien, R. Y. A Guide to Choosing Fluorescent Proteins. Nat. Methods 2005, 2, 905–909.
+Remington, S. J. Fluorescent Proteins: Maturation, Photochemistry and Photophysics. Curr. Opin. Struct. Biol. 2006, 16, 714–721.
+Craggs, T. D. Green Fluorescent Protein: Structure, Folding and Chromophore Maturation. Chem. Soc. Rev. 2009, 38, 2865–2875.
+Zimmer, M. Green Fluorescent Protein (GFP): Applications, Structure, and Related Photophysical Behavior. Chem. Rev. 2002, 102, 759–781.
+Li, B.; Shahid, R.; Peshkepija, P.; Zimmer, M. Water Diffusion In and Out of the Beta-Barrel of GFP and the Fast Maturing Fluorescent Protein, TurboGFP. Chem. Phys. 2012, 392, 143–148.
+Zimmer, M. H.; Li, B.; Shahid, R. S.; Peshkepija, P.; Zimmer, M. Structural Consequences of Chromophore Formation and Exploration of Conserved Lid Residues amongst Naturally Occurring Fluorescent Proteins. Chem. Phys. 2014, 429, 5–11.
+Nwafor, J.; Salguero, C.; Welcome, F.; Durmus, S.; Glasser, R. N.; Zimmer, M.; Schneider, T. L. Why Are Gly31, Gly33, and Gly35 Highly Conserved in All Fluorescent Proteins? Biochemistry 2021, 60, 3762–3770.
+Megley, C. M.; Dickson, L. A.; Maddalo, S. L.; Chandler, G. J.; Zimmer, M. Photophysics and Dihedral Freedom of the Chromophore in Yellow, Blue, and Green Fluorescent Protein. J. Phys. Chem. B 2009, 113, 302–308.
+Ahmed, R. D.; Jamieson, W. D.; Vitsupakorn, D.; Zitti, A.; Pawson, K. A.; Castell, O. K.; Watson, P. D.; Jones, D. D. Molecular Dynamics Guided Identification of a Brighter Variant of Superfolder Green Fluorescent Protein with Increased Photobleaching Resistance. Commun. Chem. 2025, 8, 174.
+Anthropic. Claude Code. https://docs.anthropic.com/en/docs/claude-code (accessed 2026-04-07).
+Schwartz, M. D. Vibe Physics: The AI Grad Student. Anthropic 2026. https://www.anthropic.com/research/vibe-physics (accessed 2026-04-07).
+Hartley, S. M.; Tiernan, K. A.; Ahmetaj, G.; Cretu, A.; Zhuang, Y.; Zimmer, M. AlphaFold2 and RoseTTAFold Predict Posttranslational Modifications. Chromophore Formation in GFP-like Proteins. PLoS One 2022, 17, e0267560.
+Hayes, T.; et al. Simulating 500 Million Years of Evolution with a Language Model. Science 2025, 387, 850–858.
+Gelman, S.; Johnson, B.; Freschlin, C. R.; Sharma, A.; D’Costa, S.; Peters, J.; Gitter, A.; Romero, P. A. Biophysics-Based Protein Language Models for Protein Engineering. Nat. Methods 2025, 22, 1868–1879.
+Lambert, T. J. FPbase: A Community-Editable Fluorescent Protein Database. Nat. Methods 2019, 16, 277–278.
+Sievers, F.; et al. Fast, Scalable Generation of High-Quality Protein Multiple Sequence Alignments Using Clustal Omega. Mol. Syst. Biol. 2011, 7, 539.
+Waterhouse, A. M.; Procter, J. B.; Martin, D. M. A.; Clamp, M.; Barton, G. J. Jalview Version 2: A Multiple Sequence Alignment Editor and Analysis Workbench. Bioinformatics 2009, 25, 1189–1191.
+Barber, C. B.; Dobkin, D. P.; Huhdanpaa, H. The Quickhull Algorithm for Convex Hulls. ACM Trans. Math. Softw. 1996, 22, 469–483.
+Cranfill, P. J.; et al. Quantitative Assessment of Fluorescent Proteins. Nat. Methods 2016, 13, 557–562.
+Virtanen, P.; et al. SciPy 1.0: Fundamental Algorithms for Scientific Computing in Python. Nat. Methods 2020, 17, 261–272.
+Pedregosa, F.; et al. Scikit-learn: Machine Learning in Python. J. Mach. Learn. Res. 2011, 12, 2825–2830.
+Hirano, M.; Ando, R.; Shimozono, S.; Sugiyama, M.; Takeda, N.; Kurokawa, H.; Deguchi, R.; Endo, K.; Haga, K.; Takai-Todaka, R.; et al. A Highly Photostable and Bright Green Fluorescent Protein. Nat. Biotechnol. 2022, 40, 1132–1142.
+Zimmer, M. Ground-State Chromophore Geometry, Not Cage Size, Tracks Quantum Yield in Fluorescent Proteins. Biophys. J. 2026, submitted.
+Pieri, E.; Walker, A. R.; Zhu, M.; Martínez, T. J. Conical Intersection Accessibility Dictates Brightness in Red Fluorescent Proteins. J. Am. Chem. Soc. 2024, 146, 17646–17658.
+Chen, C.; Pathiranage, V.; Ong, W. S. Y.; Dodani, S. C.; Walker, A. R.; Fang, C. A Twisted Chromophore Powers a Turn-On Fluorescent Protein Chloride Sensor. Proc. Natl. Acad. Sci. U. S. A. 2025, 122, e2508094122.
+Meech, S. R. Excited-State Reactions in Fluorescent Proteins. Chem. Soc. Rev. 2009, 38, 2922–2934.
+Park, J. W.; Rhee, Y. M. Electric Field Keeps Chromophore Planar and Produces High Yield Fluorescence in Green Fluorescent Protein. J. Am. Chem. Soc. 2016, 138, 13619–13629.
+Jones, C. M.; List, N. H.; Martínez, T. J. Steric and Electronic Origins of Fluorescence in GFP and GFP-like Proteins. J. Am. Chem. Soc. 2022, 144, 12732–12746.
+Varadi, M.; et al. AlphaFold Protein Structure Database in 2024: Providing Structure Coverage for over 214 Million Protein Sequences. Nucleic Acids Res. 2024, 52 (D1), D368–D375.

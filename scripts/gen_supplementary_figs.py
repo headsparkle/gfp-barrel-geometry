@@ -325,7 +325,7 @@ for t in sorted_types:
     nn = ct_counts[t]
     type_labels.append(f'{t} (n={nn})')
 
-fig, axes = plt.subplots(3, 1, figsize=(7.5, 8))
+fig, axes = plt.subplots(3, 1, figsize=(9.5, 7.5))
 
 metrics_s5 = [
     ('minor_axis',   'Minor Axis (Å)'),
@@ -360,8 +360,14 @@ for ax, (col, ylabel), lab in zip(axes, metrics_s5, labels_s5):
         item.set_linewidth(1.5)
 
     ax.set_xticks(range(1, len(labels_clean)+1))
-    ax.set_xticklabels(labels_clean, rotation=45, ha='right', fontsize=8)
-    ax.set_ylabel(ylabel)
+    # Label the x-axis only on the bottom panel (all panels share the same
+    # ordered chromophore-type categories); larger font for legibility.
+    if lab == labels_s5[-1]:
+        ax.set_xticklabels(labels_clean, rotation=45, ha='right', fontsize=11)
+    else:
+        ax.set_xticklabels([])
+    ax.set_ylabel(ylabel, fontsize=11)
+    ax.tick_params(axis='y', labelsize=10)
     clean_spines(ax)
     panel_label(ax, lab)
     all_vals = pd.concat(groups_clean)

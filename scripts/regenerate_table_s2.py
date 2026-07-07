@@ -140,6 +140,7 @@ mw_tests = [
     ('MW Eccentricity (chrom vs no-chrom)', 'eccentricity'),
     ('MW Circularity (chrom vs no-chrom)',  'circularity'),
     ('MW Minor Axis (chrom vs no-chrom)',   'minor_axis'),
+    ('MW Major Axis (chrom vs no-chrom)',   'major_axis'),
 ]
 for name, m in mw_tests:
     u_o, p_o = mw(F, m, 'has_chromophore')

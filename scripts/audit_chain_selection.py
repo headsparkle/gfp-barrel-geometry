@@ -86,18 +86,14 @@ for pdb_id in df['pdb_id']:
         rows.append({'pdb_id': pdb_id, 'error': 'no protein chains'})
         continue
 
-    # Our pipeline likely picks longest chain (with seq_length in some range).
-    # Match against recorded seq_length.
+    # The ORIGINAL pipeline rule analysed the longest standard-amino-acid chain
+    # in each entry (Note S1(b)). For FP-complex co-crystals the longest chain is
+    # the binding partner, not the FP; this audit flags exactly those cases.
+    # NB: do NOT match against seq_length here — reprocess_buggy_chains.py
+    # overwrote seq_length with the CORRECTED chain length, so matching on it
+    # would hide the very bug this table documents.
     recorded_len = df.loc[df['pdb_id'] == pdb_id, 'seq_length'].values[0]
-    # Find which chain matches recorded length (allow ±2 for missing residues / numbering quirks)
-    matched_chain = None
-    for ci in chains_info:
-        if pd.notna(recorded_len) and abs(ci['n_aa'] - recorded_len) <= 2:
-            matched_chain = ci
-            break
-    # If no chain matches recorded length, fall back to longest
-    if matched_chain is None:
-        matched_chain = max(chains_info, key=lambda c: c['n_aa'])
+    matched_chain = max(chains_info, key=lambda c: c['n_aa'])
 
     chrom_chains = [c for c in chains_info if c['chromophore']]
     n_chains = len(chains_info)
